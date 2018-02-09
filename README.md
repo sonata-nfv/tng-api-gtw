@@ -1,7 +1,9 @@
-# 5GTANGO API Gateway
-This is the 5GTANGO API Gateway for the Verification&amp;Validation and Service Platforms (built on top of [SONATA](https://github.com/sonata-nfv)) repository.
+[![Build Status](https://travis-ci.org/sonata-nfv/tng-schema.svg?branch=master)](https://travis-ci.org/sonata-nfv/tng-schema) [![Join the chat at https://gitter.im/5gtango/tango-schema](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/5gtango/tango-schema)
 
 ![Logo of the project](./images/logo.sample.png)
+
+# 5GTANGO API Gateway
+This is the 5GTANGO API Gateway for the Verification&amp;Validation and Service Platforms (built on top of [SONATA](https://github.com/sonata-nfv)) repository.
 
 # Name of the project
 > Additional information or tag line
