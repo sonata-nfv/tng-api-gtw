@@ -1,5 +1,5 @@
-# tng-api-gtw
-The API Gateway for the 5GTANGO Verification&amp;Validation and Service Platforms (built on top of [SONATA](https://github.com/sonata-nfv)).
+# 5GTANGO API Gateway
+This is the 5GTANGO API Gateway for the Verification&amp;Validation and Service Platforms (built on top of [SONATA](https://github.com/sonata-nfv)) repository.
 
 ![Logo of the project](./images/logo.sample.png)
 
