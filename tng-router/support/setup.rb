@@ -36,19 +36,37 @@ require 'active_support'
 class Setup
   
   def self.configure
-    middlewares = symbolize YAML::load_file(File.join(__dir__, '..', 'config', 'middlewares.yml'))
-    configuration = symbolize YAML::load_file(File.join(__dir__, '..', 'config', 'sp_routes.yml'))
+    
+    unless File.exist?(middleware_file_name)
+      # Temporary 'till I decide the interface
+      return {}
+    end
+    middlewares = symbolize YAML::load_file(middleware_file_name)
+    
+    unless ENV['ROUTES_FILE'] && File.exist?(routes_file_name)
+      # Temporary 'till I decide the interface
+      return {}
+    end      
+    configuration = symbolize YAML::load_file(routes_file_name)
         
-    @@basic_path = configuration[:basic_path]
+    @@base_path = configuration[:base_path]
     @@paths = configuration[:paths]
     @@loading_paths = middlewares[:loading_paths]
     @@middlewares = middlewares
+    
+    FileUtils.mkdir(File.join(__dir__, '..', 'log')) unless File.exists? File.join(__dir__, '..', 'log')
+    logfile = File.open(File.join(__dir__, '..', 'log', ENV['RACK_ENV'])+'.log', 'a+')
+    logfile.sync = true
+    STDOUT.reopen(logfile)
+    STDERR.reopen(logfile)
+    @@logger = Logger.new(logfile)
   end
   
-  def self.basic_path() @@basic_path end
+  def self.base_path() @@base_path end
   def self.paths() @@paths end
   def self.loading_paths() @@loading_paths end
   def self.middlewares() @@middlewares end
+  def self.logger() @@logger end
   
   private
   # from https://gist.github.com/Integralist/9503099
@@ -61,6 +79,14 @@ class Setup
       memo << symbolize(v); memo
     end if obj.is_a? Array
     obj
+  end
+  
+  def self.middleware_file_name
+    File.join(__dir__, '..', 'config', 'middlewares.yml')
+  end
+  
+  def self.routes_file_name
+    File.join(__dir__, '..', 'config', ENV['ROUTES_FILE'])
   end
 end
 =begin

@@ -41,27 +41,31 @@ class Auth
   
   def initialize(app, options= {})
     @app, @auth_uri = app, options[:auth_uri]
+    puts "Initialized #{self.class.name} with auth_uri=#{@auth_uri}"
   end
 
   def call(env)
+    @logger = env['rack.errors']
     if (env['HTTP_AUTHORIZATION'].to_s.empty?)
       # Just forward request if no authorization token is provided
+      env['rack.errors'].debug(self.class.name) {'No authorization header'}
       @app.call(env)
     else
       # Authorization token is provided, it has to be in the form of 'bearer: <token>'
       token = env['HTTP_AUTHORIZATION'].split(' ')
-      return [400, {}, ['Unauthorized: missing authorization (bearer) header']] unless bearer_token?(token:token)
-    
+      return respond(400, {}, 'Unauthorized: missing authorization (bearer) header') unless bearer_token?(token:token)
       begin
         user = find_user_by_token(token: token[1])
         env['session.user.name'] = user[:preferred_username]
-        return @app.call(env)
+        code, headers, body = @app.call(env)
+        env['rack.errors'].debug(self.class.name) {"code, headers, body: #{code}, #{headers}, #{body[0]}"}
+        return [code, headers, body]
       rescue UserTokenNotActiveError
-        [401, {}, ['Unauthorized: token  not active']]
+        respond(401, {}, 'Unauthorized: token  not active')
       rescue UserNotFoundError
-        [404, {}, ['Not found: user not found']]
+        respond(404, {}, 'Not found: user not found')
       else
-        [500, {}, ['Internal error in '+self.class.name]]
+        respond(500, {}, 'Internal error in '+self.class.name)
       end
     end
   end
@@ -84,7 +88,7 @@ class Auth
       begin
         JSON.parse(resp.body, symbolize_names: true)
       rescue => e
-        "Error processing #{$!}: \n\t#{e.backtrace.join("\n\t")}"
+        @logger.debug(self.class.name) {"Error processing #{$!}: \n\t#{e.backtrace.join("\n\t")}"}
         nil
       end
     when 401
@@ -92,5 +96,8 @@ class Auth
     else
       raise UserNotFoundError.new "User not found with the given token"
     end  
+  end
+  def respond( code, headers, body, message='')
+    [code, headers, [body]]
   end
 end

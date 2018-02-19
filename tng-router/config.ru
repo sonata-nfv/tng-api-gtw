@@ -30,7 +30,23 @@
 ## acknowledge the contributions of their colleagues of the 5GTANGO
 ## partner consortium (www.5gtango.eu).
 # encoding: utf-8
+require ::File.join(__dir__, 'support', '/setup')
 require ::File.join(__dir__, 'dispatcher')
+
+Setup.configure
+
+Setup.loading_paths.each do |folder|
+  Dir.glob(File.join(__dir__, folder, '**', '*.rb')).each { |file| require file } if Dir.exist?(folder)
+end
+
+#use RateLimiter
+#use Rack::CommonLogger, logger: Setup.logger
+use TangoLogger, logger: Setup.logger
+use Instrumentation, kpis_uri: Setup.middlewares[:middlewares][:kpis][:site] unless ENV['NO_KPIS']
+use Auth, auth_uri: Setup.middlewares[:middlewares][:user_management][:site]+Setup.middlewares[:middlewares][:user_management][:path] unless ENV['NO_AUTH']
+use PathBuilder, base_path: Setup.base_path, paths: Setup.paths
+#use AuthZ
 run Dispatcher.new
+#Rack::Handler::Puma.run(Dispatcher.new, Port: ENV['PORT'])
 
 

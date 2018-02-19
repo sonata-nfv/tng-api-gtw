@@ -31,65 +31,30 @@
 ## partner consortium (www.5gtango.eu).
 # encoding: utf-8
 require 'rack'
-require 'rack/show_exceptions'
-require 'sinatra/base'
 require 'yaml'
 require 'net/http'
 require "uri"
-require_relative './support/setup'
-require_relative './support/path_processor'
+require ::File.join(__dir__, 'support', '/setup')
+require ::File.join(__dir__, 'dispatcher')
 
 class Dispatcher
-  def initialize
-    Setup.configure
-  
-    Setup.loading_paths.each do |folder|
-      Dir.glob(File.join(__dir__, folder, '**', '*.rb')).each { |file| require file } if Dir.exist?(folder)
-    end
-    @basic_path, @paths = Setup.basic_path, Setup.paths
-
-    @app = Rack::Builder.new do
-      #use RateLimiter
-      use Rack::CommonLogger
-
-      kpis_uri = Setup.middlewares[:middlewares][:kpis][:site]
-      use Instrumentation, kpis_uri: kpis_uri unless ENV['NO_KPIS']
-      
-      auth_uri = Setup.middlewares[:middlewares][:user_management][:site]+Setup.middlewares[:middlewares][:user_management][:path]
-      use Auth, auth_uri: auth_uri unless ENV['NO_AUTH']
-      
-      #use AuthZ
-    end
-  end
-
   def call(env)
-    request = Rack::Request.new(env)
-    simple_path = env["REQUEST_PATH"]
-    simple_path.slice!(Setup.basic_path)
-    path = Setup.paths[PathProcessor.new(env["REQUEST_PATH"]).call().to_sym]
-    path[:verbs] = [ 'get' ] unless path.key?(:verbs)
+    request = Rack::Request.new(env)  
     
-    if path[:verbs].include? request.request_method.downcase
-      full_path = path[:site]+Setup.basic_path+env["REQUEST_PATH"]
-      process( request.request_method.downcase, full_path, request.params)
-    else
-      respond(404, {}, "#{request.request_method} is not supported by #{path[:site]}, only #{path[:verbs].join(', ')}")
-    end
-    #@app.call(env)
+    @logger = env['rack.errors']
+    @logger.debug(self.class.name+'#'+__method__.to_s) {"verb, full_path, params: #{request.request_method.downcase}, #{env['5gtango.full_path']}, #{request.params}"}
+    status, headers, body = process( request.request_method.downcase, env['5gtango.full_path'], request.params)
+    @logger.debug(self.class.name+'#'+__method__.to_s) {"status, headers, body: #{status}, #{headers}, #{body[0]}"}
+    [status, headers, body]
   end
   
   private
-  def verb(env)
-    env["REQUEST_METHOD"].downcase.to_sym
-  end
-  
   def process(verb, full_url, params)
-    puts verb, full_url, params
     uri = URI.parse(full_url)
     http = Net::HTTP.new(uri.host, uri.port)
-    puts "http: #{http.inspect}"
+    @logger.debug(self.class.name) { "http: #{http.inspect}"}
     attribute_url = '?'+URI.encode_www_form(params) if params
-    puts attribute_url
+    @logger.debug(self.class.name) {"attribute_url: #{attribute_url}"}
     begin
       case verb
       when 'get'
@@ -119,20 +84,12 @@ class Dispatcher
       respond(500, {}, "Exception #{e.message} #{verb}ing #{full_url} with params #{params}: #{e.backtrace.inspect}")
     end
     return respond(500, {}, "No response by #{verb}ing #{full_url} with params #{params}") if response.nil?
-    puts response.inspect
+    @logger.debug(self.class.name) {"response: #{response.inspect}"}
     respond(response.code, response.header, response.body)
     #io.rewind
   end
   
-  private
   def respond(status, headers, body)
     [status, headers, [body]]
   end 
-#  def bad_request?
-#    'What bad request?!?'
-#  end
 end
-
-  
-
-  

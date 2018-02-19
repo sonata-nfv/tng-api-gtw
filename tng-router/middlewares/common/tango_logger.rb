@@ -30,19 +30,20 @@
 ## acknowledge the contributions of their colleagues of the 5GTANGO
 ## partner consortium (www.5gtango.eu).
 # encoding: utf-8
-class PathProcessor
-  def initialize(request_path)
-    @request_path = request_path
-    @basic_path = Setup.basic_path
-    @paths = Setup.paths.keys
+require 'rack'
+
+class TangoLogger
+  attr_accessor :app, :auth_uri
+
+  def initialize(app, options = {})
+    @app, @logger = app, options[:logger]
+    @logger.info(self.class.name) {"Initialized #{self.class.name} with auth_uri=#{@logger}"} if @logger
   end
-  
-  def call
-    simple_path = @request_path
-    simple_path.slice!(@basic_path)
-    
-    possible_paths = @paths.select {|path| simple_path =~ Mustermann.new(path.to_s)}
-    puts "possible_paths: #{@possible_paths}"
-    possible_paths.max_by(&:length)
+
+  def call(env)
+    env['rack.errors'] = @logger
+    status, headers, body = @app.call(env)
+    @logger.debug(self.class.name) {"status, headers, body: #{status}, #{headers}, #{body[0]}"}
+    [status, headers, body]
   end
 end

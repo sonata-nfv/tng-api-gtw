@@ -32,16 +32,17 @@
 # encoding: utf-8
 require 'rack'
 class Instrumentation
-  def initialize(app, kpis_uri)
-    @app, @kpis_uri = app, kpis_uri
+  def initialize(app, options= {})
+    @app, @kpis_uri = app, options[:kpis_uri]
+    puts "Initialized #{self.class.name} with kpis_url=#{@kpis_uri}"
   end
 
   def call(env)
     before = Time.now
     status, headers, body = @app.call env
 
-    headers['X-Timing'] = (Time.now - before).to_i.to_s
-
+    headers['X-Timing'] = (Time.now - before).to_f.to_s
+    env['rack.errors'].debug(self.class.name) {"status, headers, body: #{status}, #{headers}, #{body[0]}"}
     [status, headers, body]
   end
 end

@@ -30,10 +30,10 @@
 ## acknowledge the contributions of their colleagues of the 5GTANGO
 ## partner consortium (www.5gtango.eu).
 # encoding: utf-8
-basic_path: /api/v3
+base_path: /api/v3
 paths:
   /: 
-    site: http://on-gtkapi:5000
+    site: http://localhost:5000 #son-gtkapi:5000
   /docs:
     site: http://son-gtkapi:5000/api/doc
   /admin/logs:
@@ -43,7 +43,7 @@ paths:
   /users/api/v1/userinfo:
     site: http://son-gtkusr:5600
     verbs: [ get, post, patch, put, delete, options, header ]   
-  /sessions/*:
+  /sessions(/?|/*):
     site: http://tng-common:5200
     verbs: [ post, delete ]   
   /packages(/?|/*):
@@ -51,12 +51,12 @@ paths:
     #  - GenerateInternalId
     #  - SwapToExternalID
     #site: http://tng-common:5200
-    site: http://son-gtkpkg:5100
+    site: http://localhost:5000 #son-gtkpkg:5100
     verbs: [ get, post, patch, put, delete, options, header ]
     auth: true  
   /services(/?|/*):
     #site: http://tng-common:5200
-    site: http://son-gtksrv:5300
+    site: http://localhost:5000 #son-gtksrv:5300
     #site: http://catalogues:4002/catalogues/api/v2/network-services
     verbs: [ get, post, patch, put, delete, options, header ]   
     auth: true  
