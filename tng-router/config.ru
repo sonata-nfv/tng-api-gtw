@@ -40,7 +40,6 @@ Setup.loading_paths.each do |folder|
 end
 
 #use RateLimiter
-#use Rack::CommonLogger, logger: Setup.logger
 use TangoLogger, logger: Setup.logger
 use Instrumentation, kpis_uri: Setup.middlewares[:middlewares][:kpis][:site] unless ENV['NO_KPIS']
 use Auth, auth_uri: Setup.middlewares[:middlewares][:user_management][:site]+Setup.middlewares[:middlewares][:user_management][:path] unless ENV['NO_AUTH']

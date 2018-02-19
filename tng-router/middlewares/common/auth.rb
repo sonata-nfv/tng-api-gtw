@@ -45,10 +45,8 @@ class Auth
   end
 
   def call(env)
-    @logger = env['rack.errors']
     if (env['HTTP_AUTHORIZATION'].to_s.empty?)
       # Just forward request if no authorization token is provided
-      env['rack.errors'].debug(self.class.name) {'No authorization header'}
       @app.call(env)
     else
       # Authorization token is provided, it has to be in the form of 'bearer: <token>'
@@ -58,7 +56,6 @@ class Auth
         user = find_user_by_token(token: token[1])
         env['session.user.name'] = user[:preferred_username]
         code, headers, body = @app.call(env)
-        env['rack.errors'].debug(self.class.name) {"code, headers, body: #{code}, #{headers}, #{body[0]}"}
         return [code, headers, body]
       rescue UserTokenNotActiveError
         respond(401, {}, 'Unauthorized: token  not active')
@@ -88,7 +85,7 @@ class Auth
       begin
         JSON.parse(resp.body, symbolize_names: true)
       rescue => e
-        @logger.debug(self.class.name) {"Error processing #{$!}: \n\t#{e.backtrace.join("\n\t")}"}
+        puts "#{self.class.name}: Error processing #{$!}: \n\t#{e.backtrace.join('\n\t')}"
         nil
       end
     when 401
