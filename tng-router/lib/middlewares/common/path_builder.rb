@@ -36,17 +36,15 @@ require 'sinatra/base'
 require 'yaml'
 require 'net/http'
 require "uri"
-require_relative '../../support/setup'
-require_relative '../../dispatcher'
+require_relative '../../../dispatcher'
 
 class PathBuilder
   def initialize(app, options={})
-    @app, @base_path, @paths = app, options[:base_path], options[:paths]
+    @app, @base_path, @paths, @logger = app, options[:base_path], options[:paths], options[:logger]
     puts "Initialized #{self.class.name} with base_path=#{@base_path} and paths=#{@paths}"
   end
 
   def call(env)
-    @logger = env['rack.errors']
     request = Rack::Request.new(env)
     simple_path = env["REQUEST_PATH"]
     simple_path.slice!(@base_path)
