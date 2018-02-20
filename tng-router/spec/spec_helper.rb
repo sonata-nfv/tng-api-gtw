@@ -39,7 +39,7 @@ require 'pp'
 
 ENV['RACK_ENV'] = 'test'
 
-require File.dirname(__FILE__) + '/../middlewares/common/auth.rb'
+Dir.glob(File.join(__dir__, '..', 'lib', '**', '*.rb')).each { |file| require file } if Dir.exist?('lib')
 
 RSpec.configure do |config|
   config.include Rack::Test::Methods

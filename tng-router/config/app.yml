@@ -30,19 +30,14 @@
 ## acknowledge the contributions of their colleagues of the 5GTANGO
 ## partner consortium (www.5gtango.eu).
 # encoding: utf-8
-require 'rack'
-class Instrumentation
-  def initialize(app, options= {})
-    @app, @kpis_uri = app, options[:kpis_uri]
-    puts "Initialized #{self.class.name} with kpis_url=#{@kpis_uri}"
-  end
-
-  def call(env)
-    before = Time.now
-    status, headers, body = @app.call env
-
-    headers['X-Timing'] = (Time.now - before).to_f.to_s
-    env['rack.errors'].debug(self.class.name) {"status, headers, body: #{status}, #{headers}, #{body[0]}"}
-    [status, headers, body]
-  end
-end
+middlewares:
+  rate_limiter:
+    path: /
+    site: http://son-gtkrlt:5150
+  user_management:
+    path: /api/v1/userinfo
+    site: http://son-gtkusr:5600
+  kpis:
+    path: /
+    site: http://son-gtkkpi:5400
+logger_level: debug

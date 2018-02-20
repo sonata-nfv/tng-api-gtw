@@ -34,17 +34,32 @@ require 'rack'
 require 'yaml'
 require 'net/http'
 require "uri"
-require ::File.join(__dir__, 'support', '/setup')
+require 'logger'
 require ::File.join(__dir__, 'dispatcher')
 
 class Dispatcher
+  
+  class << self
+    attr_accessor :configuration
+  end
+
+  def self.configure
+    self.configuration ||= Configuration.new
+    yield(configuration)
+  end
+
+  class Configuration
+    attr_accessor :base_path, :paths, :middlewares, :logger
+    def initialize
+    end
+  end
+  
   def call(env)
     request = Rack::Request.new(env)  
     
-    @logger = env['rack.errors']
-    @logger.debug(self.class.name+'#'+__method__.to_s) {"verb, full_path, params: #{request.request_method.downcase}, #{env['5gtango.full_path']}, #{request.params}"}
+    Dispatcher.configuration.logger.debug(self.class.name+'#'+__method__.to_s) {"verb, full_path, params: #{request.request_method.downcase}, #{env['5gtango.full_path']}, #{request.params}"}
     status, headers, body = process( request.request_method.downcase, env['5gtango.full_path'], request.params)
-    @logger.debug(self.class.name+'#'+__method__.to_s) {"status, headers, body: #{status}, #{headers}, #{body[0]}"}
+    Dispatcher.configuration.logger.debug(self.class.name+'#'+__method__.to_s) {"status, headers, body: #{status}, #{headers}, #{body[0]}"}
     [status, headers, body]
   end
   
@@ -52,9 +67,9 @@ class Dispatcher
   def process(verb, full_url, params)
     uri = URI.parse(full_url)
     http = Net::HTTP.new(uri.host, uri.port)
-    @logger.debug(self.class.name) { "http: #{http.inspect}"}
+    Dispatcher.configuration.logger.debug(self.class.name) { "http: #{http.inspect}"}
     attribute_url = '?'+URI.encode_www_form(params) if params
-    @logger.debug(self.class.name) {"attribute_url: #{attribute_url}"}
+    Dispatcher.configuration.logger.debug(self.class.name) {"attribute_url: #{attribute_url}"}
     begin
       case verb
       when 'get'
@@ -84,7 +99,7 @@ class Dispatcher
       respond(500, {}, "Exception #{e.message} #{verb}ing #{full_url} with params #{params}: #{e.backtrace.inspect}")
     end
     return respond(500, {}, "No response by #{verb}ing #{full_url} with params #{params}") if response.nil?
-    @logger.debug(self.class.name) {"response: #{response.inspect}"}
+    Dispatcher.configuration.logger.debug(self.class.name) {"response: #{response.inspect}"}
     respond(response.code, response.header, response.body)
     #io.rewind
   end
@@ -92,4 +107,5 @@ class Dispatcher
   def respond(status, headers, body)
     [status, headers, [body]]
   end 
+  
 end

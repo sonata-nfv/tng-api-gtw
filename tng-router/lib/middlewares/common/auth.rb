@@ -41,7 +41,7 @@ class Auth
   
   def initialize(app, options= {})
     @app, @auth_uri = app, options[:auth_uri]
-    puts "Initialized #{self.class.name} with auth_uri=#{@auth_uri}"
+    #puts "Initialized #{self.class.name} with auth_uri=#{@auth_uri}"
   end
 
   def call(env)
