@@ -58,7 +58,7 @@ pipeline {
         }
         stage('Deploying') {
           steps {
-            sh 'rm -rf tng-devops'
+            sh 'rm -rf tng-devops || true'
             sh 'git clone https://github.com/sonata-nfv/tng-devops.git'
             dir(path: 'tng-devops') {
               sh 'ansible-playbook roles/sp.yml -i environments -e "target=pre-int-sp host_key_checking=False"'
@@ -89,6 +89,7 @@ pipeline {
         stage('tng-sec-gtw') {
           steps {
             sh 'docker tag registry.sonata-nfv.eu:5000/tng-sec-gtw:latest registry.sonata-nfv.eu:5000/tng-sec-gtw:int'
+            sh 'docker push  registry.sonata-nfv.eu:5000/tng-sec-gtw:int'
           }
         }
       }
