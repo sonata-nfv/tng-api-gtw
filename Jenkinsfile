@@ -15,7 +15,7 @@ pipeline {
         }
         stage('tng-sec-gtw') {
           steps {
-            sh 'docker build -t registry.sonata-nfv.eu:5000/tng-sec-gtw -f son-sec-gw/Dockerfile son-sec-gw/'
+            sh 'docker build -t registry.sonata-nfv.eu:5000/tng-sec-gtw -f tng-sec-gtw/Dockerfile tng-sec-gtw/'
           }
         }
       }
