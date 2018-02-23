@@ -1,4 +1,4 @@
-[![Build Status](https://jenkins.sonata-nfv.eu/job/tng-api-gtw/job/master/badge/icon)](https://jenkins.sonata-nfv.eu/job/tng-api-gtw/job/master/)
+<a href='https://jenkins.sonata-nfv.eu/job/tng-api-gtw/job/master/'><img src='https://jenkins.sonata-nfv.eu/job/tng-api-gtw/job/master/badge/icon?style=plastic'></a>
 
 [![Join the chat at https://gitter.im/5gtango/tango-schema](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/5gtango/tango-schema)
 
