@@ -35,10 +35,9 @@ ruby '2.4.3'
 
 gem 'rake', '12.3.0'
 gem 'rack', '2.0.4'
-gem 'sinatra', '2.0.0', require: 'sinatra/base'
-gem 'sinatra-contrib', '2.0.0', require: false
-gem 'sinatra-logger', '0.3.2'
-gem 'sinatra-cross_origin', '0.4.0'
+gem 'rack-uploads', '0.2.1'
+gem 'sinatra', '2.0.1', require: 'sinatra/base'
+gem 'sinatra-contrib', '2.0.1', require: false
 gem 'faraday', '0.14.0'
 gem 'curb', '0.9.3'
 

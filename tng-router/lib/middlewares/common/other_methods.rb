@@ -31,22 +31,55 @@
 ## partner consortium (www.5gtango.eu).
 # encoding: utf-8
 require 'rack'
+require 'rack/utils'
+require 'rack/uploads'
+require 'curb'
+require 'faraday'
+require 'tempfile'
+require_relative '../../utils'
 
-class TangoLogger
+class OtherMethods
+  attr_accessor :app
+  
   include Utils
-  attr_accessor :app, :logger
-
-  def initialize(app, options = {})
-    @app, @logger, @logger_level = app, options[:logger], options[:logger_level]
-    @logger.info(self.class.name) {"Initialized #{self.class.name}"} if @logger
+  
+  def initialize(app, options= {})
+    @app = app
+    puts "Initialized #{self.class.name}"
   end
 
   def call(env)
+    @logger = choose_logger(env)
     msg = self.class.name+'#'+__method__.to_s
-    request = Rack::Request.new(env)
-    env['5gtango.logger'] = env['rack.logger'] = @logger
-    status, headers, body = @app.call(env)
-    @logger.debug(self.class.name) {"Finishing with status #{status}"}
-    [status, headers, body]
+    @logger.info(msg) {"Called"}
+    url = env['5gtango.sink_path'.freeze]
+    request = Rack::Request.new(env)  
+    
+    # Pass non-HEAD, DELETE or OPTIONS requests
+    return @app.call(env) unless (request.head? || request.options? || request.delete?)
+    connection = Faraday.new(url) { |conn| conn.adapter :net_http }
+    method_name = request.request_method.downcase.to_sym
+    # from https://stackoverflow.com/questions/35667746/preflight-options-request-with-faraday-gem
+    if method_name == :options
+      resp = connection.run_request(:options, nil, nil, nil) do |req|
+        req.url url
+        req.headers['Content-Type'] = request.content_type
+      end
+    elsif connection.respond_to?(method_name) && [:delete, :head].include?(method_name)
+      resp = connection.public_send(method_name) do |req|
+        req.url url
+        req.headers['Content-Type'] = request.content_type
+      end
+    else
+      return bad_request("HTTP method (#{request.request_method} not supported")
+    end
+    @logger.debug(msg) {"Response was #{resp}"}
+    respond(resp.status, resp.headers, resp.body)
+  end    
+  
+  private
+  
+  def allowed_content_type(content_type)
+    (content_type =~ /application\/json/) || (content_type =~ /application\/yaml/) || (content_type =~ /application\/xml/)
   end
 end

@@ -31,13 +31,15 @@
 ## partner consortium (www.5gtango.eu).
 # encoding: utf-8
 require 'rack'
+require 'rack/uploads'
 require 'yaml'
-require 'net/http'
-require "uri"
+require 'uri'
+require 'faraday'
 require 'logger'
-require ::File.join(__dir__, 'dispatcher')
+require_relative './lib/utils'
 
 class Dispatcher
+  include Utils
   
   class << self
     attr_accessor :configuration
@@ -49,63 +51,13 @@ class Dispatcher
   end
 
   class Configuration
-    attr_accessor :base_path, :paths, :middlewares, :logger
+    attr_accessor :base_path, :paths, :middlewares, :logger, :logger_level, :root
     def initialize
     end
   end
   
   def call(env)
     request = Rack::Request.new(env)  
-    
-    Dispatcher.configuration.logger.debug(self.class.name+'#'+__method__.to_s) {"verb, full_path, params: #{request.request_method.downcase}, #{env['5gtango.full_path']}, #{request.params}"}
-    status, headers, body = process( request.request_method.downcase, env['5gtango.full_path'], request.params)
-    Dispatcher.configuration.logger.debug(self.class.name+'#'+__method__.to_s) {"status, headers, body: #{status}, #{headers}, #{body[0]}"}
-    [status, headers, body]
+    return not_implemented("What, no guru, no method, no teacher, just you and I and Nature? Method #{env['REQUEST_METHOD']} is not implemented yet...\n")
   end
-  
-  private
-  def process(verb, full_url, params)
-    uri = URI.parse(full_url)
-    http = Net::HTTP.new(uri.host, uri.port)
-    Dispatcher.configuration.logger.debug(self.class.name) { "http: #{http.inspect}"}
-    attribute_url = '?'+URI.encode_www_form(params) if params
-    Dispatcher.configuration.logger.debug(self.class.name) {"attribute_url: #{attribute_url}"}
-    begin
-      case verb
-      when 'get'
-        response = http.request(Net::HTTP::Get.new(uri.request_uri+attribute_url))
-      when 'post'
-        request = Net::HTTP::Post.new(uri.request_uri)
-        request.set_form_data(params) if params
-        request = Net::HTTP::Post.new(uri.request_uri+attribute_url)            
-        response = http.request(request)
-      when 'put'
-        request = Net::HTTP::Put.new(uri.request_uri+attribute_url)
-        response = http.request(request)
-      when 'patch'
-        request = Net::HTTP::Patch.new(uri.request_uri+attribute_url)
-        response = http.request(request)
-      when 'delete'
-        request = Net::HTTP::Delete.new(uri.request_uri+attribute_url)
-        response = http.request(request)
-      when 'head'
-        response = http.request(Net::HTTP::Head.new(uri.request_uri+attribute_url))
-      when 'options'
-        response = http.request(Net::HTTP::Options.new(uri.request_uri+attribute_url))
-      else 
-        respond(400, {}, 'Bad request')
-      end
-    rescue StandardError => e
-      respond(500, {}, "Exception #{e.message} #{verb}ing #{full_url} with params #{params}: #{e.backtrace.inspect}")
-    end
-    return respond(500, {}, "No response by #{verb}ing #{full_url} with params #{params}") if response.nil?
-    Dispatcher.configuration.logger.debug(self.class.name) {"response: #{response.inspect}"}
-    respond(response.code, response.header, response.body)
-    #io.rewind
-  end
-  
-  def respond(status, headers, body)
-    [status, headers, [body]]
-  end 
-  
 end

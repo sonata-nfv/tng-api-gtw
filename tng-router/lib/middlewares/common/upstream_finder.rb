@@ -37,49 +37,76 @@ require 'yaml'
 require 'net/http'
 require "uri"
 require_relative '../../../dispatcher'
+require_relative '../../utils'
 
-class PathBuilder
+class UpstreamFinder
+  include Utils
   def initialize(app, options={})
-    @app, @base_path, @paths, @logger = app, options[:base_path], options[:paths], options[:logger]
-    puts "Initialized #{self.class.name} with base_path=#{@base_path} and paths=#{@paths}"
+    @app, @base_path, @paths = app, options[:base_path], options[:paths]
+    #puts "Initialized #{self.class.name} with base_path=#{@base_path} and paths=#{@paths}"
   end
 
   def call(env)
+    @logger = choose_logger(env)
+    msg = self.class.name+'#'+__method__.to_s
     request = Rack::Request.new(env)
+    @logger.info(msg) {"Base_path=#{@base_path} and paths=#{@paths}"}
+    
     simple_path = env["REQUEST_PATH"]
     simple_path.slice!(@base_path)
     path = find_path(env["REQUEST_PATH"])
+    return bad_request("Error finding #{request.request_method}") if path.nil?
     path[:verbs] = [ 'get' ] unless path.key?(:verbs)
     
-    respond(404, {}, "#{request.request_method} is not supported by #{path[:site]}, only #{path[:verbs].join(', ')}") unless path[:verbs].include? request.request_method.downcase
-    env['5gtango.full_path'] = path[:site]+@base_path+env["REQUEST_PATH"]
-    @logger.debug(self.class.name) {"path built: #{env['5gtango.full_path']}"}
+    not_found("#{request.request_method} is not supported by #{path[:site]}, only #{path[:verbs].join(', ')}") unless method_ok?(path[:verbs], request.request_method)
+    #forbidden("#{request.request_method}ing into #{path[:site]} needs authentication") unless authenticated?(path, env)
+    env['5gtango.sink_path'] = path[:site]+query_string?(env["QUERY_STRING"])
+    @logger.debug(msg) {"path built: #{env['5gtango.sink_path']}"}
     status, headers, body = @app.call(env)
-    @logger.debug(self.class.name) {"status, headers, body#{status}, #{headers}, #{body[0]}"}
-    [status, headers, body]
+    @logger.debug(msg) {"Finishing with status #{status}"}
+    respond(status, headers, body)
   end
   
-  private  
-  def respond(status, headers, body)
-    [status, headers, [body]]
-  end 
-  
+  private
   def find_path(request_path)
     chomped_path = request_path
     chomped_path.slice!(@base_path)
     @logger.debug(self.class.name+'#'+__method__.to_s) {"chomped_path: #{chomped_path}"}
     
-    possible_paths = @paths.keys.select do |path|
-      @logger.debug(self.class.name+'#'+__method__.to_s) {"path: #{path}"}
-      chomped_path =~ Mustermann.new(path.to_s)
-    end
+    possible_paths = @paths.keys.select { |path| chomped_path =~ Mustermann.new(path.to_s)}
     @logger.debug(self.class.name+'#'+__method__.to_s) { "possible_paths: #{possible_paths}"}
     longest_path = possible_paths.max_by(&:length)
+    return nil if longest_path.nil?
     @paths[longest_path.to_sym]
   end
   
+  def method_ok?(allowed_methods, method)
+    methods_to_s(allowed_methods).include? method.downcase
+  end
+  
+  def methods_to_s(methods)
+    methods_in_string=[]
+    methods.each do |m|
+      methods_in_string << (m.is_a?(String) ? m : (m.is_a?(Hash) ? m.keys[0].to_s : m.to_s))
+    end
+    methods_in_string
+  end
+  
+  def authenticated?(path, env)
+    needs_authentication?( path, env['REQUEST_METHOD'.freeze].downcase.to_sym) && env.key?('5gtango.user.name')
+  end
+
+  def needs_authentication?(path, method)
+    return path[:verbs] if path.key?(:auth)
+    methods_needing_auth()
+    a=[]
+    path[:verbs].each do |method|
+      a << method if (method.is_a?(Hash) && method.values[0][:auth])
+    end
+    a.keys
+  end
+  
+  def query_string?(str)
+    str.empty? ? '' : '?'+str
+  end
 end
-
-  
-
-  

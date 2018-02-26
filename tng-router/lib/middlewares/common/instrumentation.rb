@@ -31,18 +31,27 @@
 ## partner consortium (www.5gtango.eu).
 # encoding: utf-8
 require 'rack'
+require_relative '../../utils'
+
 class Instrumentation
   def initialize(app, options= {})
-    @app, @kpis_uri, @logger = app, options[:kpis_uri], options[:logger]
-    @logger.info(self.class.name+'#'+__method__.to_s) {"Initialized with kpis_url=#{@kpis_uri}"}
+    @app, @kpis_uri = app, options[:kpis_uri]
   end
 
   def call(env)
-    before = Time.now
+    began_at = Time.now
+    @logger = choose_logger(env)
+    msg = self.class.name+'#'+__method__.to_s
+    @logger.info(msg) {"Began at #{began_at}"}
     status, headers, body = @app.call env
 
-    headers['X-Timing'] = (Time.now - before).to_f.to_s
-    @logger.debug(self.class.name+'#'+__method__.to_s) {"status, headers, body: #{status}, #{headers}, #{body[0]}"}
+    headers['X-Timing'] = (Time.now - began_at).to_f.to_s
+    @logger.debug(self.class.name+'#'+__method__.to_s) {"Finishing with status #{status}"}
     [status, headers, body]
+  end
+  
+  private
+  def choose_logger(env)
+    (env.key?('5gtango.logger'.freeze) && env['5gtango.logger'.freeze]) ? env['5gtango.logger'.freeze] : Rack::NullLogger
   end
 end

@@ -34,6 +34,7 @@ require 'rack'
 require 'curb'
 
 class Auth
+  include Utils
   attr_accessor :app, :auth_uri
   
   class UserTokenNotActiveError < StandardError; end
@@ -45,25 +46,23 @@ class Auth
   end
 
   def call(env)
-    if (env['HTTP_AUTHORIZATION'].to_s.empty?)
-      # Just forward request if no authorization token is provided
-      @app.call(env)
+    # Just forward request if no authorization token is provided
+    return @app.call(env) if (env['HTTP_AUTHORIZATION'].to_s.empty?)
+      
+    # Authorization token is provided, it has to be in the form of 'bearer: <token>'
+    token = env['HTTP_AUTHORIZATION'].split(' ')
+    return bad_request('Unauthorized: missing authorization (bearer) header') unless bearer_token?(token:token)
+    begin
+      user = find_user_by_token(token: token[1])
+      env['5gtango.user.name'] = user[:preferred_username]
+      status, headers, body = @app.call(env)
+      return [status, headers, body]
+    rescue UserTokenNotActiveError
+      return unauthorized('Unauthorized: token  not active')
+    rescue UserNotFoundError
+      return not_found('Not found: user not found')
     else
-      # Authorization token is provided, it has to be in the form of 'bearer: <token>'
-      token = env['HTTP_AUTHORIZATION'].split(' ')
-      return respond(400, {}, 'Unauthorized: missing authorization (bearer) header') unless bearer_token?(token:token)
-      begin
-        user = find_user_by_token(token: token[1])
-        env['session.user.name'] = user[:preferred_username]
-        code, headers, body = @app.call(env)
-        return [code, headers, body]
-      rescue UserTokenNotActiveError
-        respond(401, {}, 'Unauthorized: token  not active')
-      rescue UserNotFoundError
-        respond(404, {}, 'Not found: user not found')
-      else
-        respond(500, {}, 'Internal error in '+self.class.name)
-      end
+      return internal_server_error('Internal error in '+self.class.name)
     end
   end
   
@@ -93,8 +92,5 @@ class Auth
     else
       raise UserNotFoundError.new "User not found with the given token"
     end  
-  end
-  def respond( code, headers, body, message='')
-    [code, headers, [body]]
   end
 end
