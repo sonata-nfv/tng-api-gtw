@@ -30,23 +30,23 @@
 ## acknowledge the contributions of their colleagues of the 5GTANGO
 ## partner consortium (www.5gtango.eu).
 # encoding: utf-8
-require 'rack'
+require_relative '../spec_helper'
 
-class TangoLogger
-  include Utils
-  attr_accessor :app, :logger
-
-  def initialize(app, options = {})
-    @app, @logger, @logger_level = app, options[:logger], options[:logger_level]
-    @logger.info(self.class.name) {"Initialized #{self.class.name}"} if @logger
+RSpec.describe Getter do
+  let(:app) { ->(env) { [200, env, "app"] } }
+  let(:middleware) { Getter.new(app) }
+  it "processes GET requests" do
+    allow(Rack::NullLogger).to receive(:info)
+    allow(Rack::NullLogger).to receive(:debug)
+    stub_request(:get, "http://example.com/").
+      with(headers: {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'User-Agent'=>'Faraday v0.14.0'}).
+      to_return(status: 200, body: "", headers: {})
+    code, env = middleware.call env_for('http://example.com', request_method: 'POST', '5gtango.sink_path'=>'http://example.com')
+    
+    expect(code).to eq(200)
   end
 
-  def call(env)
-    msg = self.class.name+'#'+__method__.to_s
-    request = Rack::Request.new(env)
-    env['5gtango.logger'] = env['rack.logger'] = @logger
-    status, headers, body = @app.call(env)
-    @logger.debug(self.class.name) {"Finishing with status #{status}"}
-    [status, headers, body]
+  def env_for url, opts={}
+    Rack::MockRequest.env_for(url, opts)
   end
 end

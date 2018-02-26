@@ -30,6 +30,7 @@
 ## acknowledge the contributions of their colleagues of the 5GTANGO
 ## partner consortium (www.5gtango.eu).
 # encoding: utf-8
+require 'rack/uploads'
 require ::File.join(__dir__, 'dispatcher')
 LOGGER_LEVELS = [ 'debug', 'info', 'warn', 'error', 'fatal', 'unknown']
 
@@ -56,17 +57,18 @@ Dispatcher.configure do |config|
   $stdout.sync = true
   config.logger = Logger.new($stdout)
   config.logger.level = LOGGER_LEVELS.find_index(app_config[:logger_level].downcase ||= 'debug')
+  config.root = __dir__
 end
 
 Dir.glob(File.join(__dir__, 'lib', '**', '*.rb')).each { |file| require file } if Dir.exist?('lib')
 
-#use RateLimiter
-#use Rack::CommonLogger, logger: Dispatcher.configuration.logger
-#use TangoLogger, logger: Dispatcher.configuration.logger
-use Instrumentation, kpis_uri: Dispatcher.configuration.middlewares[:kpis][:site], logger: Dispatcher.configuration.logger unless ENV['NO_KPIS']
+use TangoLogger, logger: Dispatcher.configuration.logger, logger_level: Dispatcher.configuration.logger_level
+use Instrumentation, kpis_uri: Dispatcher.configuration.middlewares[:kpis][:site] unless ENV['NO_KPIS']
 use Auth, auth_uri: Dispatcher.configuration.middlewares[:user_management][:site]+Dispatcher.configuration.middlewares[:user_management][:path] unless ENV['NO_AUTH']
-use PathBuilder, base_path: Dispatcher.configuration.base_path, paths: Dispatcher.configuration.paths, logger: Dispatcher.configuration.logger
-#use AuthZ
+use UpstreamFinder, base_path: Dispatcher.configuration.base_path, paths: Dispatcher.configuration.paths
+use Getter
+use EmbodiedMethod
+use OtherMethods
 run Dispatcher.new
 
 

@@ -67,7 +67,7 @@ RSpec.describe Auth, type: :request do
     end
     it "passes (with 200) if token is active, giving user name" do
       stub_request(:post, uri).with(headers: headers).to_return(status: 201, body: user.to_json, headers: {})
-      expect(response.headers['session.user.name']).to eq(user_name)
+      expect(response.headers['5gtango.user.name']).to eq(user_name)
       expect(response.status).to eq(200)
     end
   end
