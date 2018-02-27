@@ -1,6 +1,21 @@
 pipeline {
-  agent none
+  agent any
   stages {
+    stage('Unit Tests') {
+      agent {
+        docker {
+          image 'ruby:2.4.3'
+          args '-e TESTDIR=tng-router --entrypoint bash'
+        } 
+      }
+      steps {
+        dir(path: 'tng-router') {
+          sh 'pwd'
+          sh 'ruby --version'
+          sh 'cd $TEST_DIR && bundle install && RACK_ENV=test bundle exec rspec spec/'
+        }
+      }
+    }
     stage('Container Build') {
       parallel {
         stage('Container Build') {
@@ -18,22 +33,6 @@ pipeline {
             sh 'docker build -t registry.sonata-nfv.eu:5000/tng-sec-gtw -f tng-sec-gtw/Dockerfile tng-sec-gtw/'
           }
         }
-      }
-    }
-    stage('Unit Tests') {
-      agent {
-        docker {
-          image 'ruby:2.4.3'
-          args '-e TESTDIR=tng-router --entrypoint bash'
-        }     
-      }
-      steps {
-        dir(path: 'tests/integration') {
-          sh 'pwd'
-          sh 'ruby --version'
-          sh 'cd $TEST_DIR && bundle install && RACK_ENV=test bundle exec rspec spec/'
-        }
-        
       }
     }
     stage('Code Style check') {
