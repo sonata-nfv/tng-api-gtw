@@ -3,16 +3,16 @@ pipeline {
   stages {
     stage('Unit Tests') {
       agent {
-        docker {
-          image 'ruby:2.4.3'
-          args '-e TESTDIR=tng-router --entrypoint bash'
-        } 
+        dockerfile {
+          filename 'tng-router/Dockerfile'
+          dir 'tng-router'
+        }
       }
       steps {
         dir(path: 'tng-router') {
           sh 'pwd'
           sh 'ruby --version'
-          sh 'cd $TEST_DIR && bundle install && RACK_ENV=test bundle exec rspec spec/'
+          sh 'RACK_ENV=test bundle exec rspec spec/'
         }
       }
     }
