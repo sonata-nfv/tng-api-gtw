@@ -1,6 +1,19 @@
 pipeline {
   agent any
   stages {
+    stage('Unit Tests') {
+      agent {
+        dockerfile {
+          filename 'tng-router/Dockerfile'
+          dir 'tng-router'
+        }
+      }
+      steps {
+          sh 'pwd'
+          sh 'ruby --version'
+          sh 'RACK_ENV=test bundle exec rspec spec/'
+      }
+    }
     stage('Container Build') {
       parallel {
         stage('Container Build') {
@@ -18,11 +31,6 @@ pipeline {
             sh 'docker build -t registry.sonata-nfv.eu:5000/tng-sec-gtw -f tng-sec-gtw/Dockerfile tng-sec-gtw/'
           }
         }
-      }
-    }
-    stage('Unit Tests') {
-      steps {
-        echo 'Unit Testing..'
       }
     }
     stage('Code Style check') {
@@ -98,13 +106,13 @@ pipeline {
   post {
     success {
       emailext(subject: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'", body: """<p>SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
-                        <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""", recipientProviders: [[$class: 'DevelopersRecipientProvider']])
+                                    <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""", recipientProviders: [[$class: 'DevelopersRecipientProvider']])
       
     }
     
     failure {
       emailext(subject: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'", body: """<p>FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
-                        <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""", recipientProviders: [[$class: 'DevelopersRecipientProvider']])
+                                    <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""", recipientProviders: [[$class: 'DevelopersRecipientProvider']])
       
     }
     
