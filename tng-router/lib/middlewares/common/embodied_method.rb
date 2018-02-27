@@ -66,7 +66,7 @@ class EmbodiedMethod
     
     @logger.debug(msg) {"Params: #{request.params}"}
     @logger.debug(msg) {"Body: #{body}"}
-    bad_request("Content-type (#{request.content_type} not supported in #{equest.request_method} requests") unless allowed_content_type(request.content_type)
+    bad_request("Content-type (#{request.content_type} not supported in #{request.request_method} requests") unless allowed_content_type(request.content_type)
     connection = Faraday.new(url) { |conn| conn.adapter :net_http }
     # conn.authorization :Bearer, 'mF_9.B5f-4.1JqM'
     method_name = request.request_method.downcase.to_sym

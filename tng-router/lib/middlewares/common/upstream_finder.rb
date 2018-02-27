@@ -49,6 +49,7 @@ class UpstreamFinder
   def call(env)
     @logger = choose_logger(env)
     msg = self.class.name+'#'+__method__.to_s
+    @logger.info "Called"
     request = Rack::Request.new(env)
     @logger.info(msg) {"Base_path=#{@base_path} and paths=#{@paths}"}
     
@@ -69,12 +70,13 @@ class UpstreamFinder
   
   private
   def find_path(request_path)
+    msg = self.class.name+'#'+__method__.to_s
     chomped_path = request_path
     chomped_path.slice!(@base_path)
-    @logger.debug(self.class.name+'#'+__method__.to_s) {"chomped_path: #{chomped_path}"}
+    @logger.debug(msg) {"chomped_path: #{chomped_path}"}
     
     possible_paths = @paths.keys.select { |path| chomped_path =~ Mustermann.new(path.to_s)}
-    @logger.debug(self.class.name+'#'+__method__.to_s) { "possible_paths: #{possible_paths}"}
+    @logger.debug(msg) {"possible_paths: #{possible_paths}"}
     longest_path = possible_paths.max_by(&:length)
     return nil if longest_path.nil?
     @paths[longest_path.to_sym]

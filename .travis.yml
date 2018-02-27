@@ -30,28 +30,12 @@
 ## acknowledge the contributions of their colleagues of the 5GTANGO
 ## partner consortium (www.5gtango.eu).
 # encoding: utf-8
-require 'rack'
-require_relative '../../utils'
-
-class Instrumentation
-  def initialize(app, options= {})
-    @app, @kpis_uri = app, options[:kpis_uri]
-  end
-
-  def call(env)
-    began_at = Time.now
-    @logger = choose_logger(env)
-    msg = self.class.name+'#'+__method__.to_s
-    @logger.info(msg) {"Called"}
-    status, headers, body = @app.call env
-
-    headers['X-Timing'] = (Time.now - began_at).to_f.to_s
-    @logger.debug(msg) {"Finishing with status #{status}"}
-    [status, headers, body]
-  end
-  
-  private
-  def choose_logger(env)
-    (env.key?('5gtango.logger'.freeze) && env['5gtango.logger'.freeze]) ? env['5gtango.logger'.freeze] : Rack::NullLogger
-  end
-end
+language: ruby
+rvm:
+  - "2.4.3"
+env:
+  - TEST_DIR=tng-router
+script: cd $TEST_DIR && bundle install && RACK_ENV=test bundle exec rspec spec/
+#  - RACK_ENV=test bundle exec rake --trace db:create db:migrate
+#  - RACK_ENV=test bundle exec rake --trace db:schema:load
+#  - RACK_ENV=test bundle exec rake --trace db:test:prepare
