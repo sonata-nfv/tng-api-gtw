@@ -33,8 +33,9 @@
 language: ruby
 rvm:
   - "2.4.3"
-script:
+env:
+  - TEST_DIR=tng-router
+script: cd $TEST_DIR && RACK_ENV=test bundle exec rspec spec/
 #  - RACK_ENV=test bundle exec rake --trace db:create db:migrate
 #  - RACK_ENV=test bundle exec rake --trace db:schema:load
 #  - RACK_ENV=test bundle exec rake --trace db:test:prepare
-  - RACK_ENV=test bundle exec rspec spec/
