@@ -37,7 +37,7 @@ module Utils
 #  def method_missing(method_name, *args, &block) #:nodoc:
 #    @tempfile.__send__(method_name, *args, &block)
 #  end
-  
+
   def bad_request(msg=nil) [400, {}, [msg || 'Invalid Request']] end
   def unauthorized(msg=nil) [401, {}, [msg || 'Unauthorized']] end  
   def forbidden(msg=nil) [403, {}, [msg || 'Forbidden']] end
@@ -48,5 +48,4 @@ module Utils
   def choose_logger(env)
     (env.key?('5gtango.logger'.freeze) && env['5gtango.logger'.freeze]) ? env['5gtango.logger'.freeze] : Rack::NullLogger
   end
-    
 end

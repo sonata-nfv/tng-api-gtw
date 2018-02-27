@@ -34,19 +34,43 @@ require 'rack'
 
 class TangoLogger
   include Utils
-  attr_accessor :app, :logger
+  attr_accessor :app, :logger, :level
+  
+  LOGGER_LEVELS = ['debug', 'info', 'warn', 'error', 'fatal', 'unknown'].freeze
+  FORMAT = %{%s - %s [%s] "%s %s%s %s" %d %s %0.4f\n}
 
   def initialize(app, options = {})
-    @app, @logger, @logger_level = app, options[:logger], options[:logger_level]
+    @app = app
+    @logger = Logger.new(options[:logger_io])
+    options[:logger_io].sync = true
+    @logger_level = LOGGER_LEVELS.find_index(options[:logger_level].downcase ||= 'debug')
     @logger.info(self.class.name) {"Initialized #{self.class.name}"} if @logger
   end
 
   def call(env)
     msg = self.class.name+'#'+__method__.to_s
+    @logger.info(msg) {"Called"}
     request = Rack::Request.new(env)
+=begin
+    #[$time_local], $level, $remote_addr '"$request" $status $headers' $message;
+    @logger.formatter = proc do |severity, datetime, progname, msg|
+      message="[#{datetime}], #{severity}, "
+      message << "#{env['HTTP_X_FORWARDED_FOR'] || env['REMOTE_ADDR'] || '-'}"
+      message << "#{env['rack.url_scheme']}://#{env['HTTP_HOST']}#{env['REQUEST_PATH']}"
+      message << "?#{env['QUERY_STRING']}" if env['QUERY_STRING'].empty?
+      message << ", #{status}, #{headers}"
+      message << "#{msg}\n"
+    end
+
+    env['rack.errors'] = @logger
+    status, headers, body = @app.call(env)
+    @logger.debug(self.class.name) {"status, headers, body: #{status}, #{headers}, #{body[0]}"}
+    [status, headers, body]
+=end
+    
     env['5gtango.logger'] = env['rack.logger'] = @logger
     status, headers, body = @app.call(env)
-    @logger.debug(self.class.name) {"Finishing with status #{status}"}
+    @logger.info(msg) {"Finishing with status #{status}"}
     [status, headers, body]
   end
 end

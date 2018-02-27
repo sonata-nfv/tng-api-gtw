@@ -42,11 +42,11 @@ class Instrumentation
     began_at = Time.now
     @logger = choose_logger(env)
     msg = self.class.name+'#'+__method__.to_s
-    @logger.info(msg) {"Began at #{began_at}"}
+    @logger.info(msg) {"Called"}
     status, headers, body = @app.call env
 
     headers['X-Timing'] = (Time.now - began_at).to_f.to_s
-    @logger.debug(self.class.name+'#'+__method__.to_s) {"Finishing with status #{status}"}
+    @logger.debug(msg) {"Finishing with status #{status}"}
     [status, headers, body]
   end
   

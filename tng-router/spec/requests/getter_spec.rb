@@ -41,7 +41,7 @@ RSpec.describe Getter do
     stub_request(:get, "http://example.com/").
       with(headers: {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'User-Agent'=>'Faraday v0.14.0'}).
       to_return(status: 200, body: "", headers: {})
-    code, env = middleware.call env_for('http://example.com', request_method: 'POST', '5gtango.sink_path'=>'http://example.com')
+    code, env = middleware.call env_for('http://example.com', request_method: 'GET', '5gtango.sink_path'=>'http://example.com')
     
     expect(code).to eq(200)
   end

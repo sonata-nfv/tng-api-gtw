@@ -49,8 +49,8 @@ class OtherMethods
   end
 
   def call(env)
-    @logger = choose_logger(env)
     msg = self.class.name+'#'+__method__.to_s
+    @logger = choose_logger(env)
     @logger.info(msg) {"Called"}
     url = env['5gtango.sink_path'.freeze]
     request = Rack::Request.new(env)  

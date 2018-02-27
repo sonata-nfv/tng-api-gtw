@@ -54,15 +54,15 @@ Dispatcher.configure do |config|
   config.base_path = routes[:base_path]
   config.paths = routes[:paths]
   config.middlewares = app_config[:middlewares]
-  $stdout.sync = true
-  config.logger = Logger.new($stdout)
-  config.logger.level = LOGGER_LEVELS.find_index(app_config[:logger_level].downcase ||= 'debug')
+  #$stdout.sync = true
+  #config.logger = Logger.new($stdout)
+  #config.logger.level = LOGGER_LEVELS.find_index(app_config[:logger_level].downcase ||= 'debug')
   config.root = __dir__
 end
 
 Dir.glob(File.join(__dir__, 'lib', '**', '*.rb')).each { |file| require file } if Dir.exist?('lib')
 
-use TangoLogger, logger: Dispatcher.configuration.logger, logger_level: Dispatcher.configuration.logger_level
+use TangoLogger, logger_io: $stderr, logger_level: 'debug'
 use Instrumentation, kpis_uri: Dispatcher.configuration.middlewares[:kpis][:site] unless ENV['NO_KPIS']
 use Auth, auth_uri: Dispatcher.configuration.middlewares[:user_management][:site]+Dispatcher.configuration.middlewares[:user_management][:path] unless ENV['NO_AUTH']
 use UpstreamFinder, base_path: Dispatcher.configuration.base_path, paths: Dispatcher.configuration.paths

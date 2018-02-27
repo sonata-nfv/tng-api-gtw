@@ -42,8 +42,8 @@ class Uploader
   include Utils
   def call(env)
     @logger = choose_logger(env)
-    msg = self.class.name+'#'+__method__.to_s
-    @logger.info(msg) {"Called"}
+    @logger.progname = self.class.name+'#'+__method__.to_s
+    @logger.info "Called"
     url = URI.parse( env['5gtango.sink_path'.freeze] )
     
     req = Rack::Request.new(env)
@@ -54,7 +54,7 @@ class Uploader
     env['rack.input'].rewind
     tempfile.write env['rack.input'].read
     env['rack.input'].rewind
-    @logger.debug(msg) {"#{name} will contain #{env['rack.input'].read}"}
+    @logger.debug "#{name} will contain #{env['rack.input'].read}"
     post_req = Net::HTTP::Post.new(url)
     post_stream = File.open(tempfile, 'rb') #env['rack.input'].read
     post_req.content_length = post_stream.size

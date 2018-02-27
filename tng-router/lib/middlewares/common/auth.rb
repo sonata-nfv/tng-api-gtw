@@ -32,6 +32,7 @@
 # encoding: utf-8
 require 'rack'
 require 'curb'
+require_relative '../../utils'
 
 class Auth
   include Utils
@@ -42,10 +43,13 @@ class Auth
   
   def initialize(app, options= {})
     @app, @auth_uri = app, options[:auth_uri]
-    #puts "Initialized #{self.class.name} with auth_uri=#{@auth_uri}"
   end
 
   def call(env)
+    #@logger = choose_logger(env)
+    #msg = self.class.name+'#'+__method__.to_s
+    #@logger.info(msg) {"Called"}
+    
     # Just forward request if no authorization token is provided
     return @app.call(env) if (env['HTTP_AUTHORIZATION'].to_s.empty?)
       
@@ -56,12 +60,16 @@ class Auth
       user = find_user_by_token(token: token[1])
       env['5gtango.user.name'] = user[:preferred_username]
       status, headers, body = @app.call(env)
+      #@logger.info(msg) {'Finishing with status = '+status.to_s}
       return [status, headers, body]
     rescue UserTokenNotActiveError
+      #@logger.info(msg) {'Finishing with Unauthorized:'}
       return unauthorized('Unauthorized: token  not active')
     rescue UserNotFoundError
+      #@logger.info(msg) {'Finishing with not found'}
       return not_found('Not found: user not found')
     else
+      #@logger.info(msg) {'Finishing with internal server error'}
       return internal_server_error('Internal error in '+self.class.name)
     end
   end
