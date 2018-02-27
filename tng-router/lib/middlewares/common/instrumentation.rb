@@ -49,9 +49,4 @@ class Instrumentation
     @logger.debug(msg) {"Finishing with status #{status}"}
     [status, headers, body]
   end
-  
-  private
-  def choose_logger(env)
-    (env.key?('5gtango.logger'.freeze) && env['5gtango.logger'.freeze]) ? env['5gtango.logger'.freeze] : Rack::NullLogger
-  end
 end
