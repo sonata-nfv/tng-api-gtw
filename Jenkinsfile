@@ -21,8 +21,18 @@ pipeline {
       }
     }
     stage('Unit Tests') {
+      agent {
+        docker {
+          image 'ruby:2.4.3'
+          args '-e TESTDIR=tng-router'
+        }
+        
+      }
       steps {
-        echo 'Unit Testing..'
+        dir(path: 'tests/integration') {
+          sh 'cd $TEST_DIR && bundle install && RACK_ENV=test bundle exec rspec spec/'
+        }
+        
       }
     }
     stage('Code Style check') {
@@ -98,13 +108,13 @@ pipeline {
   post {
     success {
       emailext(subject: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'", body: """<p>SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
-                        <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""", recipientProviders: [[$class: 'DevelopersRecipientProvider']])
+                                    <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""", recipientProviders: [[$class: 'DevelopersRecipientProvider']])
       
     }
     
     failure {
       emailext(subject: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'", body: """<p>FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
-                        <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""", recipientProviders: [[$class: 'DevelopersRecipientProvider']])
+                                    <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""", recipientProviders: [[$class: 'DevelopersRecipientProvider']])
       
     }
     
