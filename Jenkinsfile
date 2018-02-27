@@ -9,7 +9,6 @@ pipeline {
         }
       }
       steps {
-        dir(path: 'tng-router') {
           sh 'pwd'
           sh 'ruby --version'
           sh 'RACK_ENV=test bundle exec rspec spec/'
