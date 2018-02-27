@@ -24,12 +24,13 @@ pipeline {
       agent {
         docker {
           image 'ruby:2.4.3'
-          args '-e TESTDIR=tng-router'
-        }
-        
+          args '-e TESTDIR=tng-router --entrypoint bash'
+        }     
       }
       steps {
         dir(path: 'tests/integration') {
+          sh 'pwd'
+          sh 'ruby --version'
           sh 'cd $TEST_DIR && bundle install && RACK_ENV=test bundle exec rspec spec/'
         }
         
