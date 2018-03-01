@@ -61,9 +61,8 @@ pipeline {
             sh 'rm -rf tng-devops || true'
             sh 'git clone https://github.com/sonata-nfv/tng-devops.git'
             dir(path: 'tng-devops') {
-              sh 'ansible-playbook roles/sp.yml -i environments -e "target=pre-int-sp host_key_checking=False"'
+              sh 'ansible-playbook roles/sp.yml -i environments -e "target=pre-int-sp"'
             }
-            
           }
         }
       }
@@ -73,7 +72,10 @@ pipeline {
         echo 'Performing Smoke Tests....'
       }
     }
-    stage('Pushing') {
+    stage('Promoting containers to integration env') {
+      when {
+         branch 'master'
+      }
       parallel {
         stage('Publishing containers to int') {
           steps {
