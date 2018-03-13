@@ -31,6 +31,7 @@
 ## partner consortium (www.5gtango.eu).
 # encoding: utf-8
 require 'rack'
+require 'logger'
 
 class TangoLogger
   include Utils
@@ -39,16 +40,49 @@ class TangoLogger
   LOGGER_LEVELS = ['debug', 'info', 'warn', 'error', 'fatal', 'unknown'].freeze
   FORMAT = %{%s - %s [%s] "%s %s%s %s" %d %s %0.4f\n}
 
+  class MyLogger
+    def initialize(app, options = {})
+      @app = app
+    end
+
+    def call(env)
+      env['rack.logger']=Logger.new($stderr)
+      puts "#{msg}: env['rack.error']: #{env['rack.error']}"
+      puts "#{msg}: env['rack.logger']: #{env['rack.logger']}"
+      @app.call(env)
+      puts "#{msg}: env['rack.error']: #{env['rack.error']}"
+      puts "#{msg}: env['rack.logger']: #{env['rack.logger']}"
+      [200, {}, ['MyLogger called']]
+    end
+
+    def debug(str)
+      @err_io.puts(str)
+    end
+  end
+  class App
+    def call(env)
+      msg=self.class.name+__method__.to_s
+      puts "#{msg}: env['rack.error']: #{env['rack.error']}"
+      env['rack.error'].puts "#{msg}: env['rack.error']: #{env['rack.error']}" if env['rack.error']
+      env['rack.logger'].debug "#{msg}: env['rack.logger']: #{env['rack.logger']}" if env['rack.logger']
+      puts "#{msg}: env['rack.logger']: #{env['rack.logger']}"
+      env['rack.error'].write "Written to env[rack.error]\n"
+      [200, {}, ['MyLogger called']]
+    end
+  end
+  
   def initialize(app, options = {})
     @app = app
-    @logger = Logger.new(options[:logger_io])
-    options[:logger_io].sync = true
+    @error_io = options[:logger_io]
+    @logger = Logger.new(@error_io)
+    @error_io.sync = true
     @logger_level = LOGGER_LEVELS.find_index(options[:logger_level].downcase ||= 'debug')
-    @logger.info(self.class.name) {"Initialized #{self.class.name}"} if @logger
   end
 
   def call(env)
     msg = self.class.name+'#'+__method__.to_s
+    env['rack.error']=@error_io
+    env['rack.logger']=@logger
     @logger.info(msg) {"Called"}
     request = Rack::Request.new(env)
 =begin
@@ -67,8 +101,6 @@ class TangoLogger
     @logger.debug(self.class.name) {"status, headers, body: #{status}, #{headers}, #{body[0]}"}
     [status, headers, body]
 =end
-    
-    env['5gtango.logger'] = env['rack.logger'] = @logger
     status, headers, body = @app.call(env)
     @logger.info(msg) {"Finishing with status #{status}"}
     [status, headers, body]

@@ -46,6 +46,6 @@ module Utils
   def not_implemented(msg=nil) [501, {}, [msg || 'Not Implemented']] end
   def respond(status, headers, body) [status, headers, body.is_a?(Array) ? body : [body]] end 
   def choose_logger(env)
-    (env.key?('5gtango.logger'.freeze) && env['5gtango.logger'.freeze]) ? env['5gtango.logger'.freeze] : Rack::NullLogger
+    (env['rack.logger'.freeze]) ? env['rack.logger'.freeze] : Rack::NullLogger
   end
 end
