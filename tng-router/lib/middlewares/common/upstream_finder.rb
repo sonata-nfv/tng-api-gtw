@@ -42,8 +42,9 @@ require_relative '../../utils'
 class UpstreamFinder
   include Utils
   def initialize(app, options={})
-    @app, @base_path, @paths = app, options[:base_path], options[:paths]
-    #puts "Initialized #{self.class.name} with base_path=#{@base_path} and paths=#{@paths}"
+    @app, @paths = app, options[:paths]
+    @base_path = options[:base_path] || ''
+    $stdout.puts "Initialized #{self.class.name} with base_path=#{@base_path} and paths=#{@paths}"
   end
 
   def call(env)
