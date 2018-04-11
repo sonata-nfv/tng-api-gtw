@@ -70,3 +70,13 @@ class Getter
     end
   end
 end
+# Faraday exceptions:
+#StandardError
+#  Faraday::Error
+#    Faraday::MissingDependency
+#    Faraday::ClientError
+#      Faraday::ConnectionFailed
+#      Faraday::ResourceNotFound
+#      Faraday::ParsingError
+#      Faraday::TimeoutError
+#      Faraday::SSLError

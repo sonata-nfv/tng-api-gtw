@@ -30,16 +30,18 @@
 ## acknowledge the contributions of their colleagues of the 5GTANGO
 ## partner consortium (www.5gtango.eu).
 # encoding: utf-8
-base_path: /api/v3
 paths:
-  /packages(/?|/*):
-    #site: http://tng-common:5200/packages
-    site: http://localhost:5000/packages #son-gtkpkg:5100
-    verbs: [ get, post, delete ]
-    auth: true  
+  /api/v3/packages(/?|/*):
+    site: http://tng-gtk-common:5200/packages
+    verbs: [ get, post ]
+  /services(/?|/*):
+    site: http://tng-gtk-common:5200/services
+  /api/v3/records(/?|/*):
+    site: http://tng-rep:4012/records
   /slices(/?|/*):
     site: http://tng-slices
+    verbs: [ get, post, delete ]
   /policies(/?|/*):
     site: http://tng-policies
   /slas(/?|/*):
-    site: http://tng-slas
+    site: http://sla-generator:8080
