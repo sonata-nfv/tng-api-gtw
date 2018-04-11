@@ -37,14 +37,14 @@ echo "Step #1: preparing the environement:"
 REPO="tng-devops"
 echo "    1.a: cloning the $REPO repository..."
 git clone "https://github.com/sonata-nfv/$REPO.git"
-if ! test "$?" -eq 0
+if [ $? -ne 0 ]
 then
   echo >&2 "Cloning https://github.com/sonata-nfv/tng-devops.git failled"
   exit 1
 fi
 echo "    1.b: changing directory..."
 cd $REPO
-if ! test "$?" -eq 0
+if [ $? -ne 0 ]
 then
   echo >&2 "Changing directory to $DIR failled"
   exit 1
@@ -52,7 +52,7 @@ fi
 echo "    ...done!"
 echo "Step #2: Deploying components:"
 ansible-playbook roles/sp.yml -i environments -e "target=pre-int-sp"
-if ! test "$?" -eq 0
+if [ $? -ne 0 ]
 then
   echo >&2 "Deploying the SP in pre-int failled"
   exit 1
