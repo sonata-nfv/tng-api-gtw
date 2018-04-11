@@ -58,4 +58,4 @@ then
   exit 1
 fi
 echo "    ...done!"
-echo "Deploying the SP components to test their integration..."
+echo "SP components deployed in pre-integration..."
