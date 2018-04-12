@@ -35,7 +35,8 @@
 ## Variables
 FIXTURES_FOLDER="./fixtures"
 TEST_PACKAGE_FILE="5gtango-ns-package-example.tgo"
-PRE_INTEGRATION="https://pre-int-sp-ath.5gtango.eu:32001"
+PRE_INTEGRATION_URL="http://pre-int-sp-ath.5gtango.eu:32002/api/v3"
+#http://pre-int-sp-ath.5gtango.eu:32002/api/v3/packages
 
 # Test package file presence
 echo "Testing package file presence..."
@@ -48,10 +49,10 @@ echo "    ...done!"
 # Testing package file upload
 echo "Testing package file upload..."
 #curl -X POST $PRE_INTEGRATION -F x=1 -F y=2 -F package=@"$FIXTURES_FOLDER/$TEST_PACKAGE_FILE"
-curl -X POST $PRE_INTEGRATION package=@"$FIXTURES_FOLDER/$TEST_PACKAGE_FILE"
+curl -X POST $PRE_INTEGRATION_URL package=@"$FIXTURES_FOLDER/$TEST_PACKAGE_FILE"
 if [ $? -ne 0 ]
 then
-    echo "Package file $FIXTURES_FOLDER/$TEST_PACKAGE_FILE upload to $PRE_INTEGRATION failled with $?"
+    echo "Package file $FIXTURES_FOLDER/$TEST_PACKAGE_FILE upload to $PRE_INTEGRATION_URL failled with $?"
     exit 1
 fi
 echo "    ...done!"
