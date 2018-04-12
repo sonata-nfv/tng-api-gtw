@@ -30,6 +30,8 @@
 ## acknowledge the contributions of their colleagues of the 5GTANGO
 ## partner consortium (www.5gtango.eu).
 # encoding: utf-8
+require 'rack'
+
 module Utils
   SYMBOL_TO_STATUS_CODE = Rack::Utils::SYMBOL_TO_STATUS_CODE
   HTTP_STATUS_CODES = Rack::Utils::HTTP_STATUS_CODES

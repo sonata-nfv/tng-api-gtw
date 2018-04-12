@@ -35,6 +35,7 @@ require 'faraday'
 require 'tempfile'
 require 'fileutils'
 require 'net/http/post/multipart'
+require_relative './utils'
 
 class Uploader
   attr_accessor :app
