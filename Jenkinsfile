@@ -69,7 +69,6 @@ pipeline {
     }
     stage('Smoke Tests') {
       steps {
-        sh './tests/integration/deploy.sh'
         sh './tests/integration/functionaltests.sh'
       }
     }
