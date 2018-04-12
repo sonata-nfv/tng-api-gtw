@@ -29,6 +29,7 @@
 ## the Horizon 2020 and 5G-PPP programmes. The authors would like to
 ## acknowledge the contributions of their colleagues of the 5GTANGO
 ## partner consortium (www.5gtango.eu).
+# frozen_string_literal: true
 # encoding: utf-8
 require 'rack'
 require 'curb'
@@ -46,9 +47,8 @@ class Auth
   end
 
   def call(env)
-    #@logger = choose_logger(env)
-    #msg = self.class.name+'#'+__method__.to_s
-    #@logger.info(msg) {"Called"}
+    msg = self.class.name+'#'+__method__.to_s
+    env['5gtango.logger'].info(msg) {"Called"}
     
     # Just forward request if no authorization token is provided
     return @app.call(env) if (env['HTTP_AUTHORIZATION'].to_s.empty?)
@@ -60,16 +60,16 @@ class Auth
       user = find_user_by_token(token: token[1])
       env['5gtango.user.name'] = user[:preferred_username]
       status, headers, body = @app.call(env)
-      #@logger.info(msg) {'Finishing with status = '+status.to_s}
+      env['5gtango.logger'].info(msg) {'Finishing with status = '+status.to_s}
       return [status, headers, body]
     rescue UserTokenNotActiveError
-      #@logger.info(msg) {'Finishing with Unauthorized:'}
+      env['5gtango.logger'].error(msg) {'Finishing with Unauthorized:'}
       return unauthorized('Unauthorized: token  not active')
     rescue UserNotFoundError
-      #@logger.info(msg) {'Finishing with not found'}
+      env['5gtango.logger'].error(msg) {'Finishing with not found'}
       return not_found('Not found: user not found')
     else
-      #@logger.info(msg) {'Finishing with internal server error'}
+      env['5gtango.logger'].error(msg) {'Finishing with internal server error'}
       return internal_server_error('Internal error in '+self.class.name)
     end
   end

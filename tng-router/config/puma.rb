@@ -30,43 +30,8 @@
 ## acknowledge the contributions of their colleagues of the 5GTANGO
 ## partner consortium (www.5gtango.eu).
 # encoding: utf-8
-require 'rack/uploads'
-require ::File.join(__dir__, 'dispatcher')
-LOGGER_LEVELS = [ 'debug', 'info', 'warn', 'error', 'fatal', 'unknown']
-
-# from https://gist.github.com/Integralist/9503099
-def symbolize(obj)
-  return obj.reduce({}) do |memo, (k, v)|
-    memo.tap { |m| m[k.to_sym] = symbolize(v) }
-  end if obj.is_a? Hash
-
-  return obj.reduce([]) do |memo, v| 
-    memo << symbolize(v); memo
-  end if obj.is_a? Array
-  obj
-end
-
-Dispatcher.configure do |config|
-  app_config = symbolize YAML::load_file(File.join(__dir__, 'config', 'app.yml'))
-  routes_file_name = File.join(__dir__, 'config', ENV['ROUTES_FILE'] ||= 'sp_routes.yml')
-  routes = symbolize YAML::load_file(routes_file_name)
-  
-  config.base_path = routes[:base_path]
-  config.paths = routes[:paths]
-  config.middlewares = app_config[:middlewares]
-  config.root = __dir__
-end
-
-Dir.glob(File.join(__dir__, 'lib', '**', '*.rb')).each { |file| require file } if Dir.exist?('lib')
-
-use TangoLogger, logger_io: $stderr, logger_level: 'debug'
-use Instrumentation, kpis_uri: Dispatcher.configuration.middlewares[:kpis][:site] unless ENV['NO_KPIS']
-use Auth, auth_uri: Dispatcher.configuration.middlewares[:user_management][:site]+Dispatcher.configuration.middlewares[:user_management][:path] unless ENV['NO_AUTH']
-use UpstreamFinder, base_path: Dispatcher.configuration.base_path, paths: Dispatcher.configuration.paths
-use Getter
-use EmbodiedMethod
-use OtherMethods
-run Dispatcher.new
-
-
-
+require 'fileutils'
+environment = ENV['RACK_ENV'] || 'production'
+#FileUtils.mkdir(File.join('.', 'log')) unless File.exists? File.join('.', 'log')
+#stdout_and_stderr_file_name=::File.join('.', 'log', environment+'.log')
+#stdout_redirect stdout_and_stderr_file_name, stdout_and_stderr_file_name, true

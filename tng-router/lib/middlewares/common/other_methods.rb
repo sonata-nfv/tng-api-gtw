@@ -29,6 +29,7 @@
 ## the Horizon 2020 and 5G-PPP programmes. The authors would like to
 ## acknowledge the contributions of their colleagues of the 5GTANGO
 ## partner consortium (www.5gtango.eu).
+# frozen_string_literal: true
 # encoding: utf-8
 require 'rack'
 require 'rack/utils'
@@ -50,8 +51,7 @@ class OtherMethods
 
   def call(env)
     msg = self.class.name+'#'+__method__.to_s
-    @logger = choose_logger(env)
-    @logger.info(msg) {"Called"}
+    env['5gtango.logger'].info(msg) {"Called"}
     url = env['5gtango.sink_path'.freeze]
     request = Rack::Request.new(env)  
     
@@ -73,7 +73,7 @@ class OtherMethods
     else
       return bad_request("HTTP method (#{request.request_method} not supported")
     end
-    @logger.debug(msg) {"Response was #{resp}"}
+    env['5gtango.logger'].debug(msg) {"Response was #{resp}"}
     respond(resp.status, resp.headers, resp.body)
   end    
   

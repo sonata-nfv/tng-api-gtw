@@ -29,6 +29,7 @@
 ## the Horizon 2020 and 5G-PPP programmes. The authors would like to
 ## acknowledge the contributions of their colleagues of the 5GTANGO
 ## partner consortium (www.5gtango.eu).
+# frozen_string_literal: true
 # encoding: utf-8
 require 'rack'
 require 'rack/show_exceptions'
@@ -48,11 +49,11 @@ class UpstreamFinder
   end
 
   def call(env)
-    @logger = choose_logger(env)
     msg = self.class.name+'#'+__method__.to_s
-    @logger.info "Called"
+    @logger = env['5gtango.logger']
+    env['5gtango.logger'].info "Called"
     request = Rack::Request.new(env)
-    @logger.info(msg) {"Base_path=#{@base_path} and paths=#{@paths}"}
+    env['5gtango.logger'].debug(msg) {"Base_path=#{@base_path} and paths=#{@paths}"}
     
     simple_path = env["REQUEST_PATH"]
     simple_path.slice!(@base_path)
@@ -63,9 +64,9 @@ class UpstreamFinder
     not_found("#{request.request_method} is not supported by #{path[:site]}, only #{path[:verbs].join(', ')}") unless method_ok?(path[:verbs], request.request_method)
     #forbidden("#{request.request_method}ing into #{path[:site]} needs authentication") unless authenticated?(path, env)
     env['5gtango.sink_path'] = path[:site]+query_string?(env["QUERY_STRING"])
-    @logger.debug(msg) {"path built: #{env['5gtango.sink_path']}"}
+    env['5gtango.logger'].debug(msg) {"path built: #{env['5gtango.sink_path']}"}
     status, headers, body = @app.call(env)
-    @logger.debug(msg) {"Finishing with status #{status}"}
+    env['5gtango.logger'].debug(msg) {"Finishing with status #{status}"}
     respond(status, headers, body)
   end
   

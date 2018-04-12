@@ -29,9 +29,11 @@
 ## the Horizon 2020 and 5G-PPP programmes. The authors would like to
 ## acknowledge the contributions of their colleagues of the 5GTANGO
 ## partner consortium (www.5gtango.eu).
+# frozen_string_literal: true
 # encoding: utf-8
 require 'rack'
 require 'logger'
+require_relative '../../utils'
 
 class TangoLogger
   include Utils
@@ -39,37 +41,6 @@ class TangoLogger
   
   LOGGER_LEVELS = ['debug', 'info', 'warn', 'error', 'fatal', 'unknown'].freeze
   FORMAT = %{%s - %s [%s] "%s %s%s %s" %d %s %0.4f\n}
-
-  class MyLogger
-    def initialize(app, options = {})
-      @app = app
-    end
-
-    def call(env)
-      env['rack.logger']=Logger.new($stderr)
-      puts "#{msg}: env['rack.error']: #{env['rack.error']}"
-      puts "#{msg}: env['rack.logger']: #{env['rack.logger']}"
-      @app.call(env)
-      puts "#{msg}: env['rack.error']: #{env['rack.error']}"
-      puts "#{msg}: env['rack.logger']: #{env['rack.logger']}"
-      [200, {}, ['MyLogger called']]
-    end
-
-    def debug(str)
-      @err_io.puts(str)
-    end
-  end
-  class App
-    def call(env)
-      msg=self.class.name+__method__.to_s
-      puts "#{msg}: env['rack.error']: #{env['rack.error']}"
-      env['rack.error'].puts "#{msg}: env['rack.error']: #{env['rack.error']}" if env['rack.error']
-      env['rack.logger'].debug "#{msg}: env['rack.logger']: #{env['rack.logger']}" if env['rack.logger']
-      puts "#{msg}: env['rack.logger']: #{env['rack.logger']}"
-      env['rack.error'].write "Written to env[rack.error]\n"
-      [200, {}, ['MyLogger called']]
-    end
-  end
   
   def initialize(app, options = {})
     @app = app
@@ -78,14 +49,16 @@ class TangoLogger
     @error_io.sync = true
     @logger_level = LOGGER_LEVELS.find_index(options[:logger_level].downcase ||= 'debug')
   end
+  
 
   def call(env)
     msg = self.class.name+'#'+__method__.to_s
-    env['rack.error']=@error_io
-    env['rack.logger']=@logger
+    env['5gtango.error']=@error_io
+    env['5gtango.logger']=@logger
     @logger.info(msg) {"Called"}
-    request = Rack::Request.new(env)
+
 =begin
+    request = Rack::Request.new(env)
     #[$time_local], $level, $remote_addr '"$request" $status $headers' $message;
     @logger.formatter = proc do |severity, datetime, progname, msg|
       message="[#{datetime}], #{severity}, "
