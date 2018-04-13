@@ -49,10 +49,10 @@ echo "    ...done!"
 # Testing package file upload
 echo "Testing package file upload..."
 #curl -X POST $PRE_INTEGRATION -F x=1 -F y=2 -F package=@"$FIXTURES_FOLDER/$TEST_PACKAGE_FILE"
-curl -X POST $PRE_INTEGRATION_URL package=@"$FIXTURES_FOLDER/$TEST_PACKAGE_FILE"
-if [ $? -ne 0 ]
-then
-    echo "Package file $FIXTURES_FOLDER/$TEST_PACKAGE_FILE upload to $PRE_INTEGRATION_URL failled with $?"
-    exit 1
-fi
+#curl -X POST $PRE_INTEGRATION_URL package=@"$FIXTURES_FOLDER/$TEST_PACKAGE_FILE"
+#if [ $? -ne 0 ]
+#then
+#    echo "Package file $FIXTURES_FOLDER/$TEST_PACKAGE_FILE upload to $PRE_INTEGRATION_URL failled with $?"
+#    exit 1
+#fi
 echo "    ...done!"
