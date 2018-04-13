@@ -50,6 +50,8 @@ class UpstreamFinder
 
   def call(env)
     msg = self.class.name+'#'+__method__.to_s
+    env['5gtango.logger'] = Logger.new(STDERR) if env['5gtango.logger'].to_s.empty?
+    
     @logger = env['5gtango.logger']
     env['5gtango.logger'].info "Called"
     request = Rack::Request.new(env)

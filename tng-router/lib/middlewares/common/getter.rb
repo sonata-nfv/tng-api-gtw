@@ -44,6 +44,7 @@ class Getter
 
   def call(env)
     msg = self.class.name+'#'+__method__.to_s
+    env['5gtango.logger'] = Logger.new(STDERR) if env['5gtango.logger'].to_s.empty?
     env['5gtango.logger'].info(msg) {"Called"}
     request = Rack::Request.new(env)  
     
