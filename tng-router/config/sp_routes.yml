@@ -32,16 +32,18 @@
 # encoding: utf-8
 paths:
   /api/v3/packages(/?|/*):
-    site: http://tng-gtk-common:5200/packages
+    site: http://tng-gtk-common:5000/packages
     verbs: [ get, post ]
-  /services(/?|/*):
-    site: http://tng-gtk-common:5200/services
+  /api/v3/services(/?|/*):
+    site: http://tng-gtk-common:5000/services
+  /api/v3/functions(/?|/*):
+    site: http://tng-gtk-common:5000/functions
   /api/v3/records(/?|/*):
-    site: http://tng-rep:4012/records
+    site: http://tng-gtk-common:5000/records #http://tng-rep:4012/records
   /slices(/?|/*):
-    site: http://tng-slices
+    site: http://tng-slice-mngr:5998
     verbs: [ get, post, delete ]
   /policies(/?|/*):
-    site: http://tng-policies
+    site: http://tng-policy-mngr:8081
   /slas(/?|/*):
-    site: http://sla-generator:8080
+    site: http://tng-sla-mgmt:8080

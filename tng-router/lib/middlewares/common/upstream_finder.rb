@@ -53,10 +53,11 @@ class UpstreamFinder
     env['5gtango.logger'] = Logger.new(STDERR) if env['5gtango.logger'].to_s.empty?
     
     @logger = env['5gtango.logger']
-    env['5gtango.logger'].info "Called"
+    env['5gtango.logger'].info(msg) {"Called"}
     request = Rack::Request.new(env)
     env['5gtango.logger'].debug(msg) {"Base_path=#{@base_path} and paths=#{@paths}"}
     
+    env['5gtango.logger'].debug(msg) {"REQUEST_PATH: #{env["REQUEST_PATH"]}"}
     simple_path = env["REQUEST_PATH"]
     simple_path.slice!(@base_path)
     path = find_path(env["REQUEST_PATH"])
