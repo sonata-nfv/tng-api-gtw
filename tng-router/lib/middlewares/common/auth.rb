@@ -33,6 +33,7 @@
 # encoding: utf-8
 require 'rack'
 require 'curb'
+require 'logger'
 require_relative '../../utils'
 
 class Auth
@@ -41,6 +42,7 @@ class Auth
   
   class UserTokenNotActiveError < StandardError; end
   class UserNotFoundError < StandardError; end
+  class UserDataNotParseableError < StandardError; end
   
   def initialize(app, options= {})
     @app, @auth_uri = app, options[:auth_uri]
@@ -48,6 +50,8 @@ class Auth
 
   def call(env)
     msg = self.class.name+'#'+__method__.to_s
+    
+    env['5gtango.logger'] = Logger.new(STDERR) if env['5gtango.logger'].to_s.empty?
     env['5gtango.logger'].info(msg) {"Called"}
     
     # Just forward request if no authorization token is provided
@@ -60,8 +64,11 @@ class Auth
       user = find_user_by_token(token: token[1])
       env['5gtango.user.name'] = user[:preferred_username]
       status, headers, body = @app.call(env)
-      env['5gtango.logger'].info(msg) {'Finishing with status = '+status.to_s}
+      env['5gtango.logger'].debug(msg) {'Finishing with status = '+status.to_s}
       return [status, headers, body]
+    rescue UserDataNotParseableError
+      env['5gtango.logger'].error(msg) {'User data not parseable error'}
+      return internal_server_error('Internal error in '+self.class.name)
     rescue UserTokenNotActiveError
       env['5gtango.logger'].error(msg) {'Finishing with Unauthorized:'}
       return unauthorized('Unauthorized: token  not active')
@@ -92,8 +99,7 @@ class Auth
       begin
         JSON.parse(resp.body, symbolize_names: true)
       rescue => e
-        puts "#{self.class.name}: Error processing #{$!}: \n\t#{e.backtrace.join('\n\t')}"
-        nil
+        raise UserDataNotParseableError.new "User data parsing error #{$!}: \n\t#{e.backtrace.join('\n\t')}"
       end
     when 401
       raise UserTokenNotActiveError.new "User token was not active"
