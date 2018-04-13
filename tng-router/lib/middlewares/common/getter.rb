@@ -67,7 +67,7 @@ class Getter
       return respond(response.status, response.headers, response.body)
     rescue Faraday::Error::ConnectionFailed => e
       env['5gtango.logger'].error(msg) {"The server at #{env['5gtango.sink_path']} is either unavailable or is not currently accepting requests. Please try again in a few minutes."}
-      return internal_server_error("No response by GETing #{env['5gtango.sink_path']}"+ params == {} ? "" : " with params #{params}")
+      return internal_server_error("No response by GETing #{env['5gtango.sink_path']}"+ (params == {} ? "" : " with params #{params}"))
     end
   end
 end
