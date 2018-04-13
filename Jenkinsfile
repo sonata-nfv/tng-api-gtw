@@ -69,7 +69,7 @@ pipeline {
     }
     stage('Smoke Tests') {
       steps {
-        echo 'Performing Smoke Tests....'
+        sh './tests/integration/functionaltests.sh'
       }
     }
     stage('Promoting containers to integration env') {

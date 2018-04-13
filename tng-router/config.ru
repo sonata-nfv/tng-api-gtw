@@ -54,9 +54,6 @@ Dispatcher.configure do |config|
   config.base_path = routes[:base_path]
   config.paths = routes[:paths]
   config.middlewares = app_config[:middlewares]
-  #$stdout.sync = true
-  #config.logger = Logger.new($stdout)
-  #config.logger.level = LOGGER_LEVELS.find_index(app_config[:logger_level].downcase ||= 'debug')
   config.root = __dir__
 end
 

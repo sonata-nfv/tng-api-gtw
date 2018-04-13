@@ -29,24 +29,26 @@
 ## the Horizon 2020 and 5G-PPP programmes. The authors would like to
 ## acknowledge the contributions of their colleagues of the 5GTANGO
 ## partner consortium (www.5gtango.eu).
+# frozen_string_literal: true
 # encoding: utf-8
 require 'rack'
 require_relative '../../utils'
 
 class Instrumentation
+  include Utils
+  
   def initialize(app, options= {})
     @app, @kpis_uri = app, options[:kpis_uri]
   end
 
   def call(env)
     began_at = Time.now
-    @logger = choose_logger(env)
     msg = self.class.name+'#'+__method__.to_s
-    @logger.info(msg) {"Called"}
+    env['5gtango.logger'].info(msg) {"Called"}
     status, headers, body = @app.call env
 
     headers['X-Timing'] = (Time.now - began_at).to_f.to_s
-    @logger.debug(msg) {"Finishing with status #{status}"}
+    env['5gtango.logger'].debug(msg) {"Finishing with status #{status}"}
     [status, headers, body]
   end
 end

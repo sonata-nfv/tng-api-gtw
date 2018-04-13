@@ -29,6 +29,7 @@
 ## the Horizon 2020 and 5G-PPP programmes. The authors would like to
 ## acknowledge the contributions of their colleagues of the 5GTANGO
 ## partner consortium (www.5gtango.eu).
+# frozen_string_literal: true
 # encoding: utf-8
 require 'rack'
 require 'rack/utils'
@@ -49,10 +50,9 @@ class EmbodiedMethod
   end
 
   def call(env)
-    @logger = choose_logger(env)
     msg = self.class.name+'#'+__method__.to_s
-    @logger.info(msg) {"Called"}
-    url = env['5gtango.sink_path'.freeze]
+    env['5gtango.logger'].info(msg) {"Called"}
+    url = env['5gtango.sink_path']
     request = Rack::Request.new(env)  
     body = request.body.read
     request.body.rewind
@@ -61,11 +61,11 @@ class EmbodiedMethod
     return @app.call(env) unless (request.post? || request.put? || request.patch?)
     
     # Pass file uploads
-    @logger.debug(msg) {"Content-type: #{request.content_type}"}
+    env['5gtango.logger'].debug(msg) {"Content-type: #{request.content_type}"}
     return Uploader.new.call(env) if request.content_type =~ /multipart\/form-data/
     
-    @logger.debug(msg) {"Params: #{request.params}"}
-    @logger.debug(msg) {"Body: #{body}"}
+    env['5gtango.logger'].debug(msg) {"Params: #{request.params}"}
+    env['5gtango.logger'].debug(msg) {"Body: #{body}"}
     bad_request("Content-type (#{request.content_type} not supported in #{request.request_method} requests") unless allowed_content_type(request.content_type)
     connection = Faraday.new(url) { |conn| conn.adapter :net_http }
     # conn.authorization :Bearer, 'mF_9.B5f-4.1JqM'
@@ -78,7 +78,7 @@ class EmbodiedMethod
         req.body = body
       end
     end
-    @logger.debug(msg) {"Response was #{resp}"}
+    env['5gtango.logger'].debug(msg) {"Response was #{resp}"}
     respond(resp.status, resp.headers, resp.body)
   end    
   
