@@ -31,6 +31,10 @@
 ## partner consortium (www.5gtango.eu).
 # encoding: utf-8
 paths:
+  /:
+    site: http://tng-gtk-common:5000/
+  /api/v3(/?):
+    site: http://tng-gtk-common:5000/
   /api/v3/packages(/?|/*):
     site: http://tng-gtk-common:5000/packages
     verbs: [ get, post ]
