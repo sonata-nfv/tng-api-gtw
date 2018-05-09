@@ -33,7 +33,7 @@
 #
 # This file holds the integration tests
 ## Variables
-FIXTURES_FOLDER="./fixtures"
+FIXTURES_FOLDER="./tests/integration/fixtures"
 TEST_PACKAGE_FILE="5gtango-ns-package-example.tgo"
 PRE_INTEGRATION_URL="http://pre-int-sp-ath.5gtango.eu:32002/api/v3"
 PACKAGES_PRE_INTEGRATION_URL="$PRE_INTEGRATION_URL/packages"
