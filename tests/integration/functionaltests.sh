@@ -35,14 +35,19 @@
 ## Variables
 FIXTURES_FOLDER="./fixtures"
 TEST_PACKAGE_FILE="5gtango-ns-package-example.tgo"
-PRE_INTEGRATION_URL="http://pre-int-sp-ath.5gtango.eu:32002/api/v3/packages"
+PRE_INTEGRATION_URL="http://pre-int-sp-ath.5gtango.eu:32002/api/v3"
 PACKAGES_PRE_INTEGRATION_URL="$PRE_INTEGRATION_URL/packages"
 
 # Test package file presence
 echo "Testing package file presence..."
+echo "PWD is $(pwd)"
+FILES_PRESENT=$(ls)
+echo "Files present: $FILES_PRESENT"
+
 if  ! [ -e "$FIXTURES_FOLDER/$TEST_PACKAGE_FILE" ]
 then
     echo "Test package file $TEST_PACKAGE_FILE not found in $FIXTURES_FOLDER folder"
+    exit 1
 fi
 echo "    ...done!"
 
@@ -55,17 +60,17 @@ echo "Testing package file upload..."
 #echo "User $USER logged in: $RESP"
 #token=$(echo $RESP | jq -r '.token.access_token')
 
-UPLOAD_RESPONSE=$(curl -qfsS -X POST $PRE_INTEGRATION_URL -F package=@"$FIXTURES_FOLDER/$TEST_PACKAGE_FILE")
+UPLOAD_RESPONSE=$(curl -qfsS -X POST $PACKAGES_PRE_INTEGRATION_URL -F package=@"$FIXTURES_FOLDER/$TEST_PACKAGE_FILE")
 echo "UPLOAD_RESPONSE=$UPLOAD_RESPONSE"
 PROCESS_UUID=$(echo $UPLOAD_RESPONSE | jq -r '.package_process_uuid')
 echo "PROCESS_UUID=$PROCESS_UUID"
 if [ -z "$PROCESS_UUID" ]; then
-  echo "Package file $FIXTURES_FOLDER/$TEST_PACKAGE_FILE upload to $PRE_INTEGRATION_URL failled with $UPLOAD_RESPONSE"
+  echo "Package file $FIXTURES_FOLDER/$TEST_PACKAGE_FILE upload to $PACKAGES_PRE_INTEGRATION_URL failled with $UPLOAD_RESPONSE"
   exit 1
 fi
 echo "    ...successfuly!"
 echo "Getting package status..."
-PACKAGE_PROCESS_STATUS=$(curl -qfsS "$PRE_INTEGRATION_URL/status/$PROCESS_UUID")
+PACKAGE_PROCESS_STATUS=$(curl -qfsS "$PACKAGES_PRE_INTEGRATION_URL/status/$PROCESS_UUID")
 echo "PACKAGE_PROCESS_STATUS=$PACKAGE_PROCESS_STATUS"
 echo "Getting package uuid..."
 echo "    ...not done yet!"
