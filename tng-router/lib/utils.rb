@@ -44,6 +44,7 @@ module Utils
   def unauthorized(msg=nil) [401, {}, [msg || 'Unauthorized']] end  
   def forbidden(msg=nil) [403, {}, [msg || 'Forbidden']] end
   def not_found(msg=nil) [404, {}, [msg || 'Not Authorized']] end
+  def method_not_allowed(msg=nil) [405, {}, [msg || 'Method Not Allowed']] end
   def internal_server_error(msg=nil) [500, {}, [msg || 'Internal Server Error']] end
   def not_implemented(msg=nil) [501, {}, [msg || 'Not Implemented']] end
   def respond(status, headers, body) [status, headers, body.is_a?(Array) ? body : [body]] end 

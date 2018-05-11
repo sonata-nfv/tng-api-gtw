@@ -58,6 +58,6 @@ class Dispatcher
   
   def call(env)
     request = Rack::Request.new(env)  
-    return not_implemented("What, no guru, no method, no teacher, just you and I and Nature? Method #{env['REQUEST_METHOD']} is not implemented yet...\n")
+    return method_not_allowed("What, no guru, no method, no teacher, just you and I and Nature? Method #{env['REQUEST_METHOD']} is not implemented yet...\n")
   end
 end
