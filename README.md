@@ -68,11 +68,17 @@ The following `ENV` variables must be defined:
 
 ## Tests
 
-Describe and show how to run the tests with code examples.
-Explain what these tests test and why.
+**Unit** tests can be ran by executing the following set of commands:
 
 ```shell
-Give an example
+$ cd tng-router
+$ bundle exec rspec spec/
+```
+
+**Smoke** (end-to-end) tests can be executed by running
+```shell
+$ cd tng-router
+$ bundle exec rspec spec/
 ```
 
 ### Unit tests
