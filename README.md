@@ -106,7 +106,7 @@ On-boarding (i.e., uploading) a package is an **asynchronous** process that invo
 On-boarding a package can be done by the following command:
 
 ```shell
-$ curl -X POST {api_root}/api/v3/packages -F "package=@./5gtango-ns-package-example.tgo"
+$ curl -X POST :api_root/api/v3/packages -F "package=@./5gtango-ns-package-example.tgo"
 ```
 
 The `package` field is the only one that is mandatory, but there are a number of optional ones that you can check [here](https://github.com/sonata-nfv/tng-sdk-package).
@@ -135,7 +135,7 @@ We may query the on-boarding process by issuing
 $ curl :api_root/api/v3/packages/status/b295e010-1fbc-4ff7-922a-a1703295f63f
 ```
 
-The `processing_uuid` is the value obtained when a package has been submitted successfuly (see above).
+The `processing_uuid` is the value obtained when a package has been submitted successfuly (see above). Check [this gist](https://gist.github.com/jbonnet/5fea8faddba2bb54dcb42518622d2556) for an example of the answer.
 
 A package meta-data can be queried like the following.
 
@@ -147,13 +147,13 @@ Check [this gist](https://gist.github.com/jbonnet/af2ba6c78bada133fcca9c67c5bc84
 Besides the package meta-data, it's file can also be fetched:
 
 ```shell
-$ curl <api_root>/api/v3/packages/d367ed3b-e401-48be-af96-fc03487b12b5/package-file
+$ curl :api_root/api/v3/packages/d367ed3b-e401-48be-af96-fc03487b12b5/package-file
 ```
 
 Querying all existing packages can be done using the following command
 
 ```shell
-$ curl <api_root>/api/v3/packages
+$ curl :api_root/api/v3/packages
 ```
 
 Check [this gist](https://gist.github.com/jbonnet/b8c4546e4fa2be4c3942c07357bc8d74) for an example of the answer.
