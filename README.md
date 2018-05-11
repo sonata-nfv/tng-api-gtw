@@ -77,13 +77,9 @@ $ bundle exec rspec spec/
 
 **Smoke** (end-to-end) tests can be executed by running
 ```shell
-$ cd tng-router
-$ bundle exec rspec spec/
+$ cd tests/integration
+$ ./functionaltests.sh
 ```
-
-### Unit tests
-
-
 
 ## Style guide
 
@@ -123,15 +119,7 @@ The `package` field is the only one that is mandatory, but there are a number of
 }
 ```
 
-$ http pre-int-sp-ath.5gtango.eu:32002/api/v3/packages/status/
-HTTP/1.1 200 OK
-Content-Length: 3592
-X-Timing: 0.065799991
-connection: close
-content-type: application/json
-x-content-type-options: nosniff
-
-
+This `package_process_uuid` can be used to query the package processing status (see below).
 
 #### Querying
 
@@ -141,9 +129,9 @@ We may query the on-boarding process by issuing
 $ curl :api_root/api/v3/packages/status/b295e010-1fbc-4ff7-922a-a1703295f63f
 ```
 
-The `processing_uuid` is the value obtained when a package has been submitted successfuly (see above). Check [this gist](https://gist.github.com/jbonnet/5fea8faddba2bb54dcb42518622d2556) for an example of the answer.
+The `package_process_uuid` is the value obtained when a package has been submitted successfuly (see above). Check [this gist](https://gist.github.com/jbonnet/5fea8faddba2bb54dcb42518622d2556) for an example of the answer. This answer will have the `package_uuid` that can be used to query the package (used below).
 
-A package meta-data can be queried like the following.
+A package meta-data can be queried like the following:
 
 ```shell
 $ curl :api_root/api/v3/packages/d367ed3b-e401-48be-af96-fc03487b12b5
