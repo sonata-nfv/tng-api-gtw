@@ -173,4 +173,4 @@ This component does not use any database.
 
 ## Licensing
 
-State what the license is and how to find the text version of the license.
+For licensing issues, please check the [Licence](https://github.com/sonata-nfv/tng-api-gtw/blob/master/LICENSE) file.
