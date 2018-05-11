@@ -34,8 +34,8 @@ This component has been developed in [ruby](https://ruby-lang.org), version `2.4
 To get the code of this compoent you should execute the following `shell` commands:
 
 ```shell
-git clone https://github.com/sonata-nfv/tng-gtk-common.git
-cd tng-gtk-common/
+git clone https://github.com/sonata-nfv/tng-api-gtw.git
+cd tng-api-gtw/
 bundle install
 ```
 
@@ -63,28 +63,23 @@ This component's configuration is done strictly through `ENV` variables.
 
 The following `ENV` variables must be defined:
 
-1. `CATALOGUE_URL`, which defines the `URL` to reach the [Catalogue](http://github.com/sonata-nfv/tng-cat), e.g., `http://tng-cat:4011/catalogues/api/v2`;
-1. `UNPACKAGER_URL`, which defines the `URL` to reach the [Packager](https://github.com/sonata-nfv/tng-sdk-package), e.g.,`http://tng-sdk-package:5099/api/v1/packages`
-
-Optionally, you can also define the following `ENV` variables:
-
-1. `INTERNAL_CALLBACK_URL`, which defines the `URL` for the [Packager](https://github.com/sonata-nfv/tng-sdk-package) component to notify this component about the finishing of the upload process, defaults to `http://tng-gtk-common:5000/packages/on-change`;
-1. `EXTERNAL_CALLBACK_URL`, which defines the `URL` that this component should call, when  it is notified (by the [Packager](https://github.com/sonata-nfv/tng-sdk-package) component) that the package has been on-boarded, e.g.,`http://tng-vnv-lcm:6100/api/v1/packages/on-change`. See details on this component's [Design documentation wiki page](https://github.com/sonata-nfv/tng-gtk-common/wiki/design-documentation);
-1. `DEFAULT_PAGE_SIZE`: defines the default number of 'records' that are returned on a single query, for pagination purposes. If absent, a value of `100` is assumed;
-1. `DEFAULT_PAGE_NUMBER`: defines the default page to start showing the selected records (beginning at `0`), for pagination purposes. If absent, a value of `0` is assumed;
+1. `PORT`, which sets the HTTP port to `5000`;
+1. `ROUTES_FILE`, which sets the name of the file defining active routes as `sp_routes.yml` (the default name, for the Service Platform; for the V&V Platform, the deployment defines this `ENV` variable as `vnv_routes.yml`).
 
 ## Tests
 
-Describe and show how to run the tests with code examples.
-Explain what these tests test and why.
+**Unit** tests can be ran by executing the following set of commands:
 
 ```shell
-Give an example
+$ cd tng-router
+$ bundle exec rspec spec/
 ```
 
-### Unit tests
-
-
+**Smoke** (end-to-end) tests can be executed by running
+```shell
+$ cd tests/integration
+$ ./functionaltests.sh
+```
 
 ## Style guide
 
@@ -92,9 +87,10 @@ Explain your code style and show how to check it.
 
 ## Api Reference
 
-This component's API is documented in a [Swagger 2.0 file](https://github.com/sonata-nfv/tng-gtk-common/blob/master/doc/swagger.json). The current version does not support any form of authentication, since it is supposed to work with the [API Gateway](https://github.com/sonata-nfv/tng-api-gtw/) component in fron of it.
+The current version supports an `api_root` like `http://pre-int-ath.5gtango.eu:32002`.
 
-The current version supports an `api_root` like `http://pre-int-ath.5gtango.eu:32003`.
+### Authentication and authorization
+TBD
 
 ### Packages
 Packages constitute the unit for uploading information into the [Catalogue](http://github.com/sonata-nfv/tng-cat).
@@ -102,7 +98,7 @@ Packages constitute the unit for uploading information into the [Catalogue](http
 You can get examples of packages [here (the good one)](https://github.com/sonata-nfv/tng-sdk-package/blob/master/misc/5gtango-ns-package-example.tgo) and [here (the malformed one)](https://github.com/sonata-nfv/tng-sdk-package/blob/master/misc/5gtango-ns-package-example-malformed.tgo).
 
 #### On-boarding
-On-boarding (i.e., uploading) a package is an **asynchronous** process that involves several components until the package is stored in the [Catalogue](http://github.com/sonata-nfv/tng-cat):
+On-boarding (i.e., uploading) a package is an **asynchronous** process that involves several components until the package is stored in the [Catalogue](http://github.com/sonata-nfv/tng-cat) (please see the wiki for details).
 
 1. the [API Gateway](https://github.com/sonata-nfv/tng-api-gtw/) component;
 1. this component, the [Gatekeeper Common](https://github.com/sonata-nfv/tng-gtk-common/);
@@ -112,48 +108,63 @@ On-boarding (i.e., uploading) a package is an **asynchronous** process that invo
 On-boarding a package can be done by the following command:
 
 ```shell
-$ curl -X POST {api_root}/api/v3/packages -F "package=@./5gtango-ns-package-example.tgo"
+$ curl -X POST :api_root/api/v3/packages -F "package=@./5gtango-ns-package-example.tgo"
 ```
 
- The `package` field is the only one that is mandatory, but there are a number of optional ones that you can check [here](https://github.com/sonata-nfv/tng-sdk-package).
-  
+The `package` field is the only one that is mandatory, but there are a number of optional ones that you can check [here](https://github.com/sonata-nfv/tng-sdk-package).
+
+```json
+{
+    "package_process_uuid": "b295e010-1fbc-4ff7-922a-a1703295f63f"
+}
+```
+
+This `package_process_uuid` can be used to query the package processing status (see below).
+
 #### Querying
 
 We may query the on-boarding process by issuing
 
 ```shell
-$ curl {api_root}/api/v3/packages/status/:processing_uuid
+$ curl :api_root/api/v3/packages/status/b295e010-1fbc-4ff7-922a-a1703295f63f
 ```
 
-Querying all existing packages can be done using the following command (default values for `DEFAULT_PAGE_SIZE` and `DEFAULT_PAGE_NUMBER` mentioned above are used):
+The `package_process_uuid` is the value obtained when a package has been submitted successfuly (see above). Check [this gist](https://gist.github.com/jbonnet/5fea8faddba2bb54dcb42518622d2556) for an example of the answer. This answer will have the `package_uuid` that can be used to query the package (used below).
+
+A package meta-data can be queried like the following:
 
 ```shell
-$ curl {api_root}/api/v3/packages
+$ curl :api_root/api/v3/packages/d367ed3b-e401-48be-af96-fc03487b12b5
+```
+Check [this gist](https://gist.github.com/jbonnet/af2ba6c78bada133fcca9c67c5bc84bd) for an example of the answer.
+
+Besides the package meta-data, it's file can also be fetched:
+
+```shell
+$ curl :api_root/api/v3/packages/d367ed3b-e401-48be-af96-fc03487b12b5/package-file
 ```
 
+Querying all existing packages can be done using the following command
+
+```shell
+$ curl :api_root/api/v3/packages
+```
+
+Check [this gist](https://gist.github.com/jbonnet/b8c4546e4fa2be4c3942c07357bc8d74) for an example of the answer.
+  
 If different default values for the starting page number and the number of records per page are needed, these can be used as query parameters:
 
 ```shell
-$ curl "{api_root}/api/v3/packages?page_size=20&page_number=2"
+$ curl ":api_root/api/v3/packages?page_size=20&page_number=2"
 ```
 
-A specific package's metadata can be fetched using the following command:
+Note the `""` used around the command, in order for the `shell` used to consider the `&` as part of the command, instead of considering it a background process command.
 
-```shell
-$ curl "{api_root}/api/v3/packages/:package_uuid"
-```
-
-In case we want to download the package's file, we can use the following command:
-
-```shell
-$ curl "{api_root}/api/v3/packages/:package_uuid/package-file"
-```
 
 ## Database
 
-Explaining what database (and version) has been used. Provide download links.
-Documents your database design and schemas, relations etc... 
+This component does not use any database. 
 
 ## Licensing
 
-State what the license is and how to find the text version of the license.
+For licensing issues, please check the [Licence](https://github.com/sonata-nfv/tng-api-gtw/blob/master/LICENSE) file.
