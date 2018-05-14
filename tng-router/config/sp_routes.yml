@@ -36,7 +36,7 @@ paths:
   /api/v3(/?):
     site: http://tng-gtk-common:5000/
   /api/v3/pings(/?):
-    site: http://tng-gtk-common:5000/
+    site: http://tng-gtk-common:5000/pings
   /api/v3/packages(/?|/*):
     site: http://tng-gtk-common:5000/packages
     verbs: [ get, post, delete ]
