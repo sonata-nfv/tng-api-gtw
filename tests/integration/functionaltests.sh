@@ -71,6 +71,29 @@ fi
 echo "    ...successfuly!"
 echo "Getting package status..."
 PACKAGE_PROCESS_STATUS=$(curl -qfsS "$PACKAGES_PRE_INTEGRATION_URL/status/$PROCESS_UUID")
+
+#!/bin/bash
+
+# This script copies files from my homedirectory into the webserver directory.
+# (use scp and SSH keys for a remote directory)
+# A new directory is created every hour.
+
+#PICSDIR=/home/carol/pics
+#WEBDIR=/var/www/carol/webcam
+
+#while true; do 
+#	DATE=`date +%Y%m%d`
+#	HOUR=`date +%H`
+#	mkdir $WEBDIR/"$DATE"
+	
+#	while [ $HOUR -ne "00" ]; do 
+#		DESTDIR=$WEBDIR/"$DATE"/"$HOUR"
+#		mkdir "$DESTDIR"
+#		mv $PICDIR/*.jpg "$DESTDIR"/
+#		sleep 3600
+#		HOUR=`date +%H`
+#	done
+  #done
 echo "PACKAGE_PROCESS_STATUS=$PACKAGE_PROCESS_STATUS"
 echo "Getting package uuid..."
 echo "    ...not done yet!"
@@ -83,3 +106,37 @@ echo "    ...not done yet!"
 echo "Verify that package has been deleted..."
 echo "    ...not done yet!"
 echo "    ...done!"
+
+# Using tavern
+# tavern-ci package-uuid.yaml --stdout --debug
+#get token
+#test_name: get_package
+
+#stages:
+#  - name: get_token
+#    request:
+#      url: http://sp.int3.sonata-nfv.eu:32001/api/v2/sessions
+#      json: 
+#        username: sonata
+#        password: '1234'
+#      method: POST
+#      headers:
+#        Content-Type: application/json
+#    response: 
+#      status_code: 200
+#      headers:
+#        content-type: application/json
+#      save:
+#        body:
+#          test_login_token: token.access_token
+
+#get 1 package
+#  - name: get_package
+#    request:
+#      url: http://sp.int3.sonata-nfv.eu:32001/api/v2/packages/d02b95b3-ef02-4b46-8548-af07eb789baa
+#      method: GET
+#      headers:
+#        content-type: application/json
+#        authorization: "Bearer {test_login_token:s}"
+#    response:
+#      status_code: 200
