@@ -160,6 +160,18 @@ $ curl ":api_root/api/v3/packages?page_size=20&page_number=2"
 
 Note the `""` used around the command, in order for the `shell` used to consider the `&` as part of the command, instead of considering it a background process command.
 
+#### Deleting
+We may delete an on-boarded package by issuing the following command:
+
+```shell
+$ curl -X DELETE :api_root/api/v3/packages/:package_uuid
+```
+
+Expected returned data is:
+
+* `HTTP` code `204` (`No Content`) if the package is found and successfuly deleted (the body will be empty);
+* `HTTP` code `400` (`Bad Request`), if the `:package_uuid` is mal-formed;
+* `HTTP` code `404` (`Not Found`), if the package is not found.
 
 ## Database
 
