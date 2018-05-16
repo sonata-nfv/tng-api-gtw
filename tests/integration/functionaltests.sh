@@ -61,7 +61,7 @@ if [ -z "$PACKAGE_PROCESS_UUID" ]; then
   exit 1
 fi
 echo "    ...successfuly!"
-TIMES_TO_RUN=5
+TIMES_TO_RUN=50
 while [ $TIMES_TO_RUN -ne 0 ]
 do
   TIMES_TO_RUN=$((TIMES_TO_RUN-1))
@@ -72,7 +72,7 @@ do
   echo "    PACKAGE_PROCESS_STATUS=$PACKAGE_PROCESS_STATUS"
   if [ "$PACKAGE_PROCESS_STATUS" == "running" ]; then
     echo "Package file $FIXTURES_FOLDER/$TEST_PACKAGE_FILE processing still running..."
-    sleep 5
+    sleep 10
     continue
   fi
   if [ "$PACKAGE_PROCESS_STATUS" == "failed" ]; then
