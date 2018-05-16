@@ -61,31 +61,33 @@ if [ -z "$PACKAGE_PROCESS_UUID" ]; then
   exit 1
 fi
 echo "    ...successfuly!"
-TIMES_TO_RUN=50
+TIMES_TO_RUN=20
 while [ $TIMES_TO_RUN -ne 0 ]
 do
   TIMES_TO_RUN=$((TIMES_TO_RUN-1))
   echo "Getting package status..."
   PACKAGE_PROCESS_DATA=$(curl -qfsS "$PACKAGES_PRE_INTEGRATION_URL/status/$PACKAGE_PROCESS_UUID")
   echo "    PACKAGE_PROCESS_DATA=$PACKAGE_PROCESS_DATA"
-  PACKAGE_PROCESS_STATUS=$(echo $PACKAGE_PROCESS_DATA | jq -r '.status')
-  echo "    PACKAGE_PROCESS_STATUS=$PACKAGE_PROCESS_STATUS"
-  if [ "$PACKAGE_PROCESS_STATUS" == "running" ]; then
+  PACKAGE_PROCESS_STATUS_HEAD=$(echo $PACKAGE_PROCESS_DATA | jq -r '.status')
+  PACKAGE_PROCESS_STATUS_TAIL=$(echo $PACKAGE_PROCESS_DATA | jq -r '.package_process_status')
+  echo "    PACKAGE_PROCESS_STATUS_HEAD=$PACKAGE_PROCESS_STATUS_HEAD"
+  echo "    PACKAGE_PROCESS_STATUS_TAIL=$PACKAGE_PROCESS_STATUS_TAIL"
+  if [ "$PACKAGE_PROCESS_STATUS_HEAD" == "running" ] || [ "$PACKAGE_PROCESS_STATUS_TAIL" == "running" ]; then
     echo "Package file $FIXTURES_FOLDER/$TEST_PACKAGE_FILE processing still running..."
     sleep 10
     continue
   fi
-  if [ "$PACKAGE_PROCESS_STATUS" == "failed" ]; then
+  if [ "$PACKAGE_PROCESS_STATUS_HEAD" == "failed" ] || [ "$PACKAGE_PROCESS_STATUS_TAIL" == "failed" ]; then
     ERROR=$(echo $PACKAGE_PROCESS_DATA | jq -r '.package_metadata.error')
     echo "Package file $FIXTURES_FOLDER/$TEST_PACKAGE_FILE processing failled with error '$ERROR'"
     exit 1
   fi
-  if [ $PACKAGE_PROCESS_STATUS == "success" ]; then 
+  if [ $PACKAGE_PROCESS_STATUS_HEAD == "success" ] || [ "$PACKAGE_PROCESS_STATUS_TAIL" == "success" ]; then 
     break
   fi
 done
 echo "    PACKAGE_PROCESS_STATUS=$PACKAGE_PROCESS_STATUS"
-if [ "$PACKAGE_PROCESS_STATUS" != "success" ]; then
+if [ "$PACKAGE_PROCESS_STATUS_HEAD" != "success" ] && [ "$PACKAGE_PROCESS_STATUS_TAIL" != "success" ]; then
   echo "Package file $FIXTURES_FOLDER/$TEST_PACKAGE_FILE processing failled with $PACKAGE_PROCESS_DATA"
   exit 1
 fi
