@@ -68,10 +68,10 @@ do
   echo "Getting package status..."
   PACKAGE_PROCESS_DATA=$(curl -qfsS "$PACKAGES_PRE_INTEGRATION_URL/status/$PACKAGE_PROCESS_UUID")
   echo "    PACKAGE_PROCESS_DATA=$PACKAGE_PROCESS_DATA"
-  PACKAGE_PROCESS_STATUS=$(echo $PACKAGE_PROCESS_DATA | jq -r '.package_process_status')
+  PACKAGE_PROCESS_STATUS=$(echo $PACKAGE_PROCESS_DATA | jq -r '.status')
   echo "    PACKAGE_PROCESS_STATUS=$PACKAGE_PROCESS_STATUS"
   if [ "$PACKAGE_PROCESS_STATUS" == "running" ]; then
-    echo "Package file $FIXTURES_FOLDER/$TEST_PACKAGE_FILE processing failled with $PACKAGE_PROCESS_DATA"
+    echo "Package file $FIXTURES_FOLDER/$TEST_PACKAGE_FILE processing still running..."
     sleep 5
     continue
   fi
