@@ -64,7 +64,7 @@ echo "    ...successfuly!"
 TIMES_TO_RUN=5
 while [ $TIMES_TO_RUN -ne 0 ]
 do
-  ((TIMES_TO_RUN--))
+  TIMES_TO_RUN=$((TIMES_TO_RUN-1))
   echo "Getting package status..."
   PACKAGE_PROCESS_DATA=$(curl -qfsS "$PACKAGES_PRE_INTEGRATION_URL/status/$PACKAGE_PROCESS_UUID")
   echo "    PACKAGE_PROCESS_DATA=$PACKAGE_PROCESS_DATA"
