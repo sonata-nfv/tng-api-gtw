@@ -37,6 +37,7 @@ FIXTURES_FOLDER="./tests/integration/fixtures"
 TEST_PACKAGE_FILE="5gtango-ns-package-example.tgo"
 PRE_INTEGRATION_URL="http://pre-int-sp-ath.5gtango.eu:32002/api/v3"
 PACKAGES_PRE_INTEGRATION_URL="$PRE_INTEGRATION_URL/packages"
+echo "==================="
 
 # Test package file presence
 echo "Testing package file presence..."
@@ -61,34 +62,40 @@ if [ -z "$PACKAGE_PROCESS_UUID" ]; then
   exit 1
 fi
 echo "    ...successfuly!"
-TIMES_TO_RUN=20
-while [ $TIMES_TO_RUN -ne 0 ]
-do
+MAX_TIMES_TO_RUN=20
+TIMES_TO_RUN=$MAX_TIMES_TO_RUN
+echo "Getting package status..."
+while true; do
+  echo "    Run #$TIMES_TO_RUN"
+  if [ $TIMES_TO_RUN == 0 ]; then
+    break
+  fi
+  # && [[ ! ${PACKAGE_PROCESS_STATUS_HEAD:+1} ]]
   TIMES_TO_RUN=$((TIMES_TO_RUN-1))
-  echo "Getting package status..."
   PACKAGE_PROCESS_DATA=$(curl -qfsS "$PACKAGES_PRE_INTEGRATION_URL/status/$PACKAGE_PROCESS_UUID")
   echo "    PACKAGE_PROCESS_DATA=$PACKAGE_PROCESS_DATA"
-  PACKAGE_PROCESS_STATUS_HEAD=$(echo $PACKAGE_PROCESS_DATA | jq -r '.status')
-  PACKAGE_PROCESS_STATUS_TAIL=$(echo $PACKAGE_PROCESS_DATA | jq -r '.package_process_status')
-  echo "    PACKAGE_PROCESS_STATUS_HEAD=$PACKAGE_PROCESS_STATUS_HEAD"
-  echo "    PACKAGE_PROCESS_STATUS_TAIL=$PACKAGE_PROCESS_STATUS_TAIL"
-  if [ "$PACKAGE_PROCESS_STATUS_HEAD" == "running" ] || [ "$PACKAGE_PROCESS_STATUS_TAIL" == "running" ]; then
-    echo "Package file $FIXTURES_FOLDER/$TEST_PACKAGE_FILE processing still running..."
-    sleep 10
-    continue
-  fi
-  if [ "$PACKAGE_PROCESS_STATUS_HEAD" == "failed" ] || [ "$PACKAGE_PROCESS_STATUS_TAIL" == "failed" ]; then
-    ERROR=$(echo $PACKAGE_PROCESS_DATA | jq -r '.package_metadata.error')
-    echo "Package file $FIXTURES_FOLDER/$TEST_PACKAGE_FILE processing failled with error '$ERROR'"
-    exit 1
-  fi
-  if [ $PACKAGE_PROCESS_STATUS_HEAD == "success" ] || [ "$PACKAGE_PROCESS_STATUS_TAIL" == "success" ]; then 
+  PACKAGE_PROCESS_STATUS_HEAD=$(echo $PACKAGE_PROCESS_DATA | jq '.status')
+  if [ "$PACKAGE_PROCESS_STATUS_HEAD" != "null" ]; then
+    echo "    PACKAGE_PROCESS_STATUS_HEAD=$PACKAGE_PROCESS_STATUS_HEAD"
+    if [ "$PACKAGE_PROCESS_STATUS_HEAD" == "running" ]; then
+      echo "Package file $FIXTURES_FOLDER/$TEST_PACKAGE_FILE processing still running..."
+      sleep 10
+      continue
+    fi
+  else
+    echo "    PACKAGE_PROCESS_STATUS_HEAD not defined"
     break
   fi
 done
-echo "    PACKAGE_PROCESS_STATUS=$PACKAGE_PROCESS_STATUS"
-if [ "$PACKAGE_PROCESS_STATUS_HEAD" != "success" ] && [ "$PACKAGE_PROCESS_STATUS_TAIL" != "success" ]; then
-  echo "Package file $FIXTURES_FOLDER/$TEST_PACKAGE_FILE processing failled with $PACKAGE_PROCESS_DATA"
+if [ $TIMES_TO_RUN == 0 ]; then
+  echo "Package $FIXTURES_FOLDER/$TEST_PACKAGE_FILE processing failled to end after running $MAX_TIMES_TO_RUN times"
+  exit 1
+fi
+PACKAGE_PROCESS_STATUS_TAIL=$(echo $PACKAGE_PROCESS_DATA | jq -r '.package_process_status')
+echo "    PACKAGE_PROCESS_STATUS_TAIL=$PACKAGE_PROCESS_STATUS_TAIL"
+if [ "$PACKAGE_PROCESS_STATUS_TAIL" == "failed" ]; then
+  ERROR=$(echo $PACKAGE_PROCESS_DATA | jq -r '.package_metadata.error')
+  echo "Package file $FIXTURES_FOLDER/$TEST_PACKAGE_FILE processing failled with error '$ERROR'"
   exit 1
 fi
 echo "Getting package uuid..."
