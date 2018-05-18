@@ -1,6 +1,5 @@
 #!/bin/bash
 ## Copyright (c) 2015 SONATA-NFV, 2017 5GTANGO [, ANY ADDITIONAL AFFILIATION]
-
 ## ALL RIGHTS RESERVED.
 ##
 ## Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,27 +33,18 @@
 # encoding: utf-8
 #
 # This file holds the integration tests
-## Variables
-INTEGRATION_TESTS_FOLDER="./tests/integration"
-FIXTURES_FOLDER="$INTEGRATION_TESTS_FOLDER/fixtures"
-TEST_PACKAGE_FILE="5gtango-ns-package-example.tgo"
-PRE_INTEGRATION_URL="http://pre-int-sp-ath.5gtango.eu:32002/api/v3"
-PACKAGES_PRE_INTEGRATION_URL="$PRE_INTEGRATION_URL/packages"
-SERVICES_PRE_INTEGRATION_URL="$PRE_INTEGRATION_URL/services"
-echo "==================="
-
-# Test package file presence
-echo "Testing package file presence..."
-echo "PWD is $(pwd)"
-
-if  ! [ -e "$FIXTURES_FOLDER/$TEST_PACKAGE_FILE" ]
-then
-    echo "Test package file $TEST_PACKAGE_FILE not found in $FIXTURES_FOLDER folder"
-    exit 1
+echo "Deleting the package..."
+PACKAGE_META_DATA_CODE=$(curl -X DELETE --write-out %{http_code} --silent --output /dev/null "$PACKAGES_PRE_INTEGRATION_URL/$PACKAGE_UUID")
+echo "\tPACKAGE_META_DATA_CODE=$PACKAGE_META_DATA_CODE"
+if [ "$PACKAGE_META_DATA_CODE" != "204" ]; then
+  echo "Package file $FIXTURES_FOLDER/$TEST_PACKAGE_FILE meta-data delete failled with code $PACKAGE_META_DATA_CODE"
+  exit 1
 fi
-echo "    ...done!"
-
-. $INTEGRATION_TESTS_FOLDER/upload_package.sh
-. $INTEGRATION_TESTS_FOLDER/download_package.sh
-. $INTEGRATION_TESTS_FOLDER/download_service.sh
-. $INTEGRATION_TESTS_FOLDER/delete_package.sh
+echo "Verify that package has been deleted..."
+PACKAGE_META_DATA_CODE=$(curl --write-out %{http_code} --silent --output /dev/null "$PACKAGES_PRE_INTEGRATION_URL/$PACKAGE_UUID")
+echo "    PACKAGE_META_DATA_CODE=$PACKAGE_META_DATA_CODE"
+if [ "$PACKAGE_META_DATA_CODE" != "404" ]; then
+  echo "Package file $FIXTURES_FOLDER/$TEST_PACKAGE_FILE meta-data delete failled with code $PACKAGE_META_DATA_CODE"
+  exit 1
+fi
+echo "    ...SUCCESS deleting package!"
