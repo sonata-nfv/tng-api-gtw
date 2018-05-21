@@ -40,6 +40,10 @@ if [ "$PACKAGE_META_DATA_CODE" != "200" ]; then
   echo "Package file $FIXTURES_FOLDER/$TEST_PACKAGE_FILE meta-data download failled with code $PACKAGE_META_DATA_CODE"
   exit 1
 fi
-echo "Getting package file..."
-echo "    ...not done yet!"
+echo "Getting the package file..."
+PACKAGE_FILE_UUID=$(curl "$PACKAGES_PRE_INTEGRATION_URL/$PACKAGE_UUID" | jq -r '.package_file_id')
+echo "    PACKAGE_FILE_UUID=$PACKAGE_FILE_UUID"
+PACKAGE_FILE=$(curl "$PACKAGES_PRE_INTEGRATION_URL/$PACKAGE_UUID/package-file/$PACKAGE_FILE_UUID")
+echo "    PACKAGE_FILE=$PACKAGE_FILE"
+diff "$FIXTURES_FOLDER/$TEST_PACKAGE_FILE" $PACKAGE_FILE
 echo "    ...SUCCESS downloading package!"
