@@ -122,6 +122,7 @@ class UpstreamFinder
     #longest_path = possible_paths.max_by(&:length)
     #return nil if longest_path.nil?
     #@paths[longest_path.to_sym]
+    return nil if possible_paths.empty?
     possible_paths.first
   end
   
