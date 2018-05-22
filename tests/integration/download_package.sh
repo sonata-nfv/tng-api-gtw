@@ -41,10 +41,13 @@ if [ "$PACKAGE_META_DATA_CODE" != "200" ]; then
   exit 1
 fi
 echo "Getting the package file..."
-#PACKAGE_FILE_UUID=$(curl "$PACKAGES_PRE_INTEGRATION_URL/$PACKAGE_UUID" | jq -r '.package_file_id')
-#echo "    PACKAGE_FILE_UUID=$PACKAGE_FILE_UUID"
-#PACKAGE_FILE=$(curl "$PACKAGES_PRE_INTEGRATION_URL/$PACKAGE_UUID/package-file/$PACKAGE_FILE_UUID")
-PACKAGE_FILE=$(curl "$PACKAGES_PRE_INTEGRATION_URL/$PACKAGE_UUID/package-file")
+PACKAGE_FILE_DATA=$(curl -s "$PACKAGES_PRE_INTEGRATION_URL/$PACKAGE_UUID")
+PACKAGE_FILE_UUID=$(echo $PACKAGE_FILE_DATA | jq -r '.package_file_id')
+PACKAGE_FILE_NAME=$(echo $PACKAGE_FILE_DATA | jq -r '.package_file_name')
+echo "    There's a file named '$PACKAGE_FILE_NAME' (UUID $PACKAGE_FILE_UUID)"
+echo "    Calling $PACKAGES_PRE_INTEGRATION_URL/$PACKAGE_UUID/package-file"
+PACKAGE_FILE=$(curl -s "$PACKAGES_PRE_INTEGRATION_URL/$PACKAGE_UUID/package-file")
 echo "    PACKAGE_FILE=$PACKAGE_FILE"
 diff "$FIXTURES_FOLDER/$TEST_PACKAGE_FILE" $PACKAGE_FILE
+exit 1
 echo "    ...SUCCESS downloading package!"

@@ -34,7 +34,7 @@
 #
 # This file holds the integration tests
 echo "Dowloading all services..."
-AVAILABLE_SERVICES=$(curl "$SERVICES_PRE_INTEGRATION_URL")
+AVAILABLE_SERVICES=$(curl -s "$SERVICES_PRE_INTEGRATION_URL")
 echo "    AVAILABLE_SERVICES=$AVAILABLE_SERVICES"
 if [ "$AVAILABLE_SERVICES" == "[]" ]; then
   echo "There are no services available in the Catalogue"

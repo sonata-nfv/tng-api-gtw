@@ -35,7 +35,7 @@
 # This file holds the integration tests
 echo "Deleting the package..."
 PACKAGE_META_DATA_CODE=$(curl -X DELETE --write-out %{http_code} --silent --output /dev/null "$PACKAGES_PRE_INTEGRATION_URL/$PACKAGE_UUID")
-echo "\tPACKAGE_META_DATA_CODE=$PACKAGE_META_DATA_CODE"
+echo "    PACKAGE_META_DATA_CODE=$PACKAGE_META_DATA_CODE"
 if [ "$PACKAGE_META_DATA_CODE" != "204" ]; then
   echo "Package file $FIXTURES_FOLDER/$TEST_PACKAGE_FILE meta-data delete failled with code $PACKAGE_META_DATA_CODE"
   exit 1
