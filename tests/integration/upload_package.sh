@@ -47,7 +47,8 @@ MAX_TIMES_TO_RUN=20
 TIMES_TO_RUN=$MAX_TIMES_TO_RUN
 echo "Getting package status..."
 while true; do
-  echo "    Run #($MAX_TIMES_TO_RUN-$TIMES_TO_RUN)"
+  let RUN=$MAX_TIMES_TO_RUN-$TIMES_TO_RUN
+  echo "    Run #$RUN"
   if [ $TIMES_TO_RUN == 0 ]; then
     break
   fi
