@@ -37,9 +37,9 @@ RSpec.describe Getter do
   let(:middleware) { Getter.new(app) }
   it "processes GET requests" do
     allow(Rack::NullLogger).to receive(:info)
-    allow(Rack::NullLogger).to receive(:debug)
+    allow(Rack::NullLogger).to receive(:debug) # 'Content-Type'=>'application/json', 
     stub_request(:get, "http://example.com/").
-      with(headers: {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'User-Agent'=>'Faraday v0.14.0'}).
+      with(headers: {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Faraday v0.14.0'}).
       to_return(status: 200, body: "", headers: {})
     code, env = middleware.call env_for('http://example.com', request_method: 'GET', '5gtango.sink_path'=>'http://example.com')
     
