@@ -33,6 +33,7 @@
 # encoding: utf-8
 require 'rack'
 require 'faraday'
+#require 'net/http'    
 
 class Getter
   include Utils
@@ -62,7 +63,7 @@ class Getter
 
     begin
       # Still need to choose which headers should passed
-      response = connection.get(env['5gtango.sink_path'], params, {'Content-Type' => 'application/json'}) # compacted_env)
+      response = connection.get(env['5gtango.sink_path'], params, {'Content-Type' => request.content_type}) # compacted_env)
       env['5gtango.logger'].debug(msg) {"Response was #{response.status}, #{response.headers}, #{response.body}"}
       return respond(response.status, response.headers, response.body)
     rescue Faraday::Error::ConnectionFailed => e
@@ -71,6 +72,28 @@ class Getter
     end
   end
 end
+=begin
+response = Rack::Response.new
+file = open(path_to_binary_file, "rb")
+# other stuff…
+mime = Mime.mime_type(::File.extname(file.path), 'text/html')
+response.headers.merge!( "Content-Type" => mime ) if mime
+response.write file
+response.finish
+
+require 'net/http'    
+
+uri = URI("http://www.ruby-lang.org")
+req = Net::HTTP::Get.new(uri)
+req['some_header'] = "some_val"
+
+res = Net::HTTP.start(uri.hostname, uri.port) {|http|
+  http.request(req)
+}
+
+puts res.body
+
+=end
 # Faraday exceptions:
 #StandardError
 #  Faraday::Error
