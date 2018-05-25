@@ -57,4 +57,4 @@ echo "    ...done!"
 . $INTEGRATION_TESTS_FOLDER/upload_package.sh
 . $INTEGRATION_TESTS_FOLDER/download_package.sh
 . $INTEGRATION_TESTS_FOLDER/download_service.sh
-#. $INTEGRATION_TESTS_FOLDER/delete_package.sh
+. $INTEGRATION_TESTS_FOLDER/delete_package.sh
