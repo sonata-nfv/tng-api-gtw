@@ -6,11 +6,6 @@
 # 5GTANGO API Gateway
 This is the 5GTANGO API Gateway for the Verification&amp;Validation and Service Platforms (built on top of [SONATA](https://github.com/sonata-nfv)) repository.
 
-# Name of the project
-> Additional information or tag line
-
-A brief description of your project, what it is used for.
-
 ## Installing / Getting started
 
 A quick introduction of the minimal setup you need to get a hello world up &
