@@ -54,7 +54,12 @@ class UpstreamFinder
     env['5gtango.logger'] = @logger if env['5gtango.logger'].to_s.empty?
     @logger.info(msg) {"Called"}
     @logger.debug(msg) {"Env=#{env}"}
-    env['5gtango.sink_path'] = build_path(Rack::Request.new(env))
+    begin
+      env['5gtango.sink_path'] = build_path(Rack::Request.new(env))
+    rescue Exception => e
+      @logger.error(e.message)
+      respond( 404, {'content-type' => 'application/json'}, [e.message])
+    end
     @logger.debug(msg) {"path built: #{env['5gtango.sink_path']}"}
     status, headers, body = @app.call(env)
     @logger.debug(msg) {"Finishing with status #{status}"}
@@ -75,11 +80,11 @@ class UpstreamFinder
     simple_path = request.path
     simple_path.slice!(@base_path) unless @base_path == ''
     router_path = find_router_path(request.path)
-    return bad_request("Error finding #{request.request_method}") if router_path.nil?
+    raise Exception.new("Error finding #{request.request_method}")) if router_path.nil?
     @logger.debug(msg) {"router_path: #{router_path}"}
     @paths[router_path][:verbs] = [ 'get' ] unless @paths[router_path].key?(:verbs)
     
-    not_found("#{request.request_method} is not supported by #{@paths[router_path][:site]}, only #{@paths[router_path][:verbs].join(', ')}") unless method_ok?(@paths[router_path][:verbs], request.request_method)
+    raise Exception.new("#{request.request_method} is not supported by #{@paths[router_path][:site]}, only #{@paths[router_path][:verbs].join(', ')}") unless method_ok?(@paths[router_path][:verbs], request.request_method)
     #forbidden("#{request.request_method}ing into #{path[:site]} needs authentication") unless authenticated?(path, env)
     
     # "/api/v3/packages(/?|/*)" =>  ["/api/v3/packages/", "/api/v3/packages", "/api/v3/packages/{+splat}"]
