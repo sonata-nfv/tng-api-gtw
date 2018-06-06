@@ -44,6 +44,9 @@ paths:
     site: http://tng-gtk-common:5000/services
   /api/v3/functions(/?|/*):
     site: http://tng-gtk-common:5000/functions
+  /api/v3/requests(/?|/*):
+    site: http://tng-gtk-sp:5000/requests
+    verbs: [ get, post ]
   /api/v3/records(/?|/*):
     site: http://tng-gtk-common:5000/records #http://tng-rep:4012/records
   /api/nst/v1/descriptors(/?|/*):
@@ -54,5 +57,5 @@ paths:
     verbs: [ get, post, delete ]
   /policies(/?|/*):
     site: http://tng-policy-mngr:8081
-  /slas(/?|/*):
+  /sla-templates(/?|/*):
     site: http://tng-sla-mgmt:8080
