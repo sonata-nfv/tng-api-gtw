@@ -59,6 +59,7 @@ class UpstreamFinder
     rescue Exception => e
       @logger.error(e.message)
       return respond( 404, {'content-type' => 'application/json'}, e.message)
+      
     end
     @logger.debug(msg) {"path built: #{env['5gtango.sink_path']}"}
     status, headers, body = @app.call(env)
