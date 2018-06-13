@@ -49,13 +49,18 @@ paths:
     verbs: [ get, post ]
   /api/v3/records(/?|/*):
     site: http://tng-gtk-common:5000/records #http://tng-rep:4012/records
+  /api/v3/slices(/?|/*):
+    site: http://tng-slice-mngr:5998/api/nst/v1/descriptors
+    verbs: [ get, post, delete ]
   /api/nst/v1/descriptors(/?|/*):
     site: http://tng-slice-mngr:5998/api/nst/v1/descriptors
     verbs: [ get, post, delete ]
   /api/v3/slices(/?|/*):
     site: http://tng-slice-mngr:5998/api/nsilcm/v1/nsi
     verbs: [ get, post, delete ]
-  /policies(/?|/*):
-    site: http://tng-policy-mngr:8081
+  /api/v3/policies(/?|/*):
+    site: http://tng-policy-mngr:8081/api/policymngr/v1/policy-descriptor
+    verbs: [ get, post, delete ]
+  # /api/policymngr/v1/policy-descriptor
   /sla-templates(/?|/*):
     site: http://tng-sla-mgmt:8080
