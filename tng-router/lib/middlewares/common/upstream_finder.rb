@@ -81,7 +81,7 @@ class UpstreamFinder
     simple_path = request.path
     simple_path.slice!(@base_path) unless @base_path == ''
     router_path = find_router_path(request.path)
-    raise Exception.new("Error finding #{request.request_method}") if router_path.nil?
+    raise Exception.new("Error finding #{request.request_method} for #{request.path}") if router_path.nil?
     @logger.debug(msg) {"router_path: #{router_path}"}
     @paths[router_path][:verbs] = [ 'get' ] unless @paths[router_path].key?(:verbs)
     
