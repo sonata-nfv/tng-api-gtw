@@ -43,7 +43,7 @@ paths:
   /api/v3/services(/?|/*):
     site: http://tng-gtk-common:5000/services
   /api/v3/functions(/?|/*):
-    site: http://tng-gtk-common:5000/functions
+    site: http://tng-gtk-sp:5000/functions
   /api/v3/requests(/?|/*):
     site: http://tng-gtk-sp:5000/requests
     verbs: [ get, post ]
