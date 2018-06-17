@@ -12,7 +12,7 @@ Please see [details on the overall 5GTANGO architecture here](https://5gtango.eu
 
 This component has the follwoing architecture:
 
-<p align="center"><img src="https://github.com/sonata-nfv/tng-api-gtw/images/api_gtw.png" /></p>
+<p align="center"><img src="https://github.com/sonata-nfv/tng-api-gtw/images/wiki/api_gtw.png" /></p>
 
 A quick introduction of the minimal setup you need to get a hello world up &
 running.
