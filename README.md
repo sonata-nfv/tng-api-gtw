@@ -8,14 +8,24 @@ This is the 5GTANGO API Gateway for the Verification&amp;Validation and Service 
 
 Please see [details on the overall 5GTANGO architecture here](https://5gtango.eu/project-outcomes/deliverables/2-uncategorised/31-d2-2-architecture-design.html). 
 
-## Architecture
+## How does this work?
 
 This component has the follwoing architecture:
 
 <p align="center"><img src="https://github.com/sonata-nfv/tng-api-gtw/wiki/images/api_gtw.png" /></p>
 
-A quick introduction of the minimal setup you need to get a hello world up &
-running.
+All external requests enter the [security gateway](https://github.com/sonata-nfv/tng-api-gtw/tree/master/tng-sec-gtw), where they are redirected to the adequate port and to the [router](https://github.com/sonata-nfv/tng-api-gtw/tree/master/tng-router) component, where the request is delivered to the pre-defined component.
+
+For further details on these components, please check those component's README files.
+
+Other components are the following:
+
+* [tng-common](https://github.com/sonata-nfv/tng-gtk-common/);
+* [tng-gtk-sp](https://github.com/sonata-nfv/tng-gtk-sp);
+* [tng-gtk-vnv](https://github.com/sonata-nfv/tng-gtk-vnv);
+* [tng-policy-mngr](https://github.com/sonata-nfv/tng-policy-mngr);
+* [tng-sla-mgmt](https://github.com/sonata-nfv/tng-sla-mgmt);
+* [tng-slice-mngr](https://github.com/sonata-nfv/tng-slice-mngr);
 
 ```shell
 commands here
