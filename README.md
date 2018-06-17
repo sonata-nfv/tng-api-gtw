@@ -8,7 +8,11 @@ This is the 5GTANGO API Gateway for the Verification&amp;Validation and Service 
 
 Please see [details on the overall 5GTANGO architecture here](https://5gtango.eu/project-outcomes/deliverables/2-uncategorised/31-d2-2-architecture-design.html). 
 
-## Installing / Getting started
+## Architecture
+
+This component has the follwoing architecture:
+
+<p align="center"><img src="https://github.com/sonata-nfv/tng-api-gtw/images/api_gtw.png" /></p>
 
 A quick introduction of the minimal setup you need to get a hello world up &
 running.
