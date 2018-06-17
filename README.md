@@ -1,5 +1,5 @@
 [![Build Status](https://jenkins.sonata-nfv.eu/buildStatus/icon?job=tng-api-gtw/master)](https://jenkins.sonata-nfv.eu/job/tng-api-gtw/master)
-[![Join the chat at https://gitter.im/5gtango/tango-schema](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/5gtango/tango-schema)
+[![Join the chat at https://gitter.im/5gtango/tango-schema](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/5gtango/5gtango-sp)
 
 <p align="center"><img src="https://github.com/sonata-nfv/tng-api-gtw/wiki/images/sonata-5gtango-logo-500px.png" /></p>
 
@@ -12,7 +12,7 @@ Please see [details on the overall 5GTANGO architecture here](https://5gtango.eu
 
 This component has the follwoing architecture:
 
-<p align="center"><img src="https://github.com/sonata-nfv/tng-api-gtw/images/wiki/api_gtw.png" /></p>
+<p align="center"><img src="https://github.com/sonata-nfv/tng-api-gtw/wiki/images/api_gtw.png" /></p>
 
 A quick introduction of the minimal setup you need to get a hello world up &
 running.
