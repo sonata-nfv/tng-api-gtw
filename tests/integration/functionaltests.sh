@@ -41,6 +41,8 @@ TEST_PACKAGE_FILE="5gtango-ns-package-example.tgo"
 PRE_INTEGRATION_URL="http://pre-int-sp-ath.5gtango.eu:32002/api/v3"
 PACKAGES_PRE_INTEGRATION_URL="$PRE_INTEGRATION_URL/packages"
 SERVICES_PRE_INTEGRATION_URL="$PRE_INTEGRATION_URL/services"
+FUNCTIONS_PRE_INTEGRATION_URL="$PRE_INTEGRATION_URL/functions"
+REQUESTS_PRE_INTEGRATION_URL="$PRE_INTEGRATION_URL/requests"
 echo "==================="
 
 # Test package file presence
@@ -57,4 +59,6 @@ echo "    ...done!"
 . $INTEGRATION_TESTS_FOLDER/upload_package.sh
 . $INTEGRATION_TESTS_FOLDER/download_package.sh
 . $INTEGRATION_TESTS_FOLDER/download_service.sh
+. $INTEGRATION_TESTS_FOLDER/download_function.sh
+#. $INTEGRATION_TESTS_FOLDER/instantiate_service.sh
 . $INTEGRATION_TESTS_FOLDER/delete_package.sh

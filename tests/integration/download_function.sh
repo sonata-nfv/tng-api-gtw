@@ -33,21 +33,21 @@
 # encoding: utf-8
 #
 # This file holds the integration tests
-echo "Dowloading all services..."
-AVAILABLE_SERVICES=$(curl -s "$SERVICES_PRE_INTEGRATION_URL")
-echo "    AVAILABLE_SERVICES=$AVAILABLE_SERVICES"
-if [ "$AVAILABLE_SERVICES" == "[]" ]; then
-  echo "There are no services available in the Catalogue"
+echo "Dowloading all functions..."
+AVAILABLE_FUNCTIONS=$(curl -s "$FUNCTIONS_PRE_INTEGRATION_URL")
+echo "    AVAILABLE_FUNCTIONS=$AVAILABLE_FUNCTIONS"
+if [ "$AVAILABLE_FUNCTIONS" == "[]" ]; then
+  echo "There are no functions available in the Catalogue"
   exit 1
 fi
-FIRST_AVAILABLE_SERVICE=$(echo $AVAILABLE_SERVICES | jq '.[0]')
-echo "    FIRST_AVAILABLE_SERVICE=$FIRST_AVAILABLE_SERVICE"
-SERVICE_UUID=$(echo $FIRST_AVAILABLE_SERVICE | jq -r '.uuid')
-echo "    SERVICE_UUID=$SERVICE_UUID"
-SERVICE_META_DATA_CODE=$(curl --write-out %{http_code} --silent --output /dev/null "$SERVICES_PRE_INTEGRATION_URL/$SERVICE_UUID")
-echo "    SERVICE_META_DATA_CODE=$SERVICE_META_DATA_CODE"
-if [ "$SERVICE_META_DATA_CODE" != "200" ]; then
-  echo "Service $SERVICE_UUID meta-data query failled with code $SERVICE_META_DATA_CODE"
+FIRST_AVAILABLE_FUNCTION=$(echo $AVAILABLE_FUNCTIONS | jq '.[0]')
+echo "    FIRST_AVAILABLE_FUNCTION=$FIRST_AVAILABLE_FUNCTION"
+FUNCTION_UUID=$(echo $FIRST_AVAILABLE_FUNCTION | jq -r '.uuid')
+echo "    FUNCTION_UUID=$FUNCTION_UUID"
+FUNCTION_META_DATA_CODE=$(curl --write-out %{http_code} --silent --output /dev/null "$FUNCTIONS_PRE_INTEGRATION_URL/$FUNCTION_UUID")
+echo "    FUNCTION_META_DATA_CODE=$FUNCTION_META_DATA_CODE"
+if [ "$FUNCTION_META_DATA_CODE" != "200" ]; then
+  echo "Service $FUNCTION_UUID meta-data query failled with code $FUNCTION_META_DATA_CODE"
   exit 1
 fi
-echo "    ...SUCCESS downloading service!"
+echo "    ...SUCCESS downloading function!"
