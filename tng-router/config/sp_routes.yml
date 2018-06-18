@@ -62,6 +62,10 @@ paths:
     site: http://tng-policy-mngr:8081/api/policymngr/v1/policy-descriptor
     verbs: [ get, post, delete ]
   # /api/policymngr/v1/policy-descriptor
-  /api/v3/slas(/?|/*):
+  /api/v3/slas/templates(/?|/*):
     site: http://tng-sla-mgmt:8080/tng-sla-mgmt/api/slas/v1/templates
     verbs: [ get, post, delete ]
+  /api/v3/slas/configurations(/?|/*):
+    site: http://tng-sla-mgmt:8080/tng-sla-mgmt/api/slas/v1/mgmt
+    # only get is assumed for the moment
+    #verbs: [ get, post, delete ]
