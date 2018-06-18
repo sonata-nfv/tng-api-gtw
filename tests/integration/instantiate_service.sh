@@ -35,7 +35,7 @@
 # This file holds the integration tests
 echo "Testing service instantiation..."
 REQUEST_DATA="{'uuid':'$SERVICE_UUID'}"
-CREATION_RESPONSE=$(curl -qfsS -X POST $REQUESTS_PRE_INTEGRATION_URL -d '{"uuid":"$SERVICE_UUID"}')
+CREATION_RESPONSE=$(curl -qfsS -X POST $REQUESTS_PRE_INTEGRATION_URL -d '{"uuid":"'"$SERVICE_UUID"'"}')
 echo "    CREATION_RESPONSE=$CREATION_RESPONSE"
 REQUEST_ID=$(echo $CREATION_RESPONSE | jq -r '.id')
 echo "    REQUEST_ID=$REQUEST_ID"
