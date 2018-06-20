@@ -42,8 +42,10 @@ paths:
     verbs: [ get, post, delete ]
   /api/v3/services(/?|/*):
     site: http://tng-gtk-common:5000/services
+    verbs: [ get, options ]
   /api/v3/functions(/?|/*):
     site: http://tng-gtk-sp:5000/functions
+    verbs: [ get, options ]
   /api/v3/requests(/?|/*):
     site: http://tng-gtk-sp:5000/requests
     verbs: [ get, post ]
@@ -64,7 +66,7 @@ paths:
   # /api/policymngr/v1/policy-descriptor
   /api/v3/slas/templates(/?|/*):
     site: http://tng-sla-mgmt:8080/tng-sla-mgmt/api/slas/v1/templates
-    verbs: [ get, post, delete ]
+    verbs: [ get, post, delete, options ]
   /api/v3/slas/configurations(/?|/*):
     site: http://tng-sla-mgmt:8080/tng-sla-mgmt/api/slas/v1/mgmt
     # only get is assumed for the moment
