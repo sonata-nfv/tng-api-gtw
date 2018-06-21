@@ -57,6 +57,14 @@ then
 fi
 echo "    ...done!"
 
+# Some debugging, dump the status of the catalog
+echo "GET tng-cat functions:"
+curl -X GET -H "Content-type:application/x-yaml" $FUNCTIONS_PRE_INTEGRATION_URL
+echo "GET tng-cat services:"
+curl -X GET -H "Content-type:application/x-yaml" $SERVICES_PRE_INTEGRATION_URL
+echo "GET tng-cat packages:"
+curl -X GET -H "Content-type:application/x-yaml" $PACKAGES_PRE_INTEGRATION_URL
+
 . $INTEGRATION_TESTS_FOLDER/upload_package.sh
 . $INTEGRATION_TESTS_FOLDER/download_package.sh
 . $INTEGRATION_TESTS_FOLDER/download_service.sh
