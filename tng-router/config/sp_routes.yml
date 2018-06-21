@@ -48,7 +48,7 @@ paths:
     verbs: [ get, options ]
   /api/v3/requests(/?|/*):
     site: http://tng-gtk-sp:5000/requests
-    verbs: [ get, post ]
+    verbs: [ get, post, options ]
   /api/v3/records(/?|/*):
     site: http://tng-gtk-common:5000/records #http://tng-rep:4012/records
   /api/v3/slices(/?|/*):
