@@ -43,6 +43,7 @@ PACKAGES_PRE_INTEGRATION_URL="$PRE_INTEGRATION_URL/packages"
 SERVICES_PRE_INTEGRATION_URL="$PRE_INTEGRATION_URL/services"
 FUNCTIONS_PRE_INTEGRATION_URL="$PRE_INTEGRATION_URL/functions"
 REQUESTS_PRE_INTEGRATION_URL="$PRE_INTEGRATION_URL/requests"
+SLA_TEMPLATES_PRE_INTEGRATION_URL="$PRE_INTEGRATION_URL/slas/templates"
 echo "==================="
 
 # Test package file presence
@@ -60,5 +61,6 @@ echo "    ...done!"
 . $INTEGRATION_TESTS_FOLDER/download_package.sh
 . $INTEGRATION_TESTS_FOLDER/download_service.sh
 . $INTEGRATION_TESTS_FOLDER/download_function.sh
-. $INTEGRATION_TESTS_FOLDER/instantiate_service.sh
+#. $INTEGRATION_TESTS_FOLDER/create_sla_template.sh
+#. $INTEGRATION_TESTS_FOLDER/instantiate_service.sh
 . $INTEGRATION_TESTS_FOLDER/delete_package.sh
