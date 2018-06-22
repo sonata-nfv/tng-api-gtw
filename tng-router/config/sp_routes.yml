@@ -44,7 +44,7 @@ paths:
     site: http://tng-gtk-common:5000/services
     verbs: [ get, options ]
   /api/v3/functions(/?|/*):
-    site: http://tng-gtk-sp:5000/functions
+    site: http://tng-gtk-common:5000/functions
     verbs: [ get, options ]
   /api/v3/requests(/?|/*):
     site: http://tng-gtk-sp:5000/requests
