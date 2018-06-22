@@ -37,7 +37,7 @@
 ## Variables
 INTEGRATION_TESTS_FOLDER="./tests/integration"
 FIXTURES_FOLDER="$INTEGRATION_TESTS_FOLDER/fixtures"
-TEST_PACKAGE_FILE="5gtango-ns-package-example.tgo"
+TEST_PACKAGE_FILE="eu.5gtango.smoke-test-ns.0.1.tgo"
 PRE_INTEGRATION_URL="http://pre-int-sp-ath.5gtango.eu:32002/api/v3"
 PACKAGES_PRE_INTEGRATION_URL="$PRE_INTEGRATION_URL/packages"
 SERVICES_PRE_INTEGRATION_URL="$PRE_INTEGRATION_URL/services"
