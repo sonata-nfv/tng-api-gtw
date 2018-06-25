@@ -55,9 +55,6 @@ paths:
   /api/v3/records/functions(/?|/*):
     site: http://tng-gtk-common:5000/records/functions
     verbs: [ get, options ]
-#  /api/v3/records/test-results(/?|/*):
-#    site: http://tng-gtk-vnv:5000/test-results
-#    verbs: [ get, options ]
   /api/v3/slices(/?|/*):
     site: http://tng-slice-mngr:5998/api/nst/v1/descriptors
     verbs: [ get, post, delete ]
