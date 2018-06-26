@@ -51,14 +51,14 @@ class Uploader
         
     bad_request('No files to upload') unless req.form_data?
     name=random_string
-    tempfile = Tempfile.new(name, '/tmp')#, dirname)
+    tempfile = Tempfile.new(name, '/tmp')
     env['rack.input'].rewind
     tempfile.write env['rack.input'].read
     env['rack.input'].rewind
     post_req = Net::HTTP::Post.new(url)
-    post_stream = File.open(tempfile, 'rb') #env['rack.input'].read
+    post_stream = File.open(tempfile, 'rb')
     post_req.content_length = post_stream.size
-    env['5gtango.logger'].debug(msg) {"#{name} will contain #{env['rack.input'].read} (size #{post_stream.size})"}
+    env['5gtango.logger'].debug(msg) {"Tempfilename /tmp/#{name} will contain #{env['rack.input'].read} (size #{post_stream.size})"}
     post_req.content_type = env['CONTENT_TYPE'] #'multipart/form-data; boundary=' + boundary
     post_req.body_stream = post_stream
     resp = Net::HTTP.new(url.host, url.port).start {|http| http.request(post_req) }
