@@ -55,17 +55,20 @@ class Uploader
     env['rack.input'].rewind
     post_req.body_stream=env['rack.input'].read
     env['rack.input'].rewind
-      #post_stream = File.open(tempfile, 'rb')
-    post_req.content_length = post_req.body_stream.size #tempfile.size #post_stream.size
-    env['5gtango.logger'].debug(msg) {"Body will contain #{post_req.body_stream.size} bytes"} # #{tempfile.path} #{env['rack.input'].read} (size
-      #post_req.body_stream = body # env['rack.input'].read #post_stream
+    post_req = Net::HTTP::Post.new(url)
+    post_stream = File.open(tempfile, 'rb')
+    post_req.content_length = post_stream.size
+    env['5gtango.logger'].debug(msg) {"Tempfilename /tmp/#{name} will contain #{post_stream.size} bytes"}
+    post_req.content_type = env['CONTENT_TYPE'] #'multipart/form-data; boundary=' + boundary
+    post_req.body_stream = post_stream
+
     resp = Net::HTTP.new(url.host, url.port).start {|http| http.request(post_req) }
     respond(resp.code, {'Content-Type'=>'application/json'}, resp.body)
       #end
   end
   
-#  private
-#  def random_string
-#    (0...8).map { (65 + rand(26)).chr }.join
-#  end
+  private
+  def random_string
+    (0...8).map { (65 + rand(26)).chr }.join
+  end
 end
