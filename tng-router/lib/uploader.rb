@@ -58,7 +58,7 @@ class Uploader
     post_req = Net::HTTP::Post.new(url)
     post_stream = File.open(tempfile, 'rb')
     post_req.content_length = post_stream.size
-    env['5gtango.logger'].debug(msg) {"Tempfilename /tmp/#{name} will contain #{env['rack.input'].read} (size #{post_stream.size})"}
+    env['5gtango.logger'].debug(msg) {"Tempfilename /tmp/#{name} will contain #{post_stream.size} bytes"}
     post_req.content_type = env['CONTENT_TYPE'] #'multipart/form-data; boundary=' + boundary
     post_req.body_stream = post_stream
     resp = Net::HTTP.new(url.host, url.port).start {|http| http.request(post_req) }
@@ -70,53 +70,3 @@ class Uploader
     (0...8).map { (65 + rand(26)).chr }.join
   end
 end
-=begin
-require 'net/http/post/multipart'
-
-url = URI.parse('http://www.example.com/upload')
-File.open("./image.jpg") do |jpg|
-  req = Net::HTTP::Post::Multipart.new url.path,
-    "file" => UploadIO.new(jpg, "image/jpeg", "image.jpg")
-  res = Net::HTTP.start(url.host, url.port) do |http|
-    http.request(req)
-  end
-end
-
-To post multiple files or attachments, simply include multiple parameters with UploadIO values:
-
-require 'net/http/post/multipart'
-
-url = URI.parse('http://www.example.com/upload')
-req = Net::HTTP::Post::Multipart.new url.path,
-  "file1" => UploadIO.new(File.new("./image.jpg"), "image/jpeg", "image.jpg"),
-  "file2" => UploadIO.new(File.new("./image2.jpg"), "image/jpeg", "image2.jpg")
-res = Net::HTTP.start(url.host, url.port) do |http|
-  http.request(req)
-end
-
-    #if request.content_type =~ /multipart\/form-data/
-      #multipart = Rack::Multipart.parse_multipart env
-      #@logger.debug(msg) {"Multipart: #{multipart}"}
-      #file_info = multipart.values.find {|f| f.is_a? Hash and f.key? :tempfile }
-      #body = file_info[:tempfile].read
-      #connection = Faraday.new(url) do |conn|
-      #  conn.request :multipart
-      #  conn.adapter :net_http
-      #end
-      #begin
-      #  response = connection.post do |req|
-      #    req.headers['Content-Type'] = request.content_type
-      #    req.body = Faraday::UploadIO.new(body, request.content_type)
-      #  end
-      #rescue Faraday::Error::ConnectionFailed => e
-      #  $stderr.puts "The server at #{url} is either unavailable or is not currently accepting requests. Please try again in a few minutes."
-      #  return [500, env, ["No response by GETing #{url}"+ params == {} ? "" : " with params #{params}"]]
-      #curl = Curl::Easy.new(url)
-      #curl.multipart_form_post = true
-      #curl.http_post( Curl::PostField.file('package', file_path)) #Curl::PostField.content('source', 'embedded'), 
-      #@logger.debug(msg) {"curl.body_str=#{curl.body_str}"}
-      #response = {status: curl.response_code, headers: curl.headers, body: JSON.parse(curl.body_str)}
-      #file_info[:tempfile].close
-      #file_info[:tempfile].unlink
-
-=end
