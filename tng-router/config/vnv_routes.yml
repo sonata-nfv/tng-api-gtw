@@ -42,10 +42,10 @@ paths:
     verbs: [ get, post, delete ]
   /api/v3/services(/?|/*):
     site: http://tng-gtk-common:5000/services
-#    verbs: [ get, options ]
-#/api/v3/functions(/?|/*):
-#    site: http://tng-gtk-common:5000/functions
-#    verbs: [ get, options ]
-#  /api/v3/tests(/?|/*):
-#    site: http://tng-gtk-vnv:5000/
-#    verbs: [ get, options ]
+    verbs: [ get, options ]
+  /api/v3/functions(/?|/*):
+    site: http://tng-gtk-common:5000/functions
+    verbs: [ get, options ]
+  /api/v3/tests(/?|/*):
+    site: http://tng-gtk-vnv:5000/
+    verbs: [ get, options ]
