@@ -55,10 +55,10 @@ class Uploader
     env['rack.input'].rewind
     tempfile.write env['rack.input'].read
     env['rack.input'].rewind
-    env['5gtango.logger'].debug(msg) {"#{name} will contain #{env['rack.input'].read}"}
     post_req = Net::HTTP::Post.new(url)
     post_stream = File.open(tempfile, 'rb') #env['rack.input'].read
     post_req.content_length = post_stream.size
+    env['5gtango.logger'].debug(msg) {"#{name} will contain #{env['rack.input'].read} (size #{post_stream.size})"}
     post_req.content_type = env['CONTENT_TYPE'] #'multipart/form-data; boundary=' + boundary
     post_req.body_stream = post_stream
     resp = Net::HTTP.new(url.host, url.port).start {|http| http.request(post_req) }
