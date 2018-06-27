@@ -32,6 +32,7 @@
 # frozen_string_literal: true
 # encoding: utf-8
 require 'rack'
+require 'json'
 require 'faraday'
 require 'tempfile'
 require 'fileutils'
@@ -45,30 +46,34 @@ class Uploader
   def call(env)
     msg = self.class.name+'#'+__method__.to_s
     env['5gtango.logger'].info(msg) {"Called"}
-    url = URI.parse( env['5gtango.sink_path'] )
-    post_req = Net::HTTP::Post.new(url)
-    post_req.content_type = env['CONTENT_TYPE'] #'multipart/form-data; boundary=' + boundary
-    
     req = Rack::Request.new(env)
     bad_request('No files to upload') unless req.form_data?
-        
-    env['rack.input'].rewind
-    post_req.body_stream=env['rack.input'].read
-    env['rack.input'].rewind
-    post_req = Net::HTTP::Post.new(url)
-    post_stream = File.open(tempfile, 'rb')
-    post_req.content_length = post_stream.size
-    env['5gtango.logger'].debug(msg) {"Tempfilename /tmp/#{name} will contain #{post_stream.size} bytes"}
-    post_req.content_type = env['CONTENT_TYPE'] #'multipart/form-data; boundary=' + boundary
-    post_req.body_stream = post_stream
 
-    resp = Net::HTTP.new(url.host, url.port).start {|http| http.request(post_req) }
-    respond(resp.code, {'Content-Type'=>'application/json'}, resp.body)
-      #end
-  end
-  
-  private
-  def random_string
-    (0...8).map { (65 + rand(26)).chr }.join
+    Tempfile.open do |tempfile|
+      tempfile.binmode
+      tempfile.write env['rack.input'].read
+      tempfile.flush
+      env['5gtango.logger'].debug(msg) {"Tempfilename #{tempfile.path} will contain #{tempfile.size} bytes"}
+      tempfile.rewind
+      begin
+        env['5gtango.logger'].debug(msg) {"Calling #{env['5gtango.sink_path']}"}
+        conn = Faraday.new(url: env['5gtango.sink_path']) do |faraday|
+          faraday.request :multipart
+          #faraday.response :logger
+          faraday.adapter :net_http
+        end
+        resp = conn.post do |req|
+          req.headers['Content-Type'] = env['CONTENT_TYPE'] 
+          req.headers['Content-Length'] = tempfile.size.to_s
+          req.body = Faraday::UploadIO.new(tempfile, 'octet/stream')
+        end
+        return respond(200, {'Content-Type'=>'application/json'}, resp.body)
+      rescue => e
+        env['5gtango.logger'].debug(msg) {"Exception caught at POSTing body: #{e.message}\n#{e.backtrace.join("\n\t")}"}
+        return respond(400, {'Content-Type'=>'application/json'}, {error: "Exception caught at POSTing body: #{e.message}\n#{e.backtrace.join("\n\t")}"})
+      end
+    end
+    env['5gtango.logger'].debug(msg) {"A problem occurred with POSTing the body"}
+    respond(400, {'Content-Type'=>'application/json'}, {error: "A problem occurred with POSTing the body"}.to_json)
   end
 end
