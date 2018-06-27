@@ -46,6 +46,7 @@ class Uploader
   def call(env)
     msg = self.class.name+'#'+__method__.to_s
     env['5gtango.logger'].info(msg) {"Called"}
+
     req = Rack::Request.new(env)
     bad_request('No files to upload') unless req.form_data?
 
