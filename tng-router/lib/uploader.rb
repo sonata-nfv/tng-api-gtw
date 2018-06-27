@@ -47,12 +47,12 @@ class Uploader
     msg = self.class.name+'#'+__method__.to_s
     env['5gtango.logger'].info(msg) {"Called"}
 
-    req = Rack::Request.new(env)
-    bad_request('No files to upload') unless req.form_data?
+    request = Rack::Request.new(env)
+    bad_request('No files to upload') unless request.form_data?
 
     Tempfile.open do |tempfile|
       tempfile.binmode
-      tempfile.write env['rack.input'].read
+      tempfile.write request.body.read
       tempfile.flush
       env['5gtango.logger'].debug(msg) {"Tempfilename #{tempfile.path} will contain #{tempfile.size} bytes"}
       tempfile.rewind
@@ -64,8 +64,10 @@ class Uploader
           faraday.adapter :net_http
         end
         resp = conn.post do |req|
-          req.headers['Content-Type'] = env['CONTENT_TYPE'] 
+          req.headers['Content-Type'] = request.content_type
+          req.headers['Content-Encoding'] = 'gzip'
           req.headers['Content-Length'] = tempfile.size.to_s
+          req.headers['Accept'] = 'application/json'
           req.body = Faraday::UploadIO.new(tempfile, 'octet/stream')
         end
         return respond(200, {'Content-Type'=>'application/json'}, resp.body)
