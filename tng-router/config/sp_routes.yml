@@ -38,7 +38,7 @@ paths:
   /api/v3/pings(/?):
     site: http://tng-gtk-common:5000/pings
   /api/v3/packages(/?|/*):
-    site: http://tng-gtk-common:5000/packages
+    site: http://localhost:9293/packages
     verbs: [ get, post, delete ]
   /api/v3/services(/?|/*):
     site: http://tng-gtk-common:5000/services
@@ -65,7 +65,7 @@ paths:
     site: http://tng-slice-mngr:5998/api/nsilcm/v1/nsi
     verbs: [ get, post, delete ]
   /api/v3/policies(/?|/*):
-    site: http://tng-policy-mngr:8081/api/policymngr/v1/policy-descriptor
+    site: http://tng-policy-mngr:8081/api/v1
     verbs: [ get, post, delete ]
   # /api/policymngr/v1/policy-descriptor
   /api/v3/slas/templates(/?|/*):
