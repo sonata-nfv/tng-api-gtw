@@ -57,13 +57,13 @@ paths:
     verbs: [ get, options ]
   /api/v3/slices(/?|/*):
     site: http://tng-slice-mngr:5998/api/nst/v1/descriptors
-    verbs: [ get, post, delete, options ]
+    verbs: [ get, post, delete ]
   /api/nst/v1/descriptors(/?|/*):
     site: http://tng-slice-mngr:5998/api/nst/v1/descriptors
-    verbs: [ get, post, delete, options ]
+    verbs: [ get, post, delete ]
   /api/v3/slice-instances(/?|/*):
     site: http://tng-slice-mngr:5998/api/nsilcm/v1/nsi
-    verbs: [ get, post, delete, options ]
+    verbs: [ get, post, delete ]
   /api/v3/policies(/?|/*):
     site: http://tng-policy-mngr:8081/api/v1
     verbs: [ get, post, delete, options, put, patch ]
