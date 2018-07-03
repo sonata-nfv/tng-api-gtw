@@ -50,10 +50,10 @@ paths:
     site: http://tng-gtk-sp:5000/requests
     verbs: [ get, post, options ]
   /api/v3/records/services(/?|/*):
-    site: http://tng-gtk-common:5000/records/services
+    site: http://tng-gtk-sp:5000/records/services
     verbs: [ get, options ]
   /api/v3/records/functions(/?|/*):
-    site: http://tng-gtk-common:5000/records/functions
+    site: http://tng-gtk-sp:5000/records/functions
     verbs: [ get, options ]
   /api/v3/slices(/?|/*):
     site: http://tng-slice-mngr:5998/api/nst/v1/descriptors
