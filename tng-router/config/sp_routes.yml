@@ -77,3 +77,7 @@ paths:
   /api/v3/slas/agreements(/?|/*):
     site: http://tng-sla-mgmt:8080/tng-sla-mgmt/api/slas/v1/agreements
     verbs: [ get, options ]
+  /api/v3/slas/violations(/?|/*):
+    site: http://tng-sla-mgmt:8080/tng-sla-mgmt/api/slas/v1/violations
+    verbs: [ get, options ]
+    
