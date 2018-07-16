@@ -16,9 +16,7 @@ This component has the follwoing architecture:
 
 All external requests enter the [security gateway](https://github.com/sonata-nfv/tng-api-gtw/tree/master/tng-sec-gtw), where they are redirected to the adequate port and to the [router](https://github.com/sonata-nfv/tng-api-gtw/tree/master/tng-router) component, where the request is delivered to the pre-defined component.
 
-For further details on these components, please check those component's README files.
-
-Other components are the following:
+For further details on those components, please check their README files:
 
 * [tng-common](https://github.com/sonata-nfv/tng-gtk-common/);
 * [tng-gtk-sp](https://github.com/sonata-nfv/tng-gtk-sp);
@@ -26,6 +24,8 @@ Other components are the following:
 * [tng-policy-mngr](https://github.com/sonata-nfv/tng-policy-mngr);
 * [tng-sla-mgmt](https://github.com/sonata-nfv/tng-sla-mgmt);
 * [tng-slice-mngr](https://github.com/sonata-nfv/tng-slice-mngr);
+* [tng-vnv-lcm](https://github.com/sonata-nfv/tng-vnv-lcm);
+* [tng-vnv-tee](https://github.com/sonata-nfv/tng-vnv-tee);
 
 ```shell
 commands here
