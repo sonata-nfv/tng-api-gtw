@@ -8,6 +8,8 @@ This is the 5GTANGO API Router for the Verification&amp;Validation and Service P
 
 ## Installing / Getting started
 
+The 5GTANGO API Router is a routing micro-service that is part of the [tng-api-gtw](https://github.com/sonata-nfv/tng-api-gtw).
+
 A quick introduction of the minimal setup you need to get a hello world up &
 running.
 
