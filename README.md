@@ -16,22 +16,7 @@ This component has the follwoing architecture:
 
 All external requests enter the [security gateway](https://github.com/sonata-nfv/tng-api-gtw/tree/master/tng-sec-gtw), where they are redirected to the adequate port and to the [router](https://github.com/sonata-nfv/tng-api-gtw/tree/master/tng-router) component, where the request is delivered to the pre-defined component.
 
-For further details on those components, please check their README files:
-
-* [tng-common](https://github.com/sonata-nfv/tng-gtk-common/);
-* [tng-gtk-sp](https://github.com/sonata-nfv/tng-gtk-sp);
-* [tng-gtk-vnv](https://github.com/sonata-nfv/tng-gtk-vnv);
-* [tng-policy-mngr](https://github.com/sonata-nfv/tng-policy-mngr);
-* [tng-sla-mgmt](https://github.com/sonata-nfv/tng-sla-mgmt);
-* [tng-slice-mngr](https://github.com/sonata-nfv/tng-slice-mngr);
-* [tng-vnv-lcm](https://github.com/sonata-nfv/tng-vnv-lcm);
-* [tng-vnv-tee](https://github.com/sonata-nfv/tng-vnv-tee);
-
-```shell
-commands here
-```
-
-Here you should say what actually happens when you execute the code above.
+For further details on those components, please check their README files [here](https://github.com/sonata-nfv/tng-api-gtw/tree/master/tng-sec-gtw/README.md) and [here](https://github.com/sonata-nfv/tng-api-gtw/tree/master/tng-router/README.md).
 
 ## Developing
 
@@ -78,7 +63,7 @@ This component's configuration is done strictly through `ENV` variables.
 
 The following `ENV` variables must be defined:
 
-1. `PORT`, which sets the HTTP port to `5000`;
+1. `PORT`, which sets the HTTP port to (default) `5000`;
 1. `ROUTES_FILE`, which sets the name of the file defining active routes as `sp_routes.yml` (the default name, for the Service Platform; for the V&V Platform, the deployment defines this `ENV` variable as `vnv_routes.yml`).
 
 ## Tests
