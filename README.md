@@ -23,7 +23,7 @@ For further details on those components, please check their README files
 
 ## Versioning
 
-For the versions available, see the [link toreleases on this repository](/releases).
+For the versions available, see the [link to releases on this repository](/releases).
 
 ## Licensing
 
