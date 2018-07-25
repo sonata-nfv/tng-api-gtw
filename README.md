@@ -20,7 +20,7 @@ For further details on those components, please check their README files [here](
 
 ## Versioning
 
-We can maybe use [SemVer](http://semver.org/) for versioning. For the versions available, see the [link to tags on this repository](/tags).
+We can maybe use [SemVer](http://semver.org/) for versioning. For the versions available, see the [link toreleases on this repository](/releases).
 
 ## Licensing
 
