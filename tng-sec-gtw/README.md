@@ -41,7 +41,7 @@ With these commands, you:
 
 1. Create a `docker` network named `tango`;
 1. Run the [Portal](https://github.com/sonata-nfv/tng-portal) container within the `tango` network;
-1. Run the [Router](https://github.com/sonata-nfv/tng-sec-gtw/tree/master/tng-router) container within the `tango` network;
+1. Run the [Router](https://github.com/sonata-nfv/tng-api-gtw/tree/master/tng-router) container within the `tango` network;
 1. Run the [Security Gateway](https://github.com/sonata-nfv/tng-api-gtw/tree/master/tng-sec-gtw) container within the `tango` network.
 
 OPTIONS:
