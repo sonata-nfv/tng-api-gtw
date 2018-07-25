@@ -15,7 +15,7 @@ The tng-sec-gtw will enable a security layer for SONATA (powered by 5GTANGO) Ver
 
               +----------------+                +---------------+
      https    |                |     http       |               |
-   +---------^+  tng-api-gtw   +---------------->  tng-router   |
+   +---------^+  tng-sec-gtw   +---------------->  tng-router   |
               |                |        |       |               |
               +----------------+        |       +---------------+
                                         |
@@ -33,16 +33,16 @@ To use this module you can do it by this way:
 $ docker network create tango
 $ docker run -d -p 80:80 --net=tango --name tng-portal sonatanfv/tng-portal:4.0
 $ docker run -d -p 5000:5000 --net=tango --name tng-router sonatanfv/tng-router:4.0
-$ docker run -d -p 80:80 -p 443:443 -v /etc/ssl/private/sonata/:/etc/nginx/cert/ --net=tango --name tng-api-gtw \
+$ docker run -d -p 80:80 -p 443:443 -v /etc/ssl/private/sonata/:/etc/nginx/cert/ --net=tango --name tng-sec-gtw \
   -e ROUTES_FILE=sp_routes.yml \
-  sonatanfv/tng-api-gtw:4.0
+  sonatanfv/tng-sec-gtw:4.0
 ```
 With these commands, you:
 
 1. Create a `docker` network named `tango`;
 1. Run the [Portal](https://github.com/sonata-nfv/tng-portal) container within the `tango` network;
-1. Run the [Router](https://github.com/sonata-nfv/tng-sec-gtw/tng-router) container within the `tango` network;
-1. Run the [API Gateway](https://github.com/sonata-nfv/tng-sec-gtw/tng-api-gtw) container within the `tango` network.
+1. Run the [Router](https://github.com/sonata-nfv/tng-sec-gtw/tree/master/tng-router) container within the `tango` network;
+1. Run the [Security Gateway](https://github.com/sonata-nfv/tng-api-gtw/tree/master/tng-sec-gtw) container within the `tango` network.
 
 OPTIONS:
 * `--name`: Container name (Optional)
