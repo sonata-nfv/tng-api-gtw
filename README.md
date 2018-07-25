@@ -16,7 +16,10 @@ This component has the follwoing architecture:
 
 All external requests enter the [security gateway](https://github.com/sonata-nfv/tng-api-gtw/tree/master/tng-sec-gtw), where they are redirected to the adequate port and to the [router](https://github.com/sonata-nfv/tng-api-gtw/tree/master/tng-router) component, where the request is delivered to the pre-defined component.
 
-For further details on those components, please check their README files [here](https://github.com/sonata-nfv/tng-api-gtw/tree/master/tng-sec-gtw/README.md) and [here](https://github.com/sonata-nfv/tng-api-gtw/tree/master/tng-router/README.md).
+For further details on those components, please check their README files
+
+* [Security Gateway README](https://github.com/sonata-nfv/tng-api-gtw/tree/master/tng-sec-gtw/README.md);
+* [Router README](https://github.com/sonata-nfv/tng-api-gtw/tree/master/tng-router/README.md).
 
 ## Versioning
 
