@@ -286,5 +286,5 @@ Check [this gist](https://gist.github.com/jbonnet/1887b09327ac9b0ebfcb000e283d79
 
 ## Licensing
 
-This 5GTANGO component is published under Apache 2.0 license. Please see the [LICENSE](https://github.com/sonata-nfv/tng-gtk-vnv/blob/master/LICENSE) file for more details.
+This 5GTANGO component is published under Apache 2.0 license. Please see the [LICENSE](https://github.com/sonata-nfv/tng-api-gtw/blob/master/LICENSE) file for more details.
 
