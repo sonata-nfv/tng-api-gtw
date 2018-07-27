@@ -6,21 +6,17 @@
 # API Router
 This is the 5GTANGO Gatekeeper API Router for the Verification&amp;Validation and Service Platforms (built on top of [SONATA](https://github.com/sonata-nfv)) component.
 
-Please see [details on the overall 5GTANGO architecture here](https://5gtango.eu/project-outcomes/deliverables/2-uncategorised/31-d2-2-architecture-design.html). The Gatekeeper is the component highlighted in the following picture.
-
-<p align="center"><img src="https://github.com/sonata-nfv/tng-api-gtw/wiki/images/GKs_place_in_5GTANGO_architecture.png" /></p>
-
 ## Installing / Getting started
 
-This component is implemented in [ruby](https://www.ruby-lang.org/en/), version **2.4.3**, and is part of the [tng-api-gtw](https://github.com/sonata-nfv/tng-api-gtw).
+This component is a [rack](https://rack.github.io/) application implemented in [ruby](https://www.ruby-lang.org/en/), version **2.4.3**, and is part of the [tng-api-gtw](https://github.com/sonata-nfv/tng-api-gtw).
 
 ### Installing from code
 
 To have it up and running from code, please do the following:
 
 ```shell
-$ git clone https://github.com/sonata-nfv/tng-gtk-vnv.git # Clone this repository
-$ cd tng-gtk-vnv # Go to the newly created folder
+$ git clone https://github.com/sonata-nfv/tng-api-gtw.git # Clone the parent repository
+$ cd tng-api-gtw # Go to the newly created folder
 $ bundle install # Install dependencies
 $ PORT=5000 bundle exec rackup # dev server at http://localhost:5000
 ```
