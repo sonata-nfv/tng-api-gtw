@@ -62,7 +62,7 @@ pipeline {
             sh 'git clone https://github.com/sonata-nfv/tng-devops.git'
             dir(path: 'tng-devops') {
               sh 'ansible-playbook roles/sp.yml -i environments -e "target=sta-sp-v4.0  component=gatekeeper"'
-              sh 'ansible-playbook roles/vnv.yml -i environments -e "target=sta-sp-v4.0  component=gatekeeper"'
+              sh 'ansible-playbook roles/vnv.yml -i environments -e "target=sta-vnv-v4.0  component=gatekeeper"'
             }
           }
         }
