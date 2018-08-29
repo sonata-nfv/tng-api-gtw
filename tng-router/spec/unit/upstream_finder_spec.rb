@@ -76,25 +76,25 @@ RSpec.describe UpstreamFinder do
   
   context 'V&V Platform' do
     let(:paths)     {{
-      :"/api/v3/tests/plans(/?|/*)"=>{:site=>"http://tng-gtk-vnv:5000/tests/plans", :verbs=>["get", "post", "options"]}, 
-      :"/api/v3/tests(/?|/*)"=>{:site=>"http://tng-gtk-vnv:5000/tests", :verbs=>["get", "options"]}
+      :"/api/v3/tests/plans(/?|/*)"=>{:site=>"http://tng-gtk-vnv:5000/plans", :verbs=>["get", "post", "options"]}, 
+      :"/api/v3/tests(/?|/*)"=>{:site=>"http://tng-gtk-vnv:5000", :verbs=>["get", "options"]}
       }}
     let(:middleware) { described_class.new(app, base_path: base_path, paths: paths) }
     it 'is ok for POSTing /tests/plans' do
       env = env_for('http://example.com/api/v3/tests/plans', request_method: 'POST', '5gtango.logger'=> Logger.new(STDERR))
-      expect(middleware.build_path(Rack::Request.new(env))).to eq 'http://tng-gtk-vnv:5000/tests/plans'
+      expect(middleware.build_path(Rack::Request.new(env))).to eq 'http://tng-gtk-vnv:5000/plans'
     end
     it 'is ok for GETing /tests/plans' do
       env = env_for('http://example.com/api/v3/tests/plans', request_method: 'GET', '5gtango.logger'=> Logger.new(STDERR))
-      expect(middleware.build_path(Rack::Request.new(env))).to eq 'http://tng-gtk-vnv:5000/tests/plans'
+      expect(middleware.build_path(Rack::Request.new(env))).to eq 'http://tng-gtk-vnv:5000/plans'
     end
-    it 'is ok for GETing /tests/plans' do
+    it 'is ok for GETing /tests/descriptors' do
       env = env_for('http://example.com/api/v3/tests/descriptors', request_method: 'GET', '5gtango.logger'=> Logger.new(STDERR))
-      expect(middleware.build_path(Rack::Request.new(env))).to eq 'http://tng-gtk-vnv:5000/tests/descriptors'
+      expect(middleware.build_path(Rack::Request.new(env))).to eq 'http://tng-gtk-vnv:5000/descriptors'
     end
-    it 'is ok for GETing /tests/plans' do
+    it 'is ok for GETing /tests/results' do
       env = env_for('http://example.com/api/v3/tests/results', request_method: 'GET', '5gtango.logger'=> Logger.new(STDERR))
-      expect(middleware.build_path(Rack::Request.new(env))).to eq 'http://tng-gtk-vnv:5000/tests/results'
+      expect(middleware.build_path(Rack::Request.new(env))).to eq 'http://tng-gtk-vnv:5000/results'
     end
   end
   def env_for url, opts={}
