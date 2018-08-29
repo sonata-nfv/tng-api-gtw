@@ -47,8 +47,8 @@ paths:
     site: http://tng-gtk-common:5000/functions
     verbs: [ get, options ]
   /api/v3/tests/plans(/?|/*):
-    site: http://tng-gtk-vnv:5000/
+    site: http://tng-gtk-vnv:5000/plans
     verbs: [ get, post, options ]
   /api/v3/tests(/?|/*):
-    site: http://tng-gtk-vnv:5000/
+    site: http://tng-gtk-vnv:5000
     verbs: [ get, options ]
