@@ -10,12 +10,12 @@ pipeline {
         }
         stage('tng-api-gtw') {
           steps {
-            sh 'docker build -t registry.sonata-nfv.eu:5000/tng-api-gtw:v4.0 -f tng-router/Dockerfile tng-router/'
+            sh 'docker build -t registry.sonata-nfv.eu:5000/tng-api-gtw -f tng-router/Dockerfile tng-router/'
           }
         }
         stage('tng-sec-gtw') {
           steps {
-            sh 'docker build -t registry.sonata-nfv.eu:5000/tng-sec-gtw:v4.0 -f tng-sec-gtw/Dockerfile tng-sec-gtw/'
+            sh 'docker build -t registry.sonata-nfv.eu:5000/tng-sec-gtw -f tng-sec-gtw/Dockerfile tng-sec-gtw/'
           }
         }
       }
@@ -39,12 +39,12 @@ pipeline {
         }
         stage('tng-api-gtw') {
           steps {
-            sh 'docker push registry.sonata-nfv.eu:5000/tng-api-gtw:v4.0'
+            sh 'docker push registry.sonata-nfv.eu:5000/tng-api-gtw'
           }
         }
         stage('tng-sec-gtw') {
           steps {
-            sh 'docker push registry.sonata-nfv.eu:5000/tng-sec-gtw:v4.0'
+            sh 'docker push registry.sonata-nfv.eu:5000/tng-sec-gtw'
           }
         }
       }
@@ -61,8 +61,8 @@ pipeline {
             sh 'rm -rf tng-devops || true'
             sh 'git clone https://github.com/sonata-nfv/tng-devops.git'
             dir(path: 'tng-devops') {
-              sh 'ansible-playbook roles/sp.yml -i environments -e "target=sta-sp-v4.0  component=gatekeeper"'
-              sh 'ansible-playbook roles/vnv.yml -i environments -e "target=sta-vnv-v4.0  component=gatekeeper"'
+              sh 'ansible-playbook roles/sp.yml -i environments -e "target=pre-int-sp-ath.5gtango.eu component=gatekeeper"'
+              sh 'ansible-playbook roles/vnv.yml -i environments -e "target=pre-int-vnv-bcn.5gtango.eu component=gatekeeper"'
             }
           }
         }
@@ -85,14 +85,14 @@ pipeline {
         }
         stage('tng-api-gtw') {
           steps {
-            sh 'docker tag registry.sonata-nfv.eu:5000/tng-api-gtw:v4.0 registry.sonata-nfv.eu:5000/tng-api-gtw:v4.0'
-            sh 'docker push  registry.sonata-nfv.eu:5000/tng-api-gtw:v4.0'
+            sh 'docker tag registry.sonata-nfv.eu:5000/tng-api-gtw:latest registry.sonata-nfv.eu:5000/tng-api-gtw:int'
+            sh 'docker push  registry.sonata-nfv.eu:5000/tng-api-gtw:int'
           }
         }
         stage('tng-sec-gtw') {
           steps {
-            sh 'docker tag registry.sonata-nfv.eu:5000/tng-sec-gtw:v4.0 registry.sonata-nfv.eu:5000/tng-sec-gtw:v4.0'
-            sh 'docker push  registry.sonata-nfv.eu:5000/tng-sec-gtw:v4.0'
+            sh 'docker tag registry.sonata-nfv.eu:5000/tng-sec-gtw:latest registry.sonata-nfv.eu:5000/tng-sec-gtw:int'
+            sh 'docker push  registry.sonata-nfv.eu:5000/tng-sec-gtw:int'
           }
         }
       }
