@@ -45,6 +45,7 @@ RUN apt-get update && \
             rm -rf /var/lib/apt/lists/*
 COPY --from=0 /app/lib/local-gems /app/lib/local-gems
 COPY --from=0 /usr/local/bundle /usr/local/bundle
+WORKDIR /app
 COPY . /app
 EXPOSE 5000
 ENV PORT 5000
