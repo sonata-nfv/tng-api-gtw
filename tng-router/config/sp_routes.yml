@@ -83,4 +83,13 @@ paths:
   /api/v3/slas/violations(/?|/*):
     site: http://tng-sla-mgmt:8080/tng-sla-mgmt/api/slas/v1/violations
     verbs: [ get, options ]
+  /api/v3/users/sessions(/?|/*):
+    site: http://tng-gtk-usr:4567/login
+    verbs: [ post ]
+  /api/v3/users/endpoints(/?|/*):
+    site: http://tng-gtk-usr:4567/endpoints
+    verbs: [ get, post, options, delete ]
+  /api/v3/users(/?|/*):
+    site: http://tng-gtk-usr:4567/users
+    verbs: [ get, post, options, delete ]
     
