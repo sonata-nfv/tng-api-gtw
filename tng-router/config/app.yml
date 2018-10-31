@@ -36,7 +36,7 @@ middlewares:
     site: http://son-gtkrlt:5150
   user_management:
     path: /api/v1/userinfo
-    site: http://son-gtkusr:5600
+    site: http://tng-gtk-usr #http://son-gtkusr:5600
   kpis:
     path: /
     site: http://son-gtkkpi:5400
