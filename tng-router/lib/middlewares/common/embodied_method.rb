@@ -78,7 +78,7 @@ class EmbodiedMethod
         req.body = body
       end
     end
-    env['5gtango.logger'].debug(msg) {"Response was #{resp}"}
+    env['5gtango.logger'].debug(msg) {"Response was #{resp.inspect}"}
     respond(resp.status, resp.headers, resp.body)
   end    
   
