@@ -34,7 +34,7 @@ source 'https://rubygems.org'
 ruby '2.4.3'
 
 gem 'rake', '12.3.0'
-gem 'rack', '2.0.4'
+gem 'rack', '2.0.6'
 gem 'rack-uploads', '0.2.1'
 gem 'sinatra', '2.0.2', require: 'sinatra/base'
 gem 'sinatra-contrib', '2.0.2', require: false
