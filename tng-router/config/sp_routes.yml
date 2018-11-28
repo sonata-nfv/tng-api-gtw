@@ -86,7 +86,7 @@ paths:
   /api/v3/users/sessions(/?|/*):
     site: http://tng-gtk-usr:4567/login
     verbs: [ post ]
-  /api/v3/users/endpoints(/?|/*):
+  /api/v3/users/permissions(/?|/*):
     site: http://tng-gtk-usr:4567/endpoints
     verbs: [ get, post, options, delete ]
   /api/v3/users(/?|/*):
