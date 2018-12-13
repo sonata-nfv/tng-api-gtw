@@ -38,7 +38,6 @@ WORKDIR /app
 COPY Gemfile /app
 RUN bundle install
 
-
 FROM ruby:2.4.3-slim-stretch
 RUN apt-get update && \
     apt-get install -y --no-install-recommends libcurl3 libcurl3-gnutls libcurl4-openssl-dev && \
@@ -50,4 +49,5 @@ COPY . /app
 EXPOSE 5000
 ENV PORT 5000
 ENV ROUTES_FILE=sp_routes.yml
+#ENV NO_AUTH=true # uncomment this variable when you want to start authenticating users
 CMD ["bundle", "exec", "rackup", "-p", "5000", "--host", "0.0.0.0"]

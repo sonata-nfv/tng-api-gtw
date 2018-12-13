@@ -33,10 +33,18 @@
 # encoding: utf-8
 require 'rack'
 require 'curb'
-require 'logger'
+require 'jwt'
+require 'time'
+require 'tng/gtk/utils/logger'
 require_relative '../../utils'
 
 class Auth
+  LOGGER=Tng::Gtk::Utils::Logger
+  LOGGED_COMPONENT=self.name
+  @@began_at = Time.now.utc
+  LOGGER.info(component:LOGGED_COMPONENT, operation:'initializing', start_stop: 'START', message:"Started at #{@@began_at}")
+  
+  #AUTH_URL = ENV.fetch('AUTH_URL', '')
   include Utils
   attr_accessor :app, :auth_uri
   
@@ -45,66 +53,85 @@ class Auth
   class UserDataNotParseableError < StandardError; end
   
   def initialize(app, options= {})
-    @app, @auth_uri = app, options[:auth_uri]
+    @app = app
   end
 
   def call(env)
-    msg = self.class.name+'#'+__method__.to_s
-    
-    env['5gtango.logger'] = Logger.new(STDERR) if env['5gtango.logger'].to_s.empty?
-    env['5gtango.logger'].info(msg) {"Called"}
-    
+    msg = '#'+__method__.to_s
+    #auth_url = ENV.fetch('AUTH_URL', '')
+    #if auth_url.empty?
+    #  LOGGER.error(component:LOGGED_COMPONENT, operation: msg, message:'No AUTH_URL defined', status: '400')
+    #  LOGGER.info(component:LOGGED_COMPONENT, operation: msg, start_stop: 'STOP', message:"Ended at #{Time.now.utc}", time_elapsed:"#{Time.now.utc-@@began_at}")
+    #  return bad_request('No AUTH_URL ENV variable defined') 
+    #end
+        
     # Just forward request if no authorization token is provided
     return @app.call(env) if (env['HTTP_AUTHORIZATION'].to_s.empty?)
       
     # Authorization token is provided, it has to be in the form of 'bearer: <token>'
     token = env['HTTP_AUTHORIZATION'].split(' ')
-    return bad_request('Unauthorized: missing authorization (bearer) header') unless bearer_token?(token:token)
-    begin
-      user = find_user_by_token(token: token[1])
-      env['5gtango.user.name'] = user[:preferred_username]
-      status, headers, body = @app.call(env)
-      env['5gtango.logger'].debug(msg) {'Finishing with status = '+status.to_s}
-      return [status, headers, body]
-    rescue UserDataNotParseableError
-      env['5gtango.logger'].error(msg) {'User data not parseable error'}
-      return internal_server_error('Internal error in '+self.class.name)
-    rescue UserTokenNotActiveError
-      env['5gtango.logger'].error(msg) {'Finishing with Unauthorized:'}
-      return unauthorized('Unauthorized: token  not active')
-    rescue UserNotFoundError
-      env['5gtango.logger'].error(msg) {'Finishing with not found'}
-      return not_found('Not found: user not found')
-    else
-      env['5gtango.logger'].error(msg) {'Finishing with internal server error'}
-      return internal_server_error('Internal error in '+self.class.name)
+    LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"token=#{token}")
+    unless bearer_token?(token:token)
+      LOGGER.error(component:LOGGED_COMPONENT, operation:msg, start_stop: 'STOP', message:'Unauthorized: missing authorization (bearer) header', time_elapsed:"#{Time.now.utc-@@began_at}", status: '400')
+      return bad_request('Unauthorized: missing authorization (bearer) header') 
     end
+    begin
+      decoded_token = symbolize JWT.decode(token[1], nil, false).first
+      LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"decoded_token=#{decoded_token}")
+    rescue JWT::DecodeError => exception
+      LOGGER.error(component:LOGGED_COMPONENT, operation:msg, start_stop: 'STOP', message:'Error decoding token '+token[1], time_elapsed:"#{Time.now.utc-@@began_at}", status: '401')
+      return bad_request('Unauthorized: missing authorization (bearer) header')
+    end
+    # JWT.decode 'eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InBhY28iLCJlbWFpbCI6InBhY29AcGFjbyIsImVuZHBvaW50cyI6W3siZW5kcG9pbnQiOiJwYWNrYWdlcyIsInZlcmJzIjoiZ2V0LHBvc3QscHV0In0seyJlbmRwb2ludCI6InNlcnZpY2VzIiwidmVyYnMiOiJnZXQscG9zdCJ9XSwibG9naW5fdGltZSI6IjIwMTgtMTItMDYgMjE6NTA6MzcgKzAxMDAiLCJleHBpcmF0aW9uX3RpbWUiOiIyMDE4LTEyLTA2IDIyOjUwOjM3ICswMTAwIn0.gT7sAZdOvB-61F3VLUQSlvY6Tj87_miXqHkmrlnJaPQ', nil, false
+    #[{"username"=>"paco","email"=>"paco@paco","endpoints"=>[{"endpoint"=>"packages", "verbs"=>"get,post,put"}, {"endpoint"=>"services", "verbs"=>"get,post"}],"login_time"=>"2018-12-06 21:50:37 +0100","expiration_time"=>"2018-12-06 22:50:37 +0100"}, {"alg"=>"HS256"}]
+    unless token_valid?(token:decoded_token)
+      LOGGER.error(component:LOGGED_COMPONENT, operation:msg, start_stop: 'STOP', message:"Forbidden: token #{decoded_token} is not valid", time_elapsed:"#{Time.now.utc-@@began_at}", status: '401')
+      return forbidden('Forbidden: token is not valid') 
+    end
+    unless endpoint_and_method_authorized?(token:decoded_token, endpoint:env['REQUEST_PATH'], method: env['REQUEST_METHOD'])
+      LOGGER.error(component:LOGGED_COMPONENT, operation:msg, start_stop: 'STOP', message:'Forbidden: '+env['REQUEST_METHOD']+' '+env['REQUEST_PATH'], time_elapsed:"#{Time.now.utc-@@began_at}", status: '401')
+      return forbidden('Forbidden: '+env['REQUEST_METHOD']+' '+env['REQUEST_PATH']) 
+    end
+    env['5gtango.user.name'] = find_user_name_by_token(token: decoded_token)
+    env['5gtango.user.email'] = find_user_email_by_token(token: decoded_token)
+    LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"env=#{env}")
+    LOGGER.info(component:LOGGED_COMPONENT, operation:msg, start_stop: 'STOP', message:'Calling app...', time_elapsed:"#{Time.now.utc-@@began_at}", status: '200')
+    status, headers, body = @app.call(env)
   end
   
   private
   def bearer_token?(token:)
+    return false if token.to_s.empty?
     token.size == 2 && token[0].downcase == 'bearer'
   end
   
-  def find_user_by_token(token:)
-    
-    resp = Curl.post( @auth_uri, '') do |req|
-      req.headers['Content-type'] = req.headers['Accept'] = 'application/json'
-      req.headers['Authorization'] = 'Bearer '+token
-    end
-    
-    # {:sub=>"fe53ac4f-052a-4a41-b7cd-914d4c64c2f8", :name=>"", :preferred_username=>"jbonnet", :email=>"jbonnet@alticelabs.com"}
-    case resp.response_code
-    when 201
-      begin
-        JSON.parse(resp.body, symbolize_names: true)
-      rescue => e
-        raise UserDataNotParseableError.new "User data parsing error #{$!}: \n\t#{e.backtrace.join('\n\t')}"
-      end
-    when 401
-      raise UserTokenNotActiveError.new "User token was not active"
-    else
-      raise UserNotFoundError.new "User not found with the given token"
-    end  
+  def token_valid?(token:)
+    return false unless token.key?(:expiration_time)
+    Time.parse(token[:expiration_time]) > Time.now
   end
+  
+  def endpoint_and_method_authorized?(token:,endpoint:,method:)
+    true
+  end
+  
+  def find_user_name_by_token(token:)
+    return '' unless token.key?(:username)
+    token[:username] 
+  end
+  def find_user_email_by_token(token:)
+    return '' unless token.key?(:email)
+    token[:email]
+  end
+  def symbolize(obj)
+    return obj.reduce({}) do |memo, (k, v)|
+      memo.tap { |m| m[k.to_sym] = symbolize(v) }
+    end if obj.is_a? Hash
+
+    return obj.reduce([]) do |memo, v| 
+      memo << symbolize(v); memo
+    end if obj.is_a? Array
+    obj
+  end
+  LOGGER.info(component:LOGGED_COMPONENT, operation:'initializing', start_stop: 'STOP', message:"Ended at #{Time.now.utc}", time_elapsed:"#{Time.now.utc-@@began_at}")
 end
+

@@ -43,7 +43,7 @@ module Utils
   def bad_request(msg=nil) [400, {}, [msg || 'Invalid Request']] end
   def unauthorized(msg=nil) [401, {}, [msg || 'Unauthorized']] end  
   def forbidden(msg=nil) [403, {}, [msg || 'Forbidden']] end
-  def not_found(msg=nil) [404, {}, [msg || 'Not Authorized']] end
+  def not_found(msg=nil) [404, {}, [msg || 'Not Found']] end
   def method_not_allowed(msg=nil) [405, {}, [msg || 'Method Not Allowed']] end
   def internal_server_error(msg=nil) [500, {}, [msg || 'Internal Server Error']] end
   def not_implemented(msg=nil) [501, {}, [msg || 'Not Implemented']] end

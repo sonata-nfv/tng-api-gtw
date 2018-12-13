@@ -33,22 +33,24 @@
 # encoding: utf-8
 require 'rack'
 require_relative '../../utils'
+require 'tng/gtk/utils/logger'
 
 class Instrumentation
+  LOGGER=Tng::Gtk::Utils::Logger
+  LOGGED_COMPONENT=self.name
   include Utils
   
   def initialize(app, options= {})
-    @app, @kpis_uri = app, options[:kpis_uri]
+    @app = app
   end
 
   def call(env)
     began_at = Time.now
-    msg = self.class.name+'#'+__method__.to_s
-    env['5gtango.logger'].info(msg) {"Called"}
+    msg = '#call'
     status, headers, body = @app.call env
 
     headers['X-Timing'] = (Time.now - began_at).to_f.to_s
-    env['5gtango.logger'].debug(msg) {"Finishing with status #{status}"}
+    LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Finishing with status #{status}")
     [status, headers, body]
   end
 end

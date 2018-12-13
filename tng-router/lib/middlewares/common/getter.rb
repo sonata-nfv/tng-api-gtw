@@ -33,9 +33,11 @@
 # encoding: utf-8
 require 'rack'
 require 'faraday'
-#require 'net/http'    
+require 'tng/gtk/utils/logger'
 
 class Getter
+  LOGGER=Tng::Gtk::Utils::Logger
+  LOGGED_COMPONENT=self.name
   include Utils
   attr_accessor :app
   
@@ -44,63 +46,28 @@ class Getter
   end
 
   def call(env)
-    msg = self.class.name+'#'+__method__.to_s
-    env['5gtango.logger'] = Logger.new(STDERR) if env['5gtango.logger'].to_s.empty?
-    env['5gtango.logger'].info(msg) {"Called"}
+    msg = '#call'
     request = Rack::Request.new(env)  
     
     return @app.call(env) unless request.get?
 
     # Process GET requests
-    env['5gtango.logger'].debug(msg) {'Calling '+env['5gtango.sink_path']}
+    LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:'Calling '+env['5gtango.sink_path'])
     connection = Faraday.new(env['5gtango.sink_path']) do |conn|
       # Last middleware must be the adapter:
       conn.adapter :net_http
     end
     params = env['QUERY_STRING'].empty? ? {} : Rack::Utils.parse_nested_query(env['QUERY_STRING'])     
-    env['5gtango.logger'].debug(msg) {"Params #{params}"}
-    #compacted_env = env.delete_if {|key, value| !value.is_a?(String) }
+    LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Params #{params}")
 
     begin
       # Still need to choose which headers should passed
       response = connection.get(env['5gtango.sink_path'], params, {'Content-Type' => request.content_type}) # compacted_env)
-      env['5gtango.logger'].debug(msg) {"Response was #{response.status}, #{response.headers}, #{response.body}"}
+      LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Response was #{response.status}, #{response.headers}, #{response.body}")
       return respond(response.status, response.headers, response.body)
     rescue Faraday::Error::ConnectionFailed => e
-      env['5gtango.logger'].error(msg) {"The server at #{env['5gtango.sink_path']} is either unavailable or is not currently accepting requests. Please try again in a few minutes."}
+      LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"The server at #{env['5gtango.sink_path']} is either unavailable or is not currently accepting requests. Please try again in a few minutes.")
       return not_found("No response by GETing #{env['5gtango.sink_path']}"+ (params == {} ? "" : " with params #{params}"))
     end
   end
 end
-=begin
-response = Rack::Response.new
-file = open(path_to_binary_file, "rb")
-# other stuff…
-mime = Mime.mime_type(::File.extname(file.path), 'text/html')
-response.headers.merge!( "Content-Type" => mime ) if mime
-response.write file
-response.finish
-
-require 'net/http'    
-
-uri = URI("http://www.ruby-lang.org")
-req = Net::HTTP::Get.new(uri)
-req['some_header'] = "some_val"
-
-res = Net::HTTP.start(uri.hostname, uri.port) {|http|
-  http.request(req)
-}
-
-puts res.body
-
-=end
-# Faraday exceptions:
-#StandardError
-#  Faraday::Error
-#    Faraday::MissingDependency
-#    Faraday::ClientError
-#      Faraday::ConnectionFailed
-#      Faraday::ResourceNotFound
-#      Faraday::ParsingError
-#      Faraday::TimeoutError
-#      Faraday::SSLError

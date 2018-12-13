@@ -39,50 +39,50 @@ require 'net/http'
 require "uri"
 require_relative '../../../dispatcher'
 require_relative '../../utils'
+require 'tng/gtk/utils/logger'
 
 class UpstreamFinder
+  LOGGER=Tng::Gtk::Utils::Logger
+  LOGGED_COMPONENT=self.name
   include Utils
   def initialize(app, options={})
     @app, @paths = app, options[:paths]
     @base_path = options[:base_path] || ''
-    @logger = Logger.new(STDERR)
-    $stdout.puts "Initialized #{self.class.name} with base_path=#{@base_path} and paths=#{@paths}"
+    LOGGER.debug(component:LOGGED_COMPONENT, operation:'initialize', message:"Initialized #{self.class.name} with base_path=#{@base_path} and paths=#{@paths}")
   end
 
   def call(env)
-    msg = self.class.name+'#'+__method__.to_s
-    env['5gtango.logger'] = @logger if env['5gtango.logger'].to_s.empty?
-    @logger.info(msg) {"Called"}
-    @logger.debug(msg) {"Env=#{env}"}
+    msg = '#call'
+    LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Env=#{env}")
     begin
       env['5gtango.sink_path'] = build_path(Rack::Request.new(env))
     rescue Exception => e
-      @logger.error(e.message)
+      LOGGER.error(component:LOGGED_COMPONENT, operation:msg, message:e.message)
       return respond( 404, {'content-type' => 'application/json'}, e.message)
       
     end
-    @logger.debug(msg) {"path built: #{env['5gtango.sink_path']}"}
+    LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"path built: #{env['5gtango.sink_path']}")
     status, headers, body = @app.call(env)
-    @logger.debug(msg) {"Finishing with status #{status}"}
+    LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Finishing with status #{status}")
     respond(status, headers, body)
   end
   
   def build_path(request)
-    msg = self.class.name+'#'+__method__.to_s
-    @logger.debug(msg) {"Base_path='#{@base_path}' and paths=#{@paths}"}
-    @logger.debug(msg) {"request.path: #{request.path}"}
-    @logger.debug(msg) {"request.path_info: #{request.path_info}"}
-    @logger.debug(msg) {"request.script_name: #{request.script_name}"}
-    @logger.debug(msg) {"request.query_string: #{request.query_string}"}
-    @logger.debug(msg) {"request.host_with_port: #{request.host_with_port}"}
-    @logger.debug(msg) {"request.referer: #{request.referer}"}
-    @logger.debug(msg) {"request.url: #{request.url}"}
+    msg = '#'+__method__.to_s
+    #@logger.debug(msg) {"Base_path='#{@base_path}' and paths=#{@paths}"}
+    #@logger.debug(msg) {"request.path: #{request.path}"}
+    #@logger.debug(msg) {"request.path_info: #{request.path_info}"}
+    #@logger.debug(msg) {"request.script_name: #{request.script_name}"}
+    #@logger.debug(msg) {"request.query_string: #{request.query_string}"}
+    #@logger.debug(msg) {"request.host_with_port: #{request.host_with_port}"}
+    #@logger.debug(msg) {"request.referer: #{request.referer}"}
+    #@logger.debug(msg) {"request.url: #{request.url}"}
     
     simple_path = request.path
     simple_path.slice!(@base_path) unless @base_path == ''
     router_path = find_router_path(request.path)
     raise Exception.new("Error finding #{request.request_method} for #{request.path}") if router_path.nil?
-    @logger.debug(msg) {"router_path: #{router_path}"}
+    LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"router_path: #{router_path}")
     @paths[router_path][:verbs] = [ 'get' ] unless @paths[router_path].key?(:verbs)
     
     raise Exception.new("#{request.request_method} is not supported by #{@paths[router_path][:site]}, only #{@paths[router_path][:verbs].join(', ')}") unless method_ok?(@paths[router_path][:verbs], request.request_method)
@@ -92,14 +92,13 @@ class UpstreamFinder
     path_templates=Mustermann.new(router_path.to_s).to_templates
     # p1=Mustermann.new("/api/v3/packages/{+splat}")
     # p1.match("/api/v3/packages/status/123")[:splat] => "status/123"
-    @logger.debug(msg) {"path_templates: #{path_templates}"}
+    LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"path_templates: #{path_templates}")
     final_path = ''
     path_templates.each do |template|
-      @logger.debug(msg) {"template: #{template.inspect}"}
+      LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"template: #{template.inspect}")
       # match_data, area_code = *"555-867-5309".match(regex)
       full_match, *match = *Mustermann.new(template).match(simple_path)
-      @logger.debug(msg) {"full_match: #{full_match.inspect}"}
-      @logger.debug(msg) {"match: #{match.inspect}"}
+      LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"full_match: #{full_match.inspect}\nmatch: #{match.inspect}")
       #if match.is_a?(MatchData)
       #  final_path = match.fetch(:splat, '')
       #  @logger.debug(msg) {"final_path: #{final_path}"}
@@ -107,7 +106,7 @@ class UpstreamFinder
       #end
       if full_match
         final_path = match.first
-        @logger.debug(msg) {"final_path: #{final_path}"}
+        LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"final_path: #{final_path}")
         break
       end
     end
@@ -118,13 +117,13 @@ class UpstreamFinder
   
   private
   def find_router_path(request_path)
-    msg = self.class.name+'#'+__method__.to_s
+    msg = '#'+__method__.to_s
     chomped_path = request_path
     chomped_path.slice!(@base_path) unless @base_path == ''
-    @logger.debug(msg) {"chomped_path: #{chomped_path}"}
+    LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"chomped_path: #{chomped_path}")
     
     possible_paths = @paths.keys.select { |path| chomped_path =~ Mustermann.new(path.to_s)}
-    @logger.debug(msg) {"possible_paths: #{possible_paths}"}
+    LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"possible_paths: #{possible_paths}")
     #longest_path = possible_paths.max_by(&:length)
     #return nil if longest_path.nil?
     #@paths[longest_path.to_sym]
@@ -149,11 +148,11 @@ class UpstreamFinder
   end
 
   def needs_authentication?(path, method)
-    return path[:verbs] if path.key?(:auth)
-    methods_needing_auth()
+    return path[:verbs] if path.key?(:auth) # all verbs need authentication
+    #methods_needing_auth()
     a=[]
-    path[:verbs].each do |method|
-      a << method if (method.is_a?(Hash) && method.values[0][:auth])
+    path[:verbs].each do |verb|
+      a << verb if (verb.is_a?(Hash) && verb.values[0][:auth])
     end
     a.keys
   end

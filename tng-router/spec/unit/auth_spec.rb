@@ -32,51 +32,72 @@
 # frozen_string_literal: true
 # encoding: utf-8
 require_relative '../spec_helper'
-require 'logger'
+require 'jwt'
 
 RSpec.describe Auth do
-  let(:app) { ->(env) { [200, env, "app"] } }
+  #let(:app) { ->(env) { [200, env, "app"] } }
   #let(:app) { ->(env) { [200, env_for('http://help.example.com', {'5gtango.logger' => Logger.new(STDERR)}), "app"] } }
+  let(:app)  {double('app')}
+  let(:middleware) {described_class.new(app)}
   let(:uri) {"http://son-gtkusr:5600/"}
   #subject { described_class.new(app.call(env_for('http://help.example.com', {'5gtango.logger' => Logger.new(STDERR), auth_uri: uri })))}
-  subject { described_class.new(app, auth_uri: uri )}
+  subject { described_class.new(app)}
   let(:request) { Rack::MockRequest.new(subject) }
   let(:post_data) { "Whatever post data" }
   let(:headers) {{'Accept'=>'application/json', 'Authorization'=>'Bearer abc', 'Content-Type'=>'application/json'}}
+  let(:valid_token) {JWT.encode({username:'paco', email:"paco@paco", login_time:"2018-12-03 12:05:54 +0100", expiration_time:"2028-12-03 13:05:54 +0100"},'my_secret', 'HS256')}
+  let(:expired_token) {'eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InBhY28iLCJlbWFpbCI6InBhY29AcGFjbyIsImxvZ2luX3RpbWUiOiIyMDE4LTEyLTAzIDEyOjA1OjU0ICswMTAwIiwiZXhwaXJhdGlvbl90aW1lIjoiMjAxOC0xMi0wMyAxMzowNTo1NCArMDEwMCJ9.s4t5ePyT0FXYDUS28X9DM5_HfA5tk8VgpvlBxoTTDc8'}
 
-  it "without any authorization token it just flows" do
-    # this would be good for unit tests
-    # code, env = subject.call env_for('http://help.example.com')
-    # expect(code).to eq(200)
-    response = request.post("/some/path", input: post_data)
-    expect(response.status).to eq(200)
+  #it 'without AUTH_URL defined is a bad request' do
+  #  allow(ENV).to receive(:fetch).with('AUTH_URL', '').and_return('')
+  #  response = request.get("/some/path")
+  #  expect(response.status).to eq(400)
+  #end
+  
+  it 'without Authorization HTTP header defined just falls through' do
+    env = Rack::MockRequest.env_for("/protected")
+    env['HTTP_AUTHORIZATION'] = ''
+    allow(app).to receive(:call).with(env)
+    status, _, _ = middleware.call(env)
+    expect(app).to have_received(:call)
   end
-  it "with invalid authorization token, it fails with 401" do
-    response = request.post("/some/path", input: post_data, 'HTTP_AUTHORIZATION' => 'whatever')
-    stub_request(:post, uri).with(headers: headers).to_return(status: 401, body: "", headers: {})
-    expect(response.status).to eq(400)
+
+  context 'with Authorization HTTP header defined' do
+    it 'but it is not a bearer, fails' do
+      env = Rack::MockRequest.env_for("/protected")
+      env['HTTP_AUTHORIZATION'] = 'wrong kind-of-token'
+      status, _, _ = middleware.call(env)
+      expect(status).to eq(400)
+    end
+    it 'and bearer like, but invalid' do
+      env = Rack::MockRequest.env_for("/protected")
+      env['HTTP_AUTHORIZATION'] = 'bearer kind-of-token'
+      status, _, _ = middleware.call(env)
+      expect(status).to eq(400)
+    end
+    context 'and bearer like, valid' do
+      it 'but outdated' do
+        env = Rack::MockRequest.env_for("/protected")
+        env['HTTP_AUTHORIZATION'] = 'bearer '+expired_token
+        status, _, _ = middleware.call(env)
+        expect(status).to eq(403)
+      end
+      it 'and up-to-date' do
+        env = Rack::MockRequest.env_for("/protected")
+        env['HTTP_AUTHORIZATION'] = 'bearer '+valid_token
+        allow(app).to receive(:call).with(env).and_return([200, {}, ['Ok']])
+        status, _, _ = middleware.call(env)
+        expect(status).to eq(200)
+      end
+    end
   end
-  context "with valid authorization token" do
-    let(:response) {request.post("/some/path", input: post_data, 'HTTP_AUTHORIZATION' => 'bearer abc')}
-    let(:user_name) {'user_one'}
-    let(:user) {{ sub:'no matter', name: 'same', preferred_username: user_name, email: user_name+'@example.com'}}
-    it "fails with 401 if token is not active" do
-      stub_request(:post, uri).with(headers: headers).to_return(status: 401, body: "", headers: {})
-      expect(response.status).to eq(401)
-    end
-    it "fails with 404 if user is not found" do
-      stub_request(:post, uri).with(headers: headers).to_return(status: 404, body: "", headers: {})
-      expect(response.status).to eq(404)
-    end
-    it "passes (with 200) if token is active, giving user name" do
-      stub_request(:post, uri).with(headers: headers).to_return(status: 201, body: user.to_json, headers: {})
-      middleware = described_class.new(app, auth_uri: uri )
-      status, headers, body = middleware.call(env_for('http://help.example.com', {'5gtango.logger' => Logger.new(STDERR)}))
-      #expect(response.headers['5gtango.user.name']).to eq(user_name)
-      #expect(response.status).to eq(200)
-      expect(status).to eq(200)
-    end
-  end
+  #it "accepts an cookie token in the request" do
+  #  middleware = described_class.new(app)
+  #  env = Rack::MockRequest.env_for("/protected")
+  #  env['HTTP_AUTHORIZATION'] = 'Bearer '+token
+  #  status, _, _ = middleware.call(env)
+  #  expect(status).to eq(200)
+  #end
   
   def env_for url, opts={}
     Rack::MockRequest.env_for(url, opts)

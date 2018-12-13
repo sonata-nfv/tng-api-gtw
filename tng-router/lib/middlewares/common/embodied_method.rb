@@ -38,19 +38,23 @@ require 'curb'
 require 'faraday'
 require 'tempfile'
 require_relative '../../utils'
+require 'tng/gtk/utils/logger'
 
 class EmbodiedMethod
+  LOGGER=Tng::Gtk::Utils::Logger
+  LOGGED_COMPONENT=self.name
+  @@began_at = Time.now.utc
+  LOGGER.info(component:LOGGED_COMPONENT, operation:'class loading', start_stop: 'START', message:"Started at #{@@began_at}")
   attr_accessor :app
   
   include Utils
   
   def initialize(app, options= {})
     @app = app
-    STDOUT.puts "#{self.class.name}##{__method__}: Initialized"
   end
 
   def call(env)
-    msg = self.class.name+'#'+__method__.to_s
+    msg = '#'+__method__.to_s
     env['5gtango.logger'].info(msg) {"Called"}
     url = env['5gtango.sink_path']
     request = Rack::Request.new(env)  
@@ -61,11 +65,10 @@ class EmbodiedMethod
     return @app.call(env) unless (request.post? || request.put? || request.patch?)
     
     # Pass file uploads
-    env['5gtango.logger'].debug(msg) {"Content-type: #{request.content_type}"}
+    LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Content-type: #{request.content_type}")
     return Uploader.new.call(env) if request.content_type =~ /multipart\/form-data/
     
-    env['5gtango.logger'].debug(msg) {"Params: #{request.params}"}
-    env['5gtango.logger'].debug(msg) {"Body: #{body}"}
+    LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Params: #{request.params}\nBody: #{body}")
     bad_request("Content-type (#{request.content_type} not supported in #{request.request_method} requests") unless allowed_content_type(request.content_type)
     connection = Faraday.new(url) { |conn| conn.adapter :net_http }
     # conn.authorization :Bearer, 'mF_9.B5f-4.1JqM'
@@ -78,7 +81,7 @@ class EmbodiedMethod
         req.body = body
       end
     end
-    env['5gtango.logger'].debug(msg) {"Response was #{resp.inspect}"}
+    LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Response was #{resp.inspect}")
     respond(resp.status, resp.headers, resp.body)
   end    
   
@@ -86,4 +89,5 @@ class EmbodiedMethod
   def allowed_content_type(content_type)
     (content_type =~ /application\/json/) || (content_type =~ /application\/yaml/) || (content_type =~ /application\/xml/)
   end
+  LOGGER.info(component:LOGGED_COMPONENT, operation:'class loading', start_stop: 'STOP', message:"Ended at #{Time.now.utc}", time_elapsed:"#{Time.now.utc-@@began_at}")
 end
