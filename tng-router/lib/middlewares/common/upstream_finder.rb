@@ -69,15 +69,7 @@ class UpstreamFinder
   
   def build_path(request)
     msg = '#'+__method__.to_s
-    #@logger.debug(msg) {"Base_path='#{@base_path}' and paths=#{@paths}"}
-    #@logger.debug(msg) {"request.path: #{request.path}"}
-    #@logger.debug(msg) {"request.path_info: #{request.path_info}"}
-    #@logger.debug(msg) {"request.script_name: #{request.script_name}"}
-    #@logger.debug(msg) {"request.query_string: #{request.query_string}"}
-    #@logger.debug(msg) {"request.host_with_port: #{request.host_with_port}"}
-    #@logger.debug(msg) {"request.referer: #{request.referer}"}
-    #@logger.debug(msg) {"request.url: #{request.url}"}
-    
+        
     simple_path = request.path
     simple_path.slice!(@base_path) unless @base_path == ''
     router_path = find_router_path(request.path)
@@ -86,7 +78,7 @@ class UpstreamFinder
     @paths[router_path][:verbs] = [ 'get' ] unless @paths[router_path].key?(:verbs)
     
     raise Exception.new("#{request.request_method} is not supported by #{@paths[router_path][:site]}, only #{@paths[router_path][:verbs].join(', ')}") unless method_ok?(@paths[router_path][:verbs], request.request_method)
-    forbidden("#{request.request_method}ing into #{path[:site]} needs authentication") unless authenticated?(path, env)
+    forbidden("#{request.request_method}ing into #{@paths[router_path][:site]} needs authentication") unless authenticated?(@paths[router_path], request.env)
     
     # "/api/v3/packages(/?|/*)" =>  ["/api/v3/packages/", "/api/v3/packages", "/api/v3/packages/{+splat}"]
     path_templates=Mustermann.new(router_path.to_s).to_templates
