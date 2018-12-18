@@ -77,6 +77,7 @@ class EmbodiedMethod
       resp = connection.public_send(method_name) do |req|
         req.url url
         req.headers['Content-Type'] = request.content_type
+        req.headers['Authorization'] = 'Bearer '+env['5gtango.user.token'] if env.key?('5gtango.user.token')
         #req.headers['Content-Length'] = request.body.bytesize
         req.body = body
       end

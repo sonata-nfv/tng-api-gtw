@@ -86,7 +86,7 @@ class UpstreamFinder
     @paths[router_path][:verbs] = [ 'get' ] unless @paths[router_path].key?(:verbs)
     
     raise Exception.new("#{request.request_method} is not supported by #{@paths[router_path][:site]}, only #{@paths[router_path][:verbs].join(', ')}") unless method_ok?(@paths[router_path][:verbs], request.request_method)
-    #forbidden("#{request.request_method}ing into #{path[:site]} needs authentication") unless authenticated?(path, env)
+    forbidden("#{request.request_method}ing into #{path[:site]} needs authentication") unless authenticated?(path, env)
     
     # "/api/v3/packages(/?|/*)" =>  ["/api/v3/packages/", "/api/v3/packages", "/api/v3/packages/{+splat}"]
     path_templates=Mustermann.new(router_path.to_s).to_templates
@@ -148,13 +148,17 @@ class UpstreamFinder
   end
 
   def needs_authentication?(path, method)
-    return path[:verbs] if path.key?(:auth) # all verbs need authentication
-    #methods_needing_auth()
-    a=[]
+    return true if path.key?(:auth) # all verbs need authentication
+    #/sessions(/?|/*):
+    #  site: http://tng-common:5200
+    #  verbs:
+    #    - post:
+    #    - delete: auth   
+    # {:"/sessions(/?|/*)"=>{:site=>"http://tng-common:5200", :verbs=>[{:post=>nil}, {:delete=>"auth"}]}}
     path[:verbs].each do |verb|
-      a << verb if (verb.is_a?(Hash) && verb.values[0][:auth])
+      return true if (verb.is_a?(Hash) && verb.keys[0] == method  && verb.values[0] == 'auth')
     end
-    a.keys
+    false
   end
   
   def final_path?(str)

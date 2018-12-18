@@ -79,21 +79,22 @@ class Auth
       decoded_token = symbolize JWT.decode(token[1], nil, false).first
       LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"decoded_token=#{decoded_token}")
     rescue JWT::DecodeError => exception
-      LOGGER.error(component:LOGGED_COMPONENT, operation:msg, start_stop: 'STOP', message:'Error decoding token '+token[1], time_elapsed:"#{Time.now.utc-@@began_at}", status: '401')
-      return bad_request('Unauthorized: missing authorization (bearer) header')
+      LOGGER.error(component:LOGGED_COMPONENT, operation:msg, start_stop: 'STOP', message:'Error decoding token '+token[1], time_elapsed:"#{Time.now.utc-@@began_at}", status: '400')
+      return bad_request('Bad request: could not decode token')
     end
     # JWT.decode 'eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InBhY28iLCJlbWFpbCI6InBhY29AcGFjbyIsImVuZHBvaW50cyI6W3siZW5kcG9pbnQiOiJwYWNrYWdlcyIsInZlcmJzIjoiZ2V0LHBvc3QscHV0In0seyJlbmRwb2ludCI6InNlcnZpY2VzIiwidmVyYnMiOiJnZXQscG9zdCJ9XSwibG9naW5fdGltZSI6IjIwMTgtMTItMDYgMjE6NTA6MzcgKzAxMDAiLCJleHBpcmF0aW9uX3RpbWUiOiIyMDE4LTEyLTA2IDIyOjUwOjM3ICswMTAwIn0.gT7sAZdOvB-61F3VLUQSlvY6Tj87_miXqHkmrlnJaPQ', nil, false
-    #[{"username"=>"paco","email"=>"paco@paco","endpoints"=>[{"endpoint"=>"packages", "verbs"=>"get,post,put"}, {"endpoint"=>"services", "verbs"=>"get,post"}],"login_time"=>"2018-12-06 21:50:37 +0100","expiration_time"=>"2018-12-06 22:50:37 +0100"}, {"alg"=>"HS256"}]
+    
     unless token_valid?(token:decoded_token)
-      LOGGER.error(component:LOGGED_COMPONENT, operation:msg, start_stop: 'STOP', message:"Forbidden: token #{decoded_token} is not valid", time_elapsed:"#{Time.now.utc-@@began_at}", status: '401')
-      return forbidden('Forbidden: token is not valid') 
+      LOGGER.error(component:LOGGED_COMPONENT, operation:msg, start_stop: 'STOP', message:"Unauthorized: token #{decoded_token} is not valid", time_elapsed:"#{Time.now.utc-@@began_at}", status: '401')
+      return unauthorized('Anauthorized: token is not valid') 
     end
-    unless endpoint_and_method_authorized?(token:decoded_token, endpoint:env['REQUEST_PATH'], method: env['REQUEST_METHOD'])
-      LOGGER.error(component:LOGGED_COMPONENT, operation:msg, start_stop: 'STOP', message:'Forbidden: '+env['REQUEST_METHOD']+' '+env['REQUEST_PATH'], time_elapsed:"#{Time.now.utc-@@began_at}", status: '401')
-      return forbidden('Forbidden: '+env['REQUEST_METHOD']+' '+env['REQUEST_PATH']) 
+    unless endpoint_and_method_authorized?(endpoints:decoded_token[:endpoints], endpoint:env['PATH_INFO'], method: env['REQUEST_METHOD']) #env['REQUEST_PATH']
+      LOGGER.error(component:LOGGED_COMPONENT, operation:msg, start_stop: 'STOP', message:"Forbidden: method #{env['REQUEST_METHOD']} in path #{env['REQUEST_PATH']}", time_elapsed:"#{Time.now.utc-@@began_at}", status: '403')
+      return forbidden("Forbidden: method #{env['REQUEST_METHOD']} in path #{env['REQUEST_PATH']}") 
     end
     env['5gtango.user.name'] = find_user_name_by_token(token: decoded_token)
     env['5gtango.user.email'] = find_user_email_by_token(token: decoded_token)
+    env['5gtango.user.token'] = token[1]
     LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"env=#{env}")
     LOGGER.info(component:LOGGED_COMPONENT, operation:msg, start_stop: 'STOP', message:'Calling app...', time_elapsed:"#{Time.now.utc-@@began_at}", status: '200')
     status, headers, body = @app.call(env)
@@ -110,7 +111,15 @@ class Auth
     Time.parse(token[:expiration_time]) > Time.now
   end
   
-  def endpoint_and_method_authorized?(token:,endpoint:,method:)
+  def endpoint_and_method_authorized?(endpoints:, endpoint:, method:)
+    msg = '#'+__method__.to_s
+    #{"username"=>"paco","email"=>"paco@paco","endpoints"=>[{"endpoint"=>"packages", "verbs"=>"get,post,put"}, {"endpoint"=>"services", "verbs"=>"get,post"}],"login_time"=>"2018-12-06 21:50:37 +0100","expiration_time"=>"2018-12-06 22:50:37 +0100"}
+    authorized = []
+    endpoints.each do |element|
+      authorized << element if (element[:endpoint] == endpoint && element[:verbs].split(',').include?(method.downcase))
+    end
+    LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"authorized=#{authorized}")
+    return false if authorized.empty?
     true
   end
   
