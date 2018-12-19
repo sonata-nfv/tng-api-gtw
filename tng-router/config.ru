@@ -58,7 +58,7 @@ end
 
 Dir.glob(File.join(__dir__, 'lib', '**', '*.rb')).each { |file| require file } if Dir.exist?('lib')
 
-use Instrumentation, kpis_uri: Dispatcher.configuration.middlewares[:kpis][:site] unless ENV['NO_KPIS']
+use Instrumentation unless ENV['NO_KPIS']
 use Auth unless ENV['NO_AUTH']
 use UpstreamFinder, base_path: Dispatcher.configuration.base_path, paths: Dispatcher.configuration.paths
 use Getter
