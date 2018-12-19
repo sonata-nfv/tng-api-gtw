@@ -55,7 +55,7 @@ class EmbodiedMethod
 
   def call(env)
     msg = '#'+__method__.to_s
-    env['5gtango.logger'].info(msg) {"Called"}
+    LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Called")
     url = env['5gtango.sink_path']
     request = Rack::Request.new(env)  
     body = request.body.read
