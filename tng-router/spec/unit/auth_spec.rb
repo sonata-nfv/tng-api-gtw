@@ -50,75 +50,47 @@ RSpec.describe Auth do
   let(:valid_token) {JWT.encode({username:'paco', email:"paco@paco", endpoints: [{endpoint:path, verbs:"get,post,put"}, {endpoint:"services", verbs:"get,post"}], login_time:time.to_s, expiration_time:(time+10000).to_s},'my_secret', 'HS256')}
   let(:expired_token) {'eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InBhY28iLCJlbWFpbCI6InBhY29AcGFjbyIsImxvZ2luX3RpbWUiOiIyMDE4LTEyLTAzIDEyOjA1OjU0ICswMTAwIiwiZXhwaXJhdGlvbl90aW1lIjoiMjAxOC0xMi0wMyAxMzowNTo1NCArMDEwMCJ9.s4t5ePyT0FXYDUS28X9DM5_HfA5tk8VgpvlBxoTTDc8'}
 
-  #it 'without AUTH_URL defined is a bad request' do
-  #  allow(ENV).to receive(:fetch).with('AUTH_URL', '').and_return('')
-  #  response = request.get("/some/path")
-  #  expect(response.status).to eq(400)
-  #end
-  
-  it 'without Authorization HTTP header defined just falls through' do
-    env = Rack::MockRequest.env_for(path)
-    env['HTTP_AUTHORIZATION'] = ''
-    allow(app).to receive(:call).with(env)
-    status, _, _ = middleware.call(env)
-    expect(app).to have_received(:call)
+  context 'without Authorization HTTP header defined' do
+    it 'just falls through' do
+      env = env_for(path)
+      env['HTTP_AUTHORIZATION'] = ''
+      allow(app).to receive(:call).with(env)
+      middleware.call(env)
+      expect(app).to have_received(:call)
+    end
   end
 
   context 'with Authorization HTTP header defined' do
     
     it 'but it is not a bearer, fails' do
-      env = Rack::MockRequest.env_for(path)
+      env = env_for(path)
       env['HTTP_AUTHORIZATION'] = 'wrong kind-of-token'
       status, _, _ = middleware.call(env)
       expect(status).to eq(400)
     end
     it 'and bearer like, but invalid' do
-      env = Rack::MockRequest.env_for(path)
+      env = env_for(path)
       env['HTTP_AUTHORIZATION'] = 'bearer kind-of-token'
       status, _, _ = middleware.call(env)
       expect(status).to eq(400)
     end
     context 'and bearer like, valid' do
       it 'but outdated' do
-        env = Rack::MockRequest.env_for(path)
+        env = env_for(path)
         env['HTTP_AUTHORIZATION'] = 'bearer '+expired_token
         status, _, _ = middleware.call(env)
         expect(status).to eq(401)
       end
       it 'and up-to-date' do
-        env = Rack::MockRequest.env_for(path)
-        env['HTTP_AUTHORIZATION'] = 'bearer '+valid_token
-        env['PATH_INFO'] = path
+        env = env_for(path, 'HTTP_AUTHORIZATION'=>'bearer '+valid_token, 'PATH_INFO'=>path)
         allow(app).to receive(:call).with(env).and_return([200, {}, ['Ok']])
         status, h, b = middleware.call(env)
         expect(status).to eq(200)
       end
     end
   end
-  #it "accepts an cookie token in the request" do
-  #  middleware = described_class.new(app)
-  #  env = Rack::MockRequest.env_for("/protected")
-  #  env['HTTP_AUTHORIZATION'] = 'Bearer '+token
-  #  status, _, _ = middleware.call(env)
-  #  expect(status).to eq(200)
-  #end
   
   def env_for url, opts={}
     Rack::MockRequest.env_for(url, opts)
   end
 end
-
-=begin
-# from here http://techblog.thescore.com/2014/12/04/modify-your-racks-env-hash/
-describe MyMiddleware do
-  let(:app) { double(:app) }
-  let(:env) { double(:env) }
-
-  subject { MyMiddleware.new(app) }
-
-  it "calls app with the same env hash" do
-    expect(app).to receive(:call).with(env)
-    subject.call(env)
-  end
-end
-=end
