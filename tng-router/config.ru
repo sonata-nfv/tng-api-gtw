@@ -32,7 +32,6 @@
 # encoding: utf-8
 require 'rack/uploads'
 require ::File.join(__dir__, 'dispatcher')
-LOGGER_LEVELS = [ 'debug', 'info', 'warn', 'error', 'fatal', 'unknown']
 
 # from https://gist.github.com/Integralist/9503099
 def symbolize(obj)
@@ -47,21 +46,20 @@ def symbolize(obj)
 end
 
 Dispatcher.configure do |config|
-  app_config = symbolize YAML::load_file(File.join(__dir__, 'config', 'app.yml'))
+  #app_config = symbolize YAML::load_file(File.join(__dir__, 'config', 'app.yml'))
   routes_file_name = File.join(__dir__, 'config', ENV['ROUTES_FILE'] ||= 'sp_routes.yml')
   routes = symbolize YAML::load_file(routes_file_name)
   
   config.base_path = routes[:base_path]
   config.paths = routes[:paths]
-  config.middlewares = app_config[:middlewares]
+  #config.middlewares = app_config[:middlewares]
   config.root = __dir__
 end
 
 Dir.glob(File.join(__dir__, 'lib', '**', '*.rb')).each { |file| require file } if Dir.exist?('lib')
 
-use TangoLogger, logger_io: $stderr, logger_level: 'debug'
-use Instrumentation, kpis_uri: Dispatcher.configuration.middlewares[:kpis][:site] unless ENV['NO_KPIS']
-use Auth, auth_uri: Dispatcher.configuration.middlewares[:user_management][:site]+Dispatcher.configuration.middlewares[:user_management][:path] unless ENV['NO_AUTH']
+use Instrumentation unless ENV['NO_KPIS']
+use Auth unless ENV['NO_AUTH']
 use UpstreamFinder, base_path: Dispatcher.configuration.base_path, paths: Dispatcher.configuration.paths
 use Getter
 use EmbodiedMethod

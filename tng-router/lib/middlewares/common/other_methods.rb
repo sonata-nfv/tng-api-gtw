@@ -38,8 +38,11 @@ require 'curb'
 require 'faraday'
 require 'tempfile'
 require_relative '../../utils'
+require 'tng/gtk/utils/logger'
 
 class OtherMethods
+  LOGGER=Tng::Gtk::Utils::Logger
+  LOGGED_COMPONENT=self.name
   attr_accessor :app
   
   include Utils
@@ -50,8 +53,7 @@ class OtherMethods
   end
 
   def call(env)
-    msg = self.class.name+'#'+__method__.to_s
-    env['5gtango.logger'].info(msg) {"Called"}
+    msg = '#call'
     url = env['5gtango.sink_path'.freeze]
     request = Rack::Request.new(env)  
     
@@ -73,7 +75,7 @@ class OtherMethods
     else
       return bad_request("HTTP method (#{request.request_method} not supported")
     end
-    env['5gtango.logger'].debug(msg) {"Response was #{resp}"}
+    LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Response was #{resp}")
     respond(resp.status, resp.headers, resp.body)
   end    
   

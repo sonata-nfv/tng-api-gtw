@@ -51,7 +51,7 @@ class Dispatcher
   end
 
   class Configuration
-    attr_accessor :base_path, :paths, :middlewares, :logger, :logger_level, :root
+    attr_accessor :base_path, :paths, :root
     def initialize
     end
   end

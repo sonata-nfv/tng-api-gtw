@@ -40,56 +40,75 @@ paths:
   /api/v3/packages(/?|/*):
     site: http://tng-gtk-common:5000/packages
     verbs: [ get, post, delete ]
+    auth: true
   /api/v3/services(/?|/*):
     site: http://tng-gtk-common:5000/services
     verbs: [ get, options ]
+    auth: true
   /api/v3/functions(/?|/*):
     site: http://tng-gtk-common:5000/functions
     verbs: [ get, options ]
+    auth: true
   /api/v3/requests(/?|/*):
     site: http://tng-gtk-sp:5000/requests
     verbs: [ get, post, options ]
+    auth: true
   /api/v3/records/services(/?|/*):
     site: http://tng-gtk-sp:5000/records/services
     verbs: [ get, options ]
+    auth: true
   /api/v3/records/functions(/?|/*):
     site: http://tng-gtk-sp:5000/records/functions
     verbs: [ get, options ]
+    auth: true
   /api/v3/slices(/?|/*):
     site: http://tng-slice-mngr:5998/api/nst/v1/descriptors
     verbs: [ get, post, delete, options ]
+    auth: true
   /api/nst/v1/descriptors(/?|/*):
     site: http://tng-slice-mngr:5998/api/nst/v1/descriptors
     verbs: [ get, post, delete, options ]
+    auth: true
   /api/v3/slice-instances(/?|/*):
     site: http://tng-slice-mngr:5998/api/nsilcm/v1/nsi
     verbs: [ get, post, delete, options ]
+    auth: true
   /api/v3/policies/placement(/?|/*):
     site: http://tng-gtk-sp:5000/policies/placement
     verbs: [ get, post, options]
   /api/v3/policies(/?|/*):
     site: http://tng-policy-mngr:8081/api/v1
     verbs: [ get, post, delete, options, put, patch ]
+    auth: true
   # /api/policymngr/v1/policy-descriptor
   /api/v3/slas/templates(/?|/*):
     site: http://tng-sla-mgmt:8080/tng-sla-mgmt/api/slas/v1/templates
     verbs: [ get, post, delete, options ]
+    auth: true
   /api/v3/slas/configurations(/?|/*):
     site: http://tng-sla-mgmt:8080/tng-sla-mgmt/api/slas/v1/mgmt
     verbs: [ get, post, delete, options ]
+    auth: true
   /api/v3/slas/agreements(/?|/*):
     site: http://tng-sla-mgmt:8080/tng-sla-mgmt/api/slas/v1/agreements
     verbs: [ get, options ]
+    auth: true
   /api/v3/slas/violations(/?|/*):
     site: http://tng-sla-mgmt:8080/tng-sla-mgmt/api/slas/v1/violations
     verbs: [ get, options ]
+    auth: true
   /api/v3/users/sessions(/?|/*):
     site: http://tng-gtk-usr:4567/login
     verbs: [ post ]
-  /api/v3/users/endpoints(/?|/*):
+  /api/v3/users/permissions(/?|/*):
     site: http://tng-gtk-usr:4567/endpoints
     verbs: [ get, post, options, delete ]
+    auth: true
   /api/v3/users(/?|/*):
     site: http://tng-gtk-usr:4567/users
-    verbs: [ get, post, options, delete ]
+    verbs: 
+	  get: auth
+	  post:
+	  options: auth
+	  delete: auth
     

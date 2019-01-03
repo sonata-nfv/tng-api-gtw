@@ -31,8 +31,6 @@
 ## partner consortium (www.5gtango.eu).
 # encoding: utf-8
 require 'rspec/core/rake_task'
-require 'sinatra/activerecord/rake'
-require './snippets'
 
 task default: :spec
 

@@ -33,6 +33,9 @@
 language: ruby
 rvm:
   - "2.4.3"
+before_install:
+  - "find /home/travis/.rvm/rubies -wholename '*default/bundler-*.gemspec' -delete"
+  - gem install bundler --version 1.17.3
 env:
   - TEST_DIR=tng-router
 script: cd $TEST_DIR && bundle install && RACK_ENV=test bundle exec rspec spec/
