@@ -63,13 +63,13 @@ class UpstreamFinder
       env['5gtango.sink_path'] = build_path(Rack::Request.new(env))
     rescue MethodNotAllowedError => e
       LOGGER.error(component:LOGGED_COMPONENT, operation:msg, message:e.message)
-      return respond( 404, {'content-type' => 'application/json'}, e.message)
+      return not_found e.message
     rescue MethodNeedsAuthenticationError => e
       LOGGER.error(component:LOGGED_COMPONENT, operation:msg, message:e.message)
-      return respond( 403, {'content-type' => 'application/json'}, e.message)
+      return forbidden e.message
     rescue Exception => e
       LOGGER.error(component:LOGGED_COMPONENT, operation:msg, message:e.message)
-      return respond( 400, {'content-type' => 'application/json'}, e.message)
+      return bad_request e.message
     end
     LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"path built: #{env['5gtango.sink_path']}")
     status, headers, body = @app.call(env)
