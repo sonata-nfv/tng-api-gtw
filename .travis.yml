@@ -33,6 +33,8 @@
 language: ruby
 rvm:
   - "2.4.3"
+before_install:
+  - gem install bundler
 env:
   - TEST_DIR=tng-router
 script: cd $TEST_DIR && bundle install && RACK_ENV=test bundle exec rspec spec/
