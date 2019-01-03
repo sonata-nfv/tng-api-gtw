@@ -97,9 +97,6 @@ paths:
     site: http://tng-sla-mgmt:8080/tng-sla-mgmt/api/slas/v1/violations
     verbs: [ get, options ]
     auth: true
-  /api/v3/users(/?|/*):
-    site: http://tng-gtk-usr:4567/users
-    verbs: [ post ]
   /api/v3/users/sessions(/?|/*):
     site: http://tng-gtk-usr:4567/login
     verbs: [ post ]
@@ -109,6 +106,9 @@ paths:
     auth: true
   /api/v3/users(/?|/*):
     site: http://tng-gtk-usr:4567/users
-    verbs: [ get, post, options, delete ]
-    auth: true
+    verbs: 
+	  get: auth
+	  post:
+	  options: auth
+	  delete: auth
     

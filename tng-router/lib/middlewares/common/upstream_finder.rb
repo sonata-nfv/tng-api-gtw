@@ -146,7 +146,6 @@ class UpstreamFinder
   end
     
   def ok_to_proceed?(path, env)
-    STDERR.puts "ok_to_proceed? path=#{path}|env=#{env}"
     does_not_need_authentication?( path, request_method(env)) || (needs_authentication?( path, request_method(env)) && is_authenticated?(env)) 
   end
   
@@ -156,16 +155,23 @@ class UpstreamFinder
   end
 
    def does_not_need_authentication?(path, verb)
-     STDERR.puts "does_not_need_authentication? path=#{path}|verb=#{verb}"
+     #STDERR.puts "does_not_need_authentication? path=#{path}|verb=#{verb}"
      return false if path.key?(:auth) # all verbs need authentication
-     if path[:verbs].is_a?(Hash)
+     case path[:verbs]
+     when Hash
+       #STDERR.puts "does_not_need_authentication? Hash: #{path[:verbs].key?(verb.downcase.to_sym) && (path[:verbs][verb.downcase.to_sym].nil? || path[:verbs][verb.downcase.to_sym].empty?)}"
        return path[:verbs].key?(verb.downcase.to_sym) && (path[:verbs][verb.downcase.to_sym].nil? || path[:verbs][verb.downcase.to_sym].empty?)
+     when Array
+       path[:verbs].each do |v| 
+         #STDERR.puts "does_not_need_authentication? Array: #{v} (#{v.class})== #{verb} (#{verb.class})?"
+         return true if v.to_sym == verb
+       end
      end
      false
    end
 
   def needs_authentication?(path, verb)
-    STDERR.puts "needs_authentication? path=#{path}|verb=#{verb}"
+    #STDERR.puts "needs_authentication? path=#{path}|verb=#{verb}"
     return true if path.key?(:auth) # all verbs need authentication
     #/sessions(/?|/*):
     #  site: http://tng-common:5200
@@ -173,9 +179,12 @@ class UpstreamFinder
     #    post:
     #    delete: auth   
     # {:"/sessions(/?|/*)"=>{:site=>"http://tng-common:5200", :verbs=>{post: nil, delete: "auth"}}}
-    if path[:verbs].is_a?(Hash)
-      STDERR.puts "needs_authentication? #{path[:verbs]}"
+    case path[:verbs]
+    when Hash
+      #STDERR.puts "needs_authentication? #{path[:verbs]}"
       return path[:verbs].key?(verb.downcase.to_sym) && path[:verbs][verb.downcase.to_sym] == 'auth'
+      #when Array
+      #path[:verbs].each { |v| return true if v == verb.downcase }
     end
     false
   end

@@ -55,7 +55,7 @@ RSpec.describe UpstreamFinder do
       },
       :"/api/v3/users(/?|/*)"=>{
         site: "http://tng-gtk-usr:4567/users",
-        verbs: [ {get: 'auth'}, {post: nil}, {options: 'auth'}, {delete: 'auth'} ]
+        verbs: { get: 'auth', post: nil, options: 'auth', delete: 'auth' }
       }
     }}
     let(:middleware) { described_class.new(app, base_path: base_path, paths: paths) }
@@ -141,13 +141,25 @@ RSpec.describe UpstreamFinder do
         expect(middleware.build_path(Rack::Request.new(env))).to eq 'http://tng-gtk-usr:4567/users'
       end
       it 'is ok for POSTing /api/v3/users' do
-        env = env_for('http://example.com/api/v3/users', request_method: 'POST')
+        env = env_for('http://example.com/api/v3/users')
+        env['REQUEST_METHOD']= 'POST'
         expect(middleware.build_path(Rack::Request.new(env))).to eq 'http://tng-gtk-usr:4567/users'
       end
       it 'raises exception for non-authorized methods' do
-        env = env_for('http://example.com/api/v3/users', request_method: 'PUT')
-        STDERR.puts ">>>> #{middleware.build_path(Rack::Request.new(env))}"
+        env = env_for('http://example.com/api/v3/users')
+        env['REQUEST_METHOD']= 'PUT'
         expect {middleware.build_path(Rack::Request.new(env))}.to raise_exception(Exception)
+      end
+      it 'is ok for POSTing /api/v3/users/sessions' do
+        env = env_for('http://example.com/api/v3/users/sessions')
+        env['REQUEST_METHOD']= 'POST'
+        expect(middleware.build_path(Rack::Request.new(env))).to eq 'http://tng-gtk-usr:4567/login'
+      end
+      it 'is ok for POSTing /api/v3/users/permissions' do
+        env = env_for('http://example.com/api/v3/users/permissions')
+        env['REQUEST_METHOD']= 'POST'
+        env['5gtango.user.name']='jose'
+        expect(middleware.build_path(Rack::Request.new(env))).to eq 'http://tng-gtk-usr:4567/endpoints'
       end
     end
   end
