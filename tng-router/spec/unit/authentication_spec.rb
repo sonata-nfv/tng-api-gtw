@@ -34,7 +34,7 @@
 require_relative '../spec_helper'
 require 'jwt'
 
-RSpec.describe Auth do
+RSpec.describe Authentication do
   #let(:app) { ->(env) { [200, env, "app"] } }
   #let(:app) { ->(env) { [200, env_for('http://help.example.com', {'5gtango.logger' => Logger.new(STDERR)}), "app"] } }
   let(:app)  {double('app')}

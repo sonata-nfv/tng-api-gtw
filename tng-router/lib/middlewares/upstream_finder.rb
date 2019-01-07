@@ -37,8 +37,8 @@ require 'sinatra/base'
 require 'yaml'
 require 'net/http'
 require "uri"
-require_relative '../../../dispatcher'
-require_relative '../../utils'
+require_relative '../../dispatcher'
+require_relative '../utils'
 require 'tng/gtk/utils/logger'
 
 class UpstreamFinder
@@ -46,8 +46,8 @@ class UpstreamFinder
   LOGGED_COMPONENT=self.name
   include Utils
 
-  class MethodNotAllowedError < StandardError; end
-  class MethodNeedsAuthenticationError < StandardError; end
+  #class MethodNotAllowedError < StandardError; end
+  #class MethodNeedsAuthenticationError < StandardError; end
   
   def initialize(app, options={})
     @app, @paths = app, options[:paths]
@@ -58,7 +58,6 @@ class UpstreamFinder
   def call(env)
     msg = '#call'
     LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Env=#{env}")
-    STDERR.puts "Env=#{env}"
     begin
       env['5gtango.sink_path'] = build_path(Rack::Request.new(env))
     rescue MethodNotAllowedError => e
@@ -86,8 +85,8 @@ class UpstreamFinder
     raise Exception.new("Error finding #{request.request_method} for #{request.path}") if router_path.nil?
     LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"router_path: #{router_path}")
     @paths[router_path][:verbs] = [ 'get' ] unless @paths[router_path].key?(:verbs)
-    raise MethodNotAllowedError.new("#{request.request_method} is not supported by #{@paths[router_path][:site]}, only #{joined_verbs(@paths[router_path][:verbs])}") unless verb_ok?(@paths[router_path][:verbs], request.request_method)
-    raise MethodNeedsAuthenticationError.new("#{request.request_method}ing into #{@paths[router_path][:site]} needs authentication") unless ok_to_proceed?(@paths[router_path], request.env)
+    #raise MethodNotAllowedError.new("#{request.request_method} is not supported by #{@paths[router_path][:site]}, only #{joined_verbs(@paths[router_path][:verbs])}") unless verb_ok?(@paths[router_path][:verbs], request.request_method)
+    #raise MethodNeedsAuthenticationError.new("#{request.request_method}ing into #{@paths[router_path][:site]} needs authentication") unless ok_to_proceed?(@paths[router_path], request.env)
     
     # "/api/v3/packages(/?|/*)" =>  ["/api/v3/packages/", "/api/v3/packages", "/api/v3/packages/{+splat}"]
     path_templates=Mustermann.new(router_path.to_s).to_templates
@@ -132,6 +131,12 @@ class UpstreamFinder
     possible_paths.first
   end
   
+  def request_method(env) env['REQUEST_METHOD'.freeze].downcase.to_sym end
+  def is_authenticated?(env)
+    env.key?('5gtango.user.name')
+  end
+  
+=begin
   def verb_ok?(allowed_verbs, verb)
     case allowed_verbs
     when Hash
@@ -149,11 +154,6 @@ class UpstreamFinder
     does_not_need_authentication?( path, request_method(env)) || (needs_authentication?( path, request_method(env)) && is_authenticated?(env)) 
   end
   
-  def request_method(env) env['REQUEST_METHOD'.freeze].downcase.to_sym end
-  def is_authenticated?(env)
-    env.key?('5gtango.user.name')
-  end
-
    def does_not_need_authentication?(path, verb)
      #STDERR.puts "does_not_need_authentication? path=#{path}|verb=#{verb}"
      return false if path.key?(:auth) # all verbs need authentication
@@ -188,7 +188,7 @@ class UpstreamFinder
     end
     false
   end
-  
+=end  
   def final_path?(str) str.to_s.empty? ? '' : '/'+str end
   def query_string?(str) str.empty? ? '' : '?'+str end
   def joined_verbs(verbs)

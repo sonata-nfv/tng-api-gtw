@@ -36,9 +36,9 @@ require 'curb'
 require 'jwt'
 require 'time'
 require 'tng/gtk/utils/logger'
-require_relative '../../utils'
+require_relative '../utils'
 
-class Auth
+class Authentication
   LOGGER=Tng::Gtk::Utils::Logger
   LOGGED_COMPONENT=self.name
   @@began_at = Time.now.utc
@@ -88,41 +88,33 @@ class Auth
       LOGGER.error(component:LOGGED_COMPONENT, operation:msg, start_stop: 'STOP', message:"Unauthorized: token #{decoded_token} is not valid", time_elapsed:"#{Time.now.utc-@@began_at}", status: '401')
       return unauthorized('Anauthorized: token is not valid') 
     end
-    unless endpoint_and_method_authorized?(endpoints:decoded_token[:endpoints], endpoint:env['PATH_INFO'], method: env['REQUEST_METHOD']) #env['REQUEST_PATH']
-      LOGGER.error(component:LOGGED_COMPONENT, operation:msg, start_stop: 'STOP', message:"Forbidden: method #{env['REQUEST_METHOD']} in path #{env['REQUEST_PATH']}", time_elapsed:"#{Time.now.utc-@@began_at}", status: '403')
-      return forbidden("Forbidden: method #{env['REQUEST_METHOD']} in path #{env['REQUEST_PATH']}") 
-    end
+    #unless endpoint_and_method_authorized?(endpoints:decoded_token[:endpoints], endpoint:env['PATH_INFO'], method: env['REQUEST_METHOD']) 
+    #  LOGGER.error(component:LOGGED_COMPONENT, operation:msg, start_stop: 'STOP', message:"Forbidden: method #{env['REQUEST_METHOD']} in path #{env['REQUEST_PATH']}", time_elapsed:"#{Time.now.utc-@@began_at}", status: '403')
+    #  return forbidden("Forbidden: method #{env['REQUEST_METHOD']} in path #{env['REQUEST_PATH']}") 
+    #end
     env['5gtango.user.name'] = find_user_name_by_token(token: decoded_token)
     env['5gtango.user.email'] = find_user_email_by_token(token: decoded_token)
-    env['5gtango.user.token'] = token[1]
+    #env['5gtango.user.token'] = token[1]
+    env['5gtango.user.role'] = decoded_token[:role]
+    env['5gtango.user.endpoints'] = decoded_token[:endpoints].to_json
     LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"env=#{env}")
     LOGGER.info(component:LOGGED_COMPONENT, operation:msg, start_stop: 'STOP', message:'Calling app...', time_elapsed:"#{Time.now.utc-@@began_at}", status: '200')
-    status, headers, body = @app.call(env)
+    @app.call(env)
   end
   
   private
   def bearer_token?(token:)
+    STDERR.puts "bearer_token? #{token}"
     return false if token.to_s.empty?
     token.size == 2 && token[0].downcase == 'bearer'
   end
   
   def token_valid?(token:)
+    STDERR.puts "token_valid? #{token}"
     return false unless token.key?(:expiration_time)
     Time.parse(token[:expiration_time]) > Time.now
   end
-  
-  def endpoint_and_method_authorized?(endpoints:, endpoint:, method:)
-    msg = '#'+__method__.to_s
-    #{"username"=>"paco","email"=>"paco@paco","endpoints"=>[{"endpoint"=>"packages", "verbs"=>"get,post,put"}, {"endpoint"=>"services", "verbs"=>"get,post"}],"login_time"=>"2018-12-06 21:50:37 +0100","expiration_time"=>"2018-12-06 22:50:37 +0100"}
-    authorized = []
-    endpoints.each do |element|
-      authorized << element if (element[:endpoint] == endpoint && element[:verbs].split(',').include?(method.downcase))
-    end
-    LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"authorized=#{authorized}")
-    return false if authorized.empty?
-    true
-  end
-  
+    
   def find_user_name_by_token(token:)
     return '' unless token.key?(:username)
     token[:username] 
@@ -131,15 +123,16 @@ class Auth
     return '' unless token.key?(:email)
     token[:email]
   end
-  def symbolize(obj)
-    return obj.reduce({}) do |memo, (k, v)|
-      memo.tap { |m| m[k.to_sym] = symbolize(v) }
-    end if obj.is_a? Hash
-
-    return obj.reduce([]) do |memo, v| 
-      memo << symbolize(v); memo
-    end if obj.is_a? Array
-    obj
+  def endpoints_adapter(endpoints)
+    # from [{"endpoint": "/","roles": [],"verb": "get"}, {"endpoint": "/user","roles": ["admin", "developer"],"verb": "post"}]
+    # to   {:/=>{:get=>[]}, :"/api/v3/users"=>{:post=>["a", "c", "d"], :get=>["a"]}}
+    STDERR.puts "endpoints_adapter: endpoints=#{endpoints}"
+    transformed = {}
+    endpoints.each do |endpoint|
+      
+    end
+    STDERR.puts "endpoints_adapter: transformed=#{transformed}"
+    transformed
   end
   LOGGER.info(component:LOGGED_COMPONENT, operation:'initializing', start_stop: 'STOP', message:"Ended at #{Time.now.utc}", time_elapsed:"#{Time.now.utc-@@began_at}")
 end

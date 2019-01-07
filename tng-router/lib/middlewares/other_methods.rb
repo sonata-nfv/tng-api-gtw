@@ -37,7 +37,7 @@ require 'rack/uploads'
 require 'curb'
 require 'faraday'
 require 'tempfile'
-require_relative '../../utils'
+require_relative '../utils'
 require 'tng/gtk/utils/logger'
 
 class OtherMethods
