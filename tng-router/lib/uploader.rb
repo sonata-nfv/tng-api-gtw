@@ -37,15 +37,19 @@ require 'faraday'
 require 'tempfile'
 require 'fileutils'
 require 'net/http/post/multipart'
+require 'tng/gtk/utils/logger'
 require_relative './utils'
 
 class Uploader
   attr_accessor :app
-  
+  LOGGER=Tng::Gtk::Utils::Logger
+  LOGGED_COMPONENT=self.name
+  @@began_at = Time.now.utc
+  LOGGER.info(component:LOGGED_COMPONENT, operation:'initializing', start_stop: 'START', message:"Started at #{@@began_at}")  
   include Utils
   def call(env)
-    msg = self.class.name+'#'+__method__.to_s
-    env['5gtango.logger'].info(msg) {"Called"}
+    msg = '#'+__method__.to_s
+    LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"entered with env=#{env}")  
 
     request = Rack::Request.new(env)
     bad_request('No files to upload') unless request.form_data?
@@ -54,10 +58,10 @@ class Uploader
       tempfile.binmode
       tempfile.write request.body.read
       tempfile.flush
-      env['5gtango.logger'].debug(msg) {"Tempfilename #{tempfile.path} will contain #{tempfile.size} bytes"}
+      LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Tempfilename #{tempfile.path} will contain #{tempfile.size} bytes")  
       tempfile.rewind
       begin
-        env['5gtango.logger'].debug(msg) {"Calling #{env['5gtango.sink_path']}"}
+        LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Calling #{env['5gtango.sink_path']}")  
         conn = Faraday.new(url: env['5gtango.sink_path']) do |faraday|
           faraday.request :multipart
           #faraday.response :logger
@@ -72,11 +76,12 @@ class Uploader
         end
         return respond(200, {'Content-Type'=>'application/json'}, resp.body)
       rescue => e
-        env['5gtango.logger'].debug(msg) {"Exception caught at POSTing body: #{e.message}\n#{e.backtrace.join("\n\t")}"}
+        LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Exception caught at POSTing body: #{e.message}\n#{e.backtrace.join("\n\t")}")  
         return respond(400, {'Content-Type'=>'application/json'}, {error: "Exception caught at POSTing body: #{e.message}\n#{e.backtrace.join("\n\t")}"})
       end
     end
-    env['5gtango.logger'].debug(msg) {"A problem occurred with POSTing the body"}
-    respond(400, {'Content-Type'=>'application/json'}, {error: "A problem occurred with POSTing the body"}.to_json)
+    LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"A problem occurred with POSTing the body")  
+    bad_request('A problem occurred with POSTing the body')
   end
+  LOGGER.info(component:LOGGED_COMPONENT, operation:'initializing', start_stop: 'STOP', message:"Ended at #{Time.now.utc}", time_elapsed:"#{Time.now.utc-@@began_at}")
 end
