@@ -32,7 +32,7 @@
 # frozen_string_literal: true
 # encoding: utf-8
 require 'rack'
-require_relative '../../utils'
+require_relative '../utils'
 require 'tng/gtk/utils/logger'
 
 class Instrumentation
