@@ -46,8 +46,8 @@ class UpstreamFinder
   LOGGED_COMPONENT=self.name
   include Utils
 
-  #class MethodNotAllowedError < StandardError; end
-  #class MethodNeedsAuthenticationError < StandardError; end
+  class MethodNotAllowedError < StandardError; end
+  class MethodNeedsAuthenticationError < StandardError; end
   
   def initialize(app, options={})
     @app, @paths = app, options[:paths]
