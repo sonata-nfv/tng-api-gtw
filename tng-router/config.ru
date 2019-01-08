@@ -59,7 +59,7 @@ end
 Dir.glob(File.join(__dir__, 'lib', '**', '*.rb')).each { |file| require file } if Dir.exist?('lib')
 
 use Instrumentation unless ENV['NO_KPIS']
-use Auth unless ENV['NO_AUTH']
+use Authentication unless ENV['NO_AUTH']
 use UpstreamFinder, base_path: Dispatcher.configuration.base_path, paths: Dispatcher.configuration.paths
 use Getter
 use EmbodiedMethod
