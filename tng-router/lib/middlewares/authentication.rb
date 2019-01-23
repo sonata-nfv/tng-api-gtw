@@ -66,7 +66,10 @@ class Authentication
     #end
         
     # Just forward request if no authorization token is provided
-    return @app.call(env) if (env['HTTP_AUTHORIZATION'].to_s.empty?)
+    if (env['HTTP_AUTHORIZATION'].to_s.empty?)
+      env['5gtango.user.role'] = '-'
+      return @app.call(env) 
+    end
       
     # Authorization token is provided, it has to be in the form of 'bearer: <token>'
     token = env['HTTP_AUTHORIZATION'].split(' ')
