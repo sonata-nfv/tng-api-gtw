@@ -32,30 +32,57 @@
 # encoding: utf-8
 require_relative '../spec_helper'
 
-RSpec.describe UpstreamFinder do
+RSpec.describe ConfigFinder do
   let(:app) { ->(env) { [200, env, "app"] } }
   let(:base_path) {''}
   describe 'Service Platform' do
     let(:paths)     {{
-      :"/api/v3/packages(/?|/*)"=>{:site=>"http://tng-gtk-common:5000/packages", :verbs=>["get", "post"]}, 
-      :"/api/v3/services(/?|/*)"=>{:site=>"http://tng-gtk-common:5000/services"}, 
-      :"/api/v3/functions(/?|/*)"=>{:site=>"http://tng-gtk-common:5000/functions"}, 
-      :"/api/v3/records(/?|/*)"=>{:site=>"http://tng-gtk-common:5000/records"}, 
-      :"/slices(/?|/*)"=>{:site=>"http://tng-slice-mngr:5998", :verbs=>["get", "post", "delete"]}, 
-      :"/policies(/?|/*)"=>{:site=>"http://tng-policy-mngr:8081"}, 
-      :"/slas(/?|/*)"=>{:site=>"http://tng-sla-mgmt:8080"},
+      :"/api/v3/packages(/?|/*)"=>{
+        :site=>"http://tng-gtk-common:5000/packages", 
+        permissions: [
+          { role:'admin', verbs:"get,delete,options,post"},
+          { role:'developer', verbs:"get,delete,options,post"},
+          { role:'customer', verbs:"get,options"}
+        ]
+      }, 
+      :"/api/v3/services(/?|/*)"=>{
+        :site=>"http://tng-gtk-common:5000/services", 
+        permissions: [
+          { role:'admin', verbs:"get,options"},
+          { role:'developer', verbs:"get,options"},
+          { role:'customer', verbs:"get,options"}
+        ]
+      }, 
+      #:"/api/v3/functions(/?|/*)"=>{:site=>"http://tng-gtk-common:5000/functions"}, 
+      #:"/api/v3/records(/?|/*)"=>{:site=>"http://tng-gtk-common:5000/records"}, 
+      #:"/slices(/?|/*)"=>{:site=>"http://tng-slice-mngr:5998", :verbs=>["get", "post", "delete"]}, 
+      #:"/policies(/?|/*)"=>{:site=>"http://tng-policy-mngr:8081"}, 
+      #:"/slas(/?|/*)"=>{:site=>"http://tng-sla-mgmt:8080"},
       :"/api/v3/users/sessions(/?|/*)"=>{
-        site: "http://tng-gtk-usr:4567/login",
-        verbs: [ :post ]
+        site: "http://tng-gtk-usr:4567/login", 
+        permissions: [
+          { role:'-', verbs:"post"},
+          { role:'admin', verbs:"post"},
+          { role:'developer', verbs:"post"},
+          { role:'customer', verbs:"post"}
+        ]
       },
       :"/api/v3/users/permissions(/?|/*)"=>{
         site: "http://tng-gtk-usr:4567/endpoints",
-        verbs: [ :get, :post, :options, :delete ],
-        auth: true
+        permissions: [
+          { role:'admin', verbs:"get,options"},
+          { role:'developer', verbs:"get,options"},
+          { role:'customer', verbs:"get,options"}
+        ]
       },
       :"/api/v3/users(/?|/*)"=>{
-        site: "http://tng-gtk-usr:4567/users",
-        verbs: { get: 'auth', post: nil, options: 'auth', delete: 'auth' }
+        site: "http://tng-gtk-usr:4567/users", 
+        permissions: [
+          { role:'-', verbs:"post"},
+          { role:'admin', verbs:"get,delete,options,patch,post"},
+          { role:'developer', verbs:"get,delete,options,patch,post"},
+          { role:'customer', verbs:"get,delete,options,patch,post"}
+        ]
       }
     }}
     let(:middleware) { described_class.new(app, base_path: base_path, paths: paths) }
@@ -123,28 +150,28 @@ RSpec.describe UpstreamFinder do
     describe '.build_path' do
       it 'is ok for /packages' do
         env = env_for('http://example.com/api/v3/packages', request_method: 'GET', '5gtango.logger'=> Logger.new(STDERR))
-        expect(middleware.build_path(Rack::Request.new(env))).to eq 'http://tng-gtk-common:5000/packages'
+        expect(middleware.build_path(Rack::Request.new(env), "/api/v3/packages(/?|/*)".to_sym)).to eq 'http://tng-gtk-common:5000/packages'
       end
       it 'is ok for /packages/' do
         env = env_for('http://example.com/api/v3/packages/', request_method: 'GET', '5gtango.logger'=> Logger.new(STDERR))
-        expect(middleware.build_path(Rack::Request.new(env))).to eq 'http://tng-gtk-common:5000/packages'
+        expect(middleware.build_path(Rack::Request.new(env), "/api/v3/packages(/?|/*)".to_sym)).to eq 'http://tng-gtk-common:5000/packages'
       end
       it 'is ok for /packages?page_number=0&page_size=100' do
         env = env_for('http://example.com/api/v3/packages?page_number=0&page_size=100', request_method: 'GET', '5gtango.logger'=> Logger.new(STDERR))
-        expect(middleware.build_path(Rack::Request.new(env))).to eq 'http://tng-gtk-common:5000/packages?page_number=0&page_size=100'
+        expect(middleware.build_path(Rack::Request.new(env), "/api/v3/packages(/?|/*)".to_sym)).to eq 'http://tng-gtk-common:5000/packages?page_number=0&page_size=100'
       end
       it 'is ok for /packages/status/:uuid' do
         env = env_for('http://example.com/api/v3/packages/status/123', request_method: 'GET', '5gtango.logger'=> Logger.new(STDERR))
-        expect(middleware.build_path(Rack::Request.new(env))).to eq 'http://tng-gtk-common:5000/packages/status/123'
+        expect(middleware.build_path(Rack::Request.new(env), "/api/v3/packages(/?|/*)".to_sym)).to eq 'http://tng-gtk-common:5000/packages/status/123'
       end
       it 'is ok for GETing /api/v3/users' do
         env = env_for('http://example.com/api/v3/users', request_method: 'GET', '5gtango.user.token'=>'123', '5gtango.user.email'=>'j@j.c', '5gtango.user.name'=>'jose')
-        expect(middleware.build_path(Rack::Request.new(env))).to eq 'http://tng-gtk-usr:4567/users'
+        expect(middleware.build_path(Rack::Request.new(env), "/api/v3/users(/?|/*)".to_sym)).to eq 'http://tng-gtk-usr:4567/users'
       end
       it 'is ok for POSTing /api/v3/users' do
         env = env_for('http://example.com/api/v3/users')
         env['REQUEST_METHOD']= 'POST'
-        expect(middleware.build_path(Rack::Request.new(env))).to eq 'http://tng-gtk-usr:4567/users'
+        expect(middleware.build_path(Rack::Request.new(env), "/api/v3/users(/?|/*)".to_sym)).to eq 'http://tng-gtk-usr:4567/users'
       end
       #it 'raises exception for non-authorized methods' do
       #  env = env_for('http://example.com/api/v3/users')
@@ -154,38 +181,53 @@ RSpec.describe UpstreamFinder do
       it 'is ok for POSTing /api/v3/users/sessions' do
         env = env_for('http://example.com/api/v3/users/sessions')
         env['REQUEST_METHOD']= 'POST'
-        expect(middleware.build_path(Rack::Request.new(env))).to eq 'http://tng-gtk-usr:4567/login'
+        expect(middleware.build_path(Rack::Request.new(env), "/api/v3/users/sessions(/?|/*)".to_sym)).to eq 'http://tng-gtk-usr:4567/login'
       end
       it 'is ok for POSTing /api/v3/users/permissions' do
         env = env_for('http://example.com/api/v3/users/permissions')
         env['REQUEST_METHOD']= 'POST'
         env['5gtango.user.name']='jose'
-        expect(middleware.build_path(Rack::Request.new(env))).to eq 'http://tng-gtk-usr:4567/endpoints'
+        expect(middleware.build_path(Rack::Request.new(env), "/api/v3/users/permissions(/?|/*)".to_sym)).to eq 'http://tng-gtk-usr:4567/endpoints'
       end
     end
   end
   
   describe 'V&V Platform' do
     let(:paths)     {{
-      :"/api/v3/tests/plans(/?|/*)"=>{:site=>"http://tng-gtk-vnv:5000/plans", :verbs=>["get", "post", "options"]}, 
-      :"/api/v3/tests(/?|/*)"=>{:site=>"http://tng-gtk-vnv:5000", :verbs=>["get", "options"]}
+      :"/api/v3/tests/plans(/?|/*)"=>{
+        :site=>"http://tng-gtk-vnv:5000/plans",
+        permissions: [
+          { role:'admin', verbs:"get,options,post"},
+          { role:'developer', verbs:"get,options,post"},
+          { role:'customer', verbs:"get,options,post"}
+        ]
+      },
+      :"/api/v3/tests(/?|/*)"=>{
+        :site=>"http://tng-gtk-vnv:5000",
+        permissions: [
+          { role:'admin', verbs:"get,options"},
+          { role:'developer', verbs:"get,options"},
+          { role:'customer', verbs:"get,options"}
+        ]
+        }
       }}
+      
     let(:middleware) { described_class.new(app, base_path: base_path, paths: paths) }
     it 'is ok for POSTing /tests/plans' do
-      env = env_for('http://example.com/api/v3/tests/plans', request_method: 'POST', '5gtango.logger'=> Logger.new(STDERR))
-      expect(middleware.build_path(Rack::Request.new(env))).to eq 'http://tng-gtk-vnv:5000/plans'
+      env = env_for('http://example.com/api/v3/tests/plans', request_method: 'POST')
+      expect(middleware.build_path(Rack::Request.new(env),"/api/v3/tests/plans(/?|/*)".to_sym)).to eq 'http://tng-gtk-vnv:5000/plans'
     end
     it 'is ok for GETing /tests/plans' do
-      env = env_for('http://example.com/api/v3/tests/plans', request_method: 'GET', '5gtango.logger'=> Logger.new(STDERR))
-      expect(middleware.build_path(Rack::Request.new(env))).to eq 'http://tng-gtk-vnv:5000/plans'
+      env = env_for('http://example.com/api/v3/tests/plans', request_method: 'GET')
+      expect(middleware.build_path(Rack::Request.new(env), "/api/v3/tests/plans(/?|/*)".to_sym)).to eq 'http://tng-gtk-vnv:5000/plans'
     end
     it 'is ok for GETing /tests/descriptors' do
-      env = env_for('http://example.com/api/v3/tests/descriptors', request_method: 'GET', '5gtango.logger'=> Logger.new(STDERR))
-      expect(middleware.build_path(Rack::Request.new(env))).to eq 'http://tng-gtk-vnv:5000/descriptors'
+      env = env_for('http://example.com/api/v3/tests/descriptors', request_method: 'GET')
+      expect(middleware.build_path(Rack::Request.new(env), "/api/v3/tests(/?|/*)".to_sym)).to eq 'http://tng-gtk-vnv:5000/descriptors'
     end
     it 'is ok for GETing /tests/results' do
-      env = env_for('http://example.com/api/v3/tests/results', request_method: 'GET', '5gtango.logger'=> Logger.new(STDERR))
-      expect(middleware.build_path(Rack::Request.new(env))).to eq 'http://tng-gtk-vnv:5000/results'
+      env = env_for('http://example.com/api/v3/tests/results', request_method: 'GET')
+      expect(middleware.build_path(Rack::Request.new(env), "/api/v3/tests(/?|/*)".to_sym)).to eq 'http://tng-gtk-vnv:5000/results'
     end
   end
   def env_for url, opts={}

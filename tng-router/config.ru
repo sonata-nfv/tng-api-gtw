@@ -60,7 +60,7 @@ Dir.glob(File.join(__dir__, 'lib', '**', '*.rb')).each { |file| require file } i
 
 use Instrumentation unless ENV['NO_KPIS']
 use Authentication unless ENV['NO_AUTH']
-use UpstreamFinder, base_path: Dispatcher.configuration.base_path, paths: Dispatcher.configuration.paths
+use ConfigFinder, base_path: Dispatcher.configuration.base_path, paths: Dispatcher.configuration.paths
 use Getter
 use EmbodiedMethod
 use OtherMethods
