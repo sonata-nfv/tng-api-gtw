@@ -33,128 +33,121 @@
 base_path: ''
 paths:
   /: 
-	site: http://tng-gtk-common:5000/
-	permissions:
-	- role: '-'
-	  verbs: get
+    site: http://tng-gtk-common:5000/
+    permissions:
+    - role: '-'
+      verbs: get
   /api/v3(/?): 
-	site: http://tng-gtk-common:5000/
-	permissions:
-	- role: '-'
-	  verbs: get
+    site: http://tng-gtk-common:5000/
+    permissions:
+    - role: '-'
+      verbs: get
   /api/v3/pings(/?): 
-	site: http://tng-gtk-common:5000/pings
-	permissions:
-	- role: '-'
-	  verbs: get
+    site: http://tng-gtk-common:5000/pings
+    permissions:
+    - role: '-'
+      verbs: get
   /api/v3/packages(/?|/*): 
-	site: http://tng-gtk-common:5000/packages
-	permissions:
-	- role: admin
-	  verbs: 'get,delete,options,post'
-	- role: developer
-	  verbs: 'get,delete,options,post'
+    site: http://tng-gtk-common:5000/packages
+    permissions:
+    - role: admin
+      verbs: 'get,delete,options,post'
+    - role: developer
+      verbs: 'get,delete,options,post'
   /api/v3/services(/?|/*): 
-	site: http://tng-gtk-common:5000/services
-	permissions:
-	- role: admin
-	  verbs: 'get,options'
-	- role: developer
-	  verbs: 'get,options'
-	- role: customer
-	  verbs: 'get,options'
+    site: http://tng-gtk-common:5000/services
+    permissions:
+    - role: admin
+      verbs: 'get,options'
+    - role: developer
+      verbs: 'get,options'
+    - role: customer
+      verbs: 'get,options'
   /api/v3/functions(/?|/*): 
-	site: http://tng-gtk-common:5000/functions
-	permissions:
-	- role: admin
-	  verbs: 'get,options'
-	- role: developer
-	  verbs: 'get,options'
-	- role: customer
-	  verbs: 'get,options'
+    site: http://tng-gtk-common:5000/functions
+    permissions:
+    - role: admin
+      verbs: 'get,options'
+    - role: developer
+      verbs: 'get,options'
+    - role: customer
+      verbs: 'get,options'
   /api/v3/requests(/?|/*): 
-	site: http://tng-gtk-sp:5000/requests
-	permissions:
-	- role: '-'
-	  verbs: get
+    site: http://tng-gtk-sp:5000/requests
+    permissions:
+    - role: '-'
+      verbs: get
   /api/v3/records/services(/?|/*): 
-	site: http://tng-gtk-sp:5000/records/services
-	permissions:
-	- role: admin
-	  verbs: 'get,options'
-	- role: developer
-	  verbs: 'get,options'
-	- role: customer
-	  verbs: 'get,options'
+    site: http://tng-gtk-sp:5000/records/services
+    permissions:
+    - role: admin
+      verbs: 'get,options'
+    - role: developer
+      verbs: 'get,options'
+    - role: customer
+      verbs: 'get,options'
   /api/v3/records/functions(/?|/*): 
-	site: http://tng-gtk-sp:5000/records/functions
-	permissions:
-	- role: admin
-	  verbs: 'get,options'
-	- role: developer
-	  verbs: 'get,options'
-	- role: customer
-	  verbs: 'get,options'
+    site: http://tng-gtk-sp:5000/records/functions
+    permissions:
+    - role: admin
+      verbs: 'get,options'
+    - role: developer
+      verbs: 'get,options'
+    - role: customer
+      verbs: 'get,options'
   /api/v3/slices(/?|/*): 
-	site: http://tng-slice-mngr:5998/api/nst/v1/descriptors
-	permissions:
-	- role: '-'
-	  verbs: get
-  #/api/nst/v1/descriptors(/?|/*): http://tng-slice-mngr:5998/api/nst/v1/descriptors
+    site: http://tng-slice-mngr:5998/api/nst/v1/descriptors
+    permissions:
+    - role: '-'
+      verbs: get
   /api/v3/slice-instances(/?|/*): 
-	site: http://tng-slice-mngr:5998/api/nsilcm/v1/nsi
-	permissions:
-	- role: '-'
-	  verbs: get
+    site: http://tng-slice-mngr:5998/api/nsilcm/v1/nsi
+    permissions:
+    - role: '-'
+      verbs: get
   /api/v3/policies/placement(/?|/*): 
-	site: http://tng-gtk-sp:5000/policies/placement
-	permissions:
-	- role: '-'
-	  verbs: get
+    site: http://tng-gtk-sp:5000/policies/placement
+    permissions:
+    - role: '-'
+      verbs: get
   /api/v3/policies(/?|/*): 
-	site: http://tng-policy-mngr:8081/api/v1
-	permissions:
-	- role: '-'
-	  verbs: get
-  # /api/policymngr/v1/policy-descriptor
+    site: http://tng-policy-mngr:8081/api/v1
+    permissions:
+    - role: '-'
+      verbs: get
   /api/v3/slas/templates(/?|/*): 
-	site: http://tng-sla-mgmt:8080/tng-sla-mgmt/api/slas/v1/templates
-	permissions:
-	- role: '-'
-	  verbs: get
+    site: http://tng-sla-mgmt:8080/tng-sla-mgmt/api/slas/v1/templates
+    permissions:
+    - role: '-'
+      verbs: get
   /api/v3/slas/configurations(/?|/*): 
-	site: http://tng-sla-mgmt:8080/tng-sla-mgmt/api/slas/v1/mgmt
-	permissions:
-	- role: '-'
-	  verbs: get
+    site: http://tng-sla-mgmt:8080/tng-sla-mgmt/api/slas/v1/mgmt
+    permissions:
+    - role: '-'
+      verbs: get
   /api/v3/slas/agreements(/?|/*): 
-	site: http://tng-sla-mgmt:8080/tng-sla-mgmt/api/slas/v1/agreements
-	permissions:
-	- role: '-'
-	  verbs: get
+    site: http://tng-sla-mgmt:8080/tng-sla-mgmt/api/slas/v1/agreements
+    permissions:
+    - role: '-'
+      verbs: get
   /api/v3/slas/violations(/?|/*): 
-	site: http://tng-sla-mgmt:8080/tng-sla-mgmt/api/slas/v1/violations
-	permissions:
-	- role: '-'
-	  verbs: get
+    site: http://tng-sla-mgmt:8080/tng-sla-mgmt/api/slas/v1/violations
+    permissions:
+    - role: '-'
+      verbs: get
   /api/v3/users/sessions(/?|/*): 
-	site: http://tng-gtk-usr:4567/login
-	permissions:
-	- role: '-'
-	  verbs: post
-  #/api/v3/users/permissions(/?|/*): 
-	#site: http://tng-gtk-usr:4567/endpoints
-	#permissions:
-	#- role: admin
-	#  verbs: 'get,options'
+    site: http://tng-gtk-usr:4567/login
+    permissions:
+    - role: '-'
+      verbs: post
   /api/v3/users(/?|/*): 
-	site: http://tng-gtk-usr:4567/users
-	permissions:
-	- role: '-'
-	  verbs: post
-	- role: admin
-	  verbs: 'get,delete,options,patch,post'
-	- role: customer
-	  verbs: 'get,delete,options,patch,post'
-	- role: developer
-	  verbs: 'get,delete,options,patch,post'
+    site: http://tng-gtk-usr:4567/users
+    permissions:
+    - role: '-'
+      verbs: post
+    - role: admin
+      verbs: 'get,delete,options,patch,post'
+    - role: customer
+      verbs: 'get,delete,options,patch,post'
+    - role: developer
+      verbs: 'get,delete,options,patch,post'
