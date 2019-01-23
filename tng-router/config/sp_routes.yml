@@ -142,11 +142,11 @@ paths:
 	permissions:
 	- role: '-'
 	  verbs: post
-  /api/v3/users/permissions(/?|/*): 
-	site: http://tng-gtk-usr:4567/endpoints
-	permissions:
-	- role: admin
-	  verbs: 'get,options'
+  #/api/v3/users/permissions(/?|/*): 
+	#site: http://tng-gtk-usr:4567/endpoints
+	#permissions:
+	#- role: admin
+	#  verbs: 'get,options'
   /api/v3/users(/?|/*): 
 	site: http://tng-gtk-usr:4567/users
 	permissions:
