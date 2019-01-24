@@ -135,6 +135,13 @@ paths:
     permissions:
     - role: '-'
       verbs: get
+  /api/v3/roles(/?|/*):
+    site: http://tng-gtk-usr:4567/roles
+    permissions:
+    - role: '-'
+      verbs: 'get,options'
+    - role: admin
+      verbs: 'get,delete,options,post'
   /api/v3/users/sessions(/?|/*): 
     site: http://tng-gtk-usr:4567/login
     permissions:
