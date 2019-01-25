@@ -119,22 +119,27 @@ paths:
     site: http://tng-sla-mgmt:8080/tng-sla-mgmt/api/slas/v1/templates
     permissions:
     - role: '-'
-      verbs: get
+      verbs: 'options,post,get'
   /api/v3/slas/configurations(/?|/*): 
     site: http://tng-sla-mgmt:8080/tng-sla-mgmt/api/slas/v1/mgmt
     permissions:
     - role: '-'
-      verbs: get
+      verbs: 'options,get'
   /api/v3/slas/agreements(/?|/*): 
     site: http://tng-sla-mgmt:8080/tng-sla-mgmt/api/slas/v1/agreements
     permissions:
     - role: '-'
-      verbs: get
+      verbs: 'options,get'
   /api/v3/slas/violations(/?|/*): 
     site: http://tng-sla-mgmt:8080/tng-sla-mgmt/api/slas/v1/violations
     permissions:
     - role: '-'
-      verbs: get
+      verbs: 'option,get'
+  /api/v3/slas/licenses(/?|/*): 
+    site: http://tng-sla-mgmt:8080/tng-sla-mgmt/api/slas/v1/licenses
+    permissions:
+    - role: '-'
+      verbs: 'option,get,delete'
   /api/v3/roles(/?|/*):
     site: http://tng-gtk-usr:4567/roles
     permissions:
