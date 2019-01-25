@@ -118,23 +118,36 @@ paths:
   /api/v3/slas/templates(/?|/*): 
     site: http://tng-sla-mgmt:8080/tng-sla-mgmt/api/slas/v1/templates
     permissions:
-    - role: '-'
-      verbs: get
+    - role: 'admin'
+      verbs: 'options,post,get,delete'
+    - role: 'customer'
+      verbs: 'options,get'
   /api/v3/slas/configurations(/?|/*): 
     site: http://tng-sla-mgmt:8080/tng-sla-mgmt/api/slas/v1/mgmt
     permissions:
-    - role: '-'
-      verbs: get
+    - role: 'admin'
+      verbs: 'options,get'
   /api/v3/slas/agreements(/?|/*): 
     site: http://tng-sla-mgmt:8080/tng-sla-mgmt/api/slas/v1/agreements
     permissions:
-    - role: '-'
-      verbs: get
+    - role: 'admin'
+      verbs: 'options,post,get,delete'
+    - role: 'customer'
+      verbs: 'options,get'
   /api/v3/slas/violations(/?|/*): 
     site: http://tng-sla-mgmt:8080/tng-sla-mgmt/api/slas/v1/violations
     permissions:
-    - role: '-'
-      verbs: get
+    - role: 'admin'
+      verbs: 'options,get'
+    - role: 'customer'
+      verbs: 'options,get'
+  /api/v3/slas/licenses(/?|/*): 
+    site: http://tng-sla-mgmt:8080/tng-sla-mgmt/api/slas/v1/licenses
+    permissions:
+    - role: 'admin'
+      verbs: 'options,post,get,delete'
+    - role: 'customer'
+      verbs: 'options,post,get'
   /api/v3/roles(/?|/*):
     site: http://tng-gtk-usr:4567/roles
     permissions:
