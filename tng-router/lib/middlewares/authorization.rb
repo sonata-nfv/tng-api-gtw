@@ -29,44 +29,29 @@
 ## the Horizon 2020 and 5G-PPP programmes. The authors would like to
 ## acknowledge the contributions of their colleagues of the 5GTANGO
 ## partner consortium (www.5gtango.eu).
+# frozen_string_literal: true
 # encoding: utf-8
-require 'rack/uploads'
-require ::File.join(__dir__, 'dispatcher')
+require 'rack'
+require 'jwt'
+require 'time'
+require 'tng/gtk/utils/logger'
+require_relative '../utils'
 
-# from https://gist.github.com/Integralist/9503099
-def symbolize(obj)
-  return obj.reduce({}) do |memo, (k, v)|
-    memo.tap { |m| m[k.to_sym] = symbolize(v) }
-  end if obj.is_a? Hash
-
-  return obj.reduce([]) do |memo, v| 
-    memo << symbolize(v); memo
-  end if obj.is_a? Array
-  obj
-end
-
-Dispatcher.configure do |config|
-  #app_config = symbolize YAML::load_file(File.join(__dir__, 'config', 'app.yml'))
-  routes_file_name = File.join(__dir__, 'config', ENV['ROUTES_FILE'] ||= 'sp_routes.yml')
-  routes = symbolize YAML::load_file(routes_file_name)
+class Authorization
+  LOGGER=Tng::Gtk::Utils::Logger
+  LOGGED_COMPONENT=self.name
+  @@began_at = Time.now.utc
+  LOGGER.info(component:LOGGED_COMPONENT, operation:'initializing', start_stop: 'START', message:"Started at #{@@began_at}")
   
-  config.base_path = routes[:base_path]
-  config.paths = routes[:paths]
-  #config.middlewares = app_config[:middlewares]
-  config.root = __dir__
+  def initialize(app, options= {})
+    @app = app
+  end
+
+  def call(env)
+    msg = '#'+__method__.to_s
+    LOGGER.debug(component:LOGGED_COMPONENT, operation: msg, message:"env=#{env}")
+    @app.call(env)
+  end
+  LOGGER.info(component:LOGGED_COMPONENT, operation:'initializing', start_stop: 'STOP', message:"Ended at #{Time.now.utc}", time_elapsed:"#{Time.now.utc-@@began_at}")
 end
-
-Dir.glob(File.join(__dir__, 'lib', '**', '*.rb')).each { |file| require file } if Dir.exist?('lib')
-
-use Instrumentation unless ENV['NO_KPIS']
-use Authentication unless ENV['NO_AUTH']
-use Throttle unless ENV['NO_THROTTLE']
-use ConfigFinder, base_path: Dispatcher.configuration.base_path, paths: Dispatcher.configuration.paths
-use Authorization unless ENV['NO_AUTH']
-use Getter
-use EmbodiedMethod
-use OtherMethods
-run Dispatcher.new
-
-
 
