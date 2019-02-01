@@ -113,4 +113,3 @@ paths:
       verbs: 'get,delete,options,patch,post'
     - role: developer
       verbs: 'get,delete,options,patch,post'
-	  
