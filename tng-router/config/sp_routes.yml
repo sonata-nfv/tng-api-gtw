@@ -155,6 +155,16 @@ paths:
       verbs: 'get,options'
     - role: admin
       verbs: 'get,delete,options,post'
+  /api/v3/settings/vims(/?|/*): 
+    site: http://tng-ia:8082/api/ia/v1/vims
+    permissions:
+    - role: admin
+      verbs: 'options,post,get,delete'
+  /api/v3/settings/wims(/?|/*): 
+    site: http://tng-ia:8082/api/ia/v1/wims
+    permissions:
+    - role: admin
+      verbs: 'options,post,get,delete'
   /api/v3/users/sessions(/?|/*): 
     site: http://tng-gtk-usr:4567/login
     permissions:
