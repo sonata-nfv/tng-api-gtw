@@ -156,12 +156,12 @@ paths:
     - role: admin
       verbs: 'get,delete,options,post'
   /api/v3/settings/vims(/?|/*): 
-    site: http://tng-ia:8083/api/ia/v1/vims
+    site: http://ia-nbi:8083/api/ia/v1/vims
     permissions:
     - role: admin
       verbs: 'options,post,get,delete'
   /api/v3/settings/wims(/?|/*): 
-    site: http://tng-ia:8083/api/ia/v1/wims
+    site: http://ia-nbi:8083/api/ia/v1/wims
     permissions:
     - role: admin
       verbs: 'options,post,get,delete'
