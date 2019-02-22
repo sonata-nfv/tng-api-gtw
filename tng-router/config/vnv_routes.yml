@@ -113,3 +113,8 @@ paths:
       verbs: 'get,delete,options,patch,post'
     - role: developer
       verbs: 'get,delete,options,patch,post'
+  /api/v3/settings/platforms(/?|/*):
+    site: http://tng-vnv-platform-adapter:5001/service_platforms
+    permissions:
+    - role: admin
+      verbs: 'get,delete,options,post,put'
