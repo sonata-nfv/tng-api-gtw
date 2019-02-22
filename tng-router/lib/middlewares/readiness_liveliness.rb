@@ -50,7 +50,8 @@ class ReadinessLiveliness
   def call(env)
     msg = '#'+__method__.to_s
     LOGGER.debug(component:LOGGED_COMPONENT, operation: msg, message:"env=#{env}")
-    return [200, {}, { alive_since: @@began_at}.to_json] if is_readiness_liveliness?(env)
+    content_type :json
+    return [200, {}, [{alive_since: @@began_at}.to_json]] if is_readiness_liveliness?(env)
     @app.call(env) 
   end
   
