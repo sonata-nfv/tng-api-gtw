@@ -33,12 +33,12 @@
 base_path: ''
 paths:
   /: 
-    site: http://tng-gtk-common:5000/
+    site: http://tng-gtk-vnv:5000/
     permissions:
     - role: '-'
       verbs: get
   /api/v3(/?): 
-    site: http://tng-gtk-common:5000/
+    site: http://tng-gtk-vnv:5000/
     permissions:
     - role: '-'
       verbs: get
