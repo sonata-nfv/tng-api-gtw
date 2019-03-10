@@ -46,10 +46,11 @@ def symbolize(obj)
 end
 
 Dispatcher.configure do |config|
-  #app_config = symbolize YAML::load_file(File.join(__dir__, 'config', 'app.yml'))
+  app_config = symbolize YAML::load_file(File.join(__dir__, 'config', 'app.yml'))
+  config.throttling = app_config[:throttling]
+
   routes_file_name = File.join(__dir__, 'config', ENV['ROUTES_FILE'] ||= 'sp_routes.yml')
   routes = symbolize YAML::load_file(routes_file_name)
-  
   config.base_path = routes[:base_path]
   config.paths = routes[:paths]
   #config.middlewares = app_config[:middlewares]
@@ -61,13 +62,11 @@ Dir.glob(File.join(__dir__, 'lib', '**', '*.rb')).each { |file| require file } i
 use Instrumentation unless ENV['NO_KPIS']
 use ReadinessLiveliness
 use Authentication unless ENV['NO_AUTH']
-use Throttle unless ENV['NO_THROTTLE']
+#use Throttle, profiles: Dispatcher.configuration.throttling unless ENV['NO_THROTTLE']
 use ConfigFinder, base_path: Dispatcher.configuration.base_path, paths: Dispatcher.configuration.paths
 use Authorization unless ENV['NO_AUTH']
 use Getter
 use EmbodiedMethod
 use OtherMethods
 run Dispatcher.new
-
-
 
