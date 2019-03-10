@@ -148,13 +148,6 @@ paths:
       verbs: 'options,post,get,delete'
     - role: 'customer'
       verbs: 'options,post,get'
-  /api/v3/roles(/?|/*):
-    site: http://tng-gtk-usr:4567/roles
-    permissions:
-    - role: '-'
-      verbs: 'get,options'
-    - role: admin
-      verbs: 'get,delete,options,post'
   /api/v3/settings/vims(/?|/*): 
     site: http://ia-nbi:8083/api/ia/v1/vims
     permissions:
@@ -170,6 +163,13 @@ paths:
     permissions:
     - role: '-'
       verbs: post
+  /api/v3/users/roles(/?|/*):
+    site: http://tng-gtk-usr:4567/roles
+    permissions:
+    - role: '-'
+      verbs: 'get,options'
+    - role: admin
+      verbs: 'get,delete,options,post'
   /api/v3/users(/?|/*): 
     site: http://tng-gtk-usr:4567/users
     permissions:
