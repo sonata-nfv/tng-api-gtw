@@ -152,12 +152,12 @@ paths:
     site: http://ia-nbi:8083/api/ia/v1/vims
     permissions:
     - role: admin
-      verbs: 'options,post,get,delete'
+      verbs: 'options,post,patch,get,delete'
   /api/v3/settings/wims(/?|/*): 
     site: http://ia-nbi:8083/api/ia/v1/wims
     permissions:
     - role: admin
-      verbs: 'options,post,get,delete'
+      verbs: 'options,post,patch,get,delete'
   /api/v3/users/sessions(/?|/*): 
     site: http://tng-gtk-usr:4567/login
     permissions:
