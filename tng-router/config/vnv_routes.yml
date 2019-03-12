@@ -117,4 +117,4 @@ paths:
     site: http://tng-vnv-platform-adapter:5001/service_platforms
     permissions:
     - role: admin
-      verbs: 'get,delete,options,post,put'
+      verbs: 'get,delete,options,post,patch'
