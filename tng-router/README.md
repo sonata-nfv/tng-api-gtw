@@ -9,17 +9,33 @@ This is the 5GTANGO Gatekeeper API Router for the Verification&amp;Validation an
 ## Supported endpoints
 Supported endpoints are the following.
 
-**Endpoint**|**Description**|**V&V**|**SP**
+**Endpoints**|**Description**|**V&V**|**SP**
 :----|:----:|:---:|:---:
 `/`||x|x
 `/api/v3`||x|x
 `/api/v3/functions`||x|x
 `/api/v3/packages`||x|x
 `/api/v3/pings`||x|x 
+`/api/v3/policies`|||x
+`/api/v3/policies/placement`|||x
+`/api/v3/records/functions`|||x
+`/api/v3/records/services`|||x
+`/api/v3/requests`|||x
 `/api/v3/services`||x|x
 `/api/v3/settings/platforms`||x|
+`/api/v3/settings/vims`|||x
+`/api/v3/settings/wims`|||x
+`/api/v3/slas/agreements`|||x
+`/api/v3/slas/configurations`|||x
+`/api/v3/slas/licenses`|||x
+`/api/v3/slas/templates`|||x
+`/api/v3/slas/violations`|||x
+`/api/v3/slices`|||x
+`/api/v3/slice-instances`|||x
 `/api/v3/tests`||x|
+`/api/v3/tests/descriptors`||x|
 `/api/v3/tests/plans`||x|
+`/api/v3/tests/results`||x|
 `/api/v3/users`||x|x
 `/api/v3/users/roles`||x|x
 `/api/v3/users/sessions`||x|x
