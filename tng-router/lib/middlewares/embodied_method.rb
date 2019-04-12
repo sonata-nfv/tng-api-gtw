@@ -66,7 +66,12 @@ class EmbodiedMethod
     
     # Pass file uploads
     LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Content-type: #{request.content_type}")
-    return Uploader.new.call(env) if request.content_type =~ /multipart\/form-data/
+    if request.content_type =~ /multipart\/form-data/
+      old_params = env['rack.request.form_hash']
+      user_params = {'user_name'=>env.fetch('5gtango.user.name', ''), 'user_email'=>env.fetch('5gtango.user.email', '')}
+      env['rack.request.form_hash'] = user_params.merge old_params
+      return Uploader.new.call(env) 
+    end
     
     LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Params: #{request.params}\nBody: #{body}")
     bad_request("Content-type (#{request.content_type} not supported in #{request.request_method} requests") unless allowed_content_type(request.content_type)
@@ -94,10 +99,6 @@ class EmbodiedMethod
   
   def add_user_data(body, name, email)
     return body if (name.empty? && email.empty?)
-    #json_body = JSON.parse(body)
-    #json_body['customer_name'] = name
-    #json_body['customer_email'] = email
-    #json_body.to_json
     new_body = body.chomp('}')
     new_body += ", \"customer_name\":\"#{name}\", \"customer_email\":\"#{email}\"}"
     new_body
