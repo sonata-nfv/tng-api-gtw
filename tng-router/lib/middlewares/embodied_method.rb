@@ -66,12 +66,7 @@ class EmbodiedMethod
     
     # Pass file uploads
     LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Content-type: #{request.content_type}")
-    if request.content_type =~ /multipart\/form-data/
-      old_params = env['rack.request.form_hash']
-      user_params = {'user_name'=>env.fetch('5gtango.user.name', ''), 'user_email'=>env.fetch('5gtango.user.email', '')}
-      env['rack.request.form_hash'] = user_params.merge old_params
-      return Uploader.new.call(env) 
-    end
+    return Uploader.new.call(env) if request.content_type =~ /multipart\/form-data/
     
     LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Params: #{request.params}\nBody: #{body}")
     bad_request("Content-type (#{request.content_type} not supported in #{request.request_method} requests") unless allowed_content_type(request.content_type)
@@ -84,8 +79,7 @@ class EmbodiedMethod
         req.headers['Content-Type'] = request.content_type
         req.headers['Authorization'] = 'Bearer '+env['5gtango.user.token'] if env.key?('5gtango.user.token')
         #req.headers['Content-Length'] = request.body.bytesize
-        LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Params: #{request.params}\nBody: #{body}")
-        req.body = add_user_data(body, env.fetch('5gtango.user.name', ''), env.fetch('5gtango.user.email', ''))
+        req.body = body
       end
     end
     LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Response was #{resp.inspect}")
@@ -95,13 +89,6 @@ class EmbodiedMethod
   private  
   def allowed_content_type(content_type)
     (content_type =~ /application\/json/) || (content_type =~ /application\/yaml/) || (content_type =~ /application\/xml/)
-  end
-  
-  def add_user_data(body, name, email)
-    return body if (name.empty? && email.empty?)
-    new_body = body.chomp('}')
-    new_body += ", \"customer_name\":\"#{name}\", \"customer_email\":\"#{email}\"}"
-    new_body
   end
   LOGGER.info(component:LOGGED_COMPONENT, operation:'class loading', start_stop: 'STOP', message:"Ended at #{Time.now.utc}", time_elapsed:"#{Time.now.utc-@@began_at}")
 end
