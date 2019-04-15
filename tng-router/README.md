@@ -4,22 +4,22 @@
 <p align="center"><img src="https://github.com/sonata-nfv/tng-api-gtw/wiki/images/sonata-5gtango-logo-500px.png" /></p>
 
 # API Router
-This is the 5GTANGO Gatekeeper API Router for the Verification&amp;Validation and Service Platforms (built on top of [SONATA](https://github.com/sonata-nfv)) component.
+This is the 5GTANGO Gatekeeper API Router for the Verification&amp;Validation and Service Platforms (built on top of [SONATA](https://github.com/sonata-nfv)) component. It is deployed in the two different kinds of platforms, with two different configurations.
 
 ## Supported endpoints
-Supported endpoints are the following.
+Supported endpoints, alphabetically sorted and with the indication of the platform in which it is available, are the following.
 
 **Endpoints**|**Description**|**V&V**|**SP**
 :----|:----:|:---:|:---:
-`/`||x|x
-`/api/v3`||x|x
-`/api/v3/functions`||x|x
+`/`|The root of the API.|x|x
+`/api/v3`|The v3 root of the API.|x|x
+`/api/v3/functions`|The list of available functions (VNFs) in the Catalogue.|x|x
 `/api/v3/packages`||x|x
 `/api/v3/pings`||x|x 
 `/api/v3/policies`|||x
 `/api/v3/policies/placement`|||x
-`/api/v3/records/functions`|||x
-`/api/v3/records/services`|||x
+`/api/v3/records/functions`|The list of function records available in the Repository.||x
+`/api/v3/records/services`|The list of service records available in the Repository.||x
 `/api/v3/requests`|||x
 `/api/v3/services`||x|x
 `/api/v3/settings/platforms`||x|

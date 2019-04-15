@@ -66,6 +66,7 @@ class EmbodiedMethod
     
     # Pass file uploads
     LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Content-type: #{request.content_type}")
+
     if request.content_type =~ /multipart\/form-data/
       #old_params = env['rack.request.form_hash']
       #user_params = {'user_name'=>env.fetch('5gtango.user.name', ''), 'user_email'=>env.fetch('5gtango.user.email', '')}
@@ -84,8 +85,8 @@ class EmbodiedMethod
         req.headers['Content-Type'] = request.content_type
         req.headers['Authorization'] = 'Bearer '+env['5gtango.user.token'] if env.key?('5gtango.user.token')
         #req.headers['Content-Length'] = request.body.bytesize
-        LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Params: #{request.params}\nBody: #{body}")
         req.body = add_user_data(body, env.fetch('5gtango.user.name', ''), env.fetch('5gtango.user.email', ''))
+        LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Params: #{request.params}\nBody: #{body}")
       end
     end
     LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Response was #{resp.inspect}")
