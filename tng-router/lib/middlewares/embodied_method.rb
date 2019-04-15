@@ -67,9 +67,9 @@ class EmbodiedMethod
     # Pass file uploads
     LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Content-type: #{request.content_type}")
     if request.content_type =~ /multipart\/form-data/
-      old_params = env['rack.request.form_hash']
-      user_params = {'user_name'=>env.fetch('5gtango.user.name', ''), 'user_email'=>env.fetch('5gtango.user.email', '')}
-      env['rack.request.form_hash'] = user_params.merge old_params
+      #old_params = env['rack.request.form_hash']
+      #user_params = {'user_name'=>env.fetch('5gtango.user.name', ''), 'user_email'=>env.fetch('5gtango.user.email', '')}
+      #env['rack.request.form_hash'] = user_params.merge old_params
       return Uploader.new.call(env) 
     end
     
