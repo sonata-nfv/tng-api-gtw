@@ -84,9 +84,10 @@ class EmbodiedMethod
         req.url url
         req.headers['Content-Type'] = request.content_type
         req.headers['Authorization'] = 'Bearer '+env['5gtango.user.token'] if env.key?('5gtango.user.token')
-        #req.headers['Content-Length'] = request.body.bytesize
-        req.body = add_user_data(body, env.fetch('5gtango.user.name', ''), env.fetch('5gtango.user.email', ''))
-        LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Params: #{request.params}\nBody: #{body}")
+        req.headers['X-User-Name'] = env.fetch('5gtango.user.name', '')
+        req.headers['X-User-Email'] = env.fetch('5gtango.user.email', '')
+        req.body = body
+        LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Params: #{request.params}\nBody: #{body}\nHeaders: #{req.headers}")
       end
     end
     LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Response was #{resp.inspect}")
@@ -96,13 +97,6 @@ class EmbodiedMethod
   private  
   def allowed_content_type(content_type)
     (content_type =~ /application\/json/) || (content_type =~ /application\/yaml/) || (content_type =~ /application\/xml/)
-  end
-  
-  def add_user_data(body, name, email)
-    return body if (name.empty? && email.empty?)
-    new_body = body.chomp('}')
-    new_body += ", \"customer_name\":\"#{name}\", \"customer_email\":\"#{email}\"}"
-    new_body
   end
   LOGGER.info(component:LOGGED_COMPONENT, operation:'class loading', start_stop: 'STOP', message:"Ended at #{Time.now.utc}", time_elapsed:"#{Time.now.utc-@@began_at}")
 end
