@@ -185,13 +185,13 @@ paths:
     site: http://son-monitor-manager:8000/api/v2
     permissions:
     - role: admin
-      verbs: 'get,delete,options,patch,post'
+      verbs: 'get,options,post'
     - role: developer
       verbs: 'get,options'
   /api/v3/monitoring/graphs(/?|/*): 
     site: http://son-monitor-grafana:3000
     permissions:
     - role: admin
-      verbs: 'get,delete,options,patch,post'
+      verbs: 'get,options,post'
     - role: developer
       verbs: 'get,options'
