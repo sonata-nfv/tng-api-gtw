@@ -62,7 +62,10 @@ class Getter
 
     begin
       # Still need to choose which headers should passed
-      response = connection.get(env['5gtango.sink_path'], params, {'Content-Type' => request.content_type}) # compacted_env)
+      response = connection.get(env['5gtango.sink_path'], params, {'Content-Type' => request.content_type}) do |req|
+        req.headers['X-User-Name'] = env.fetch('5gtango.user.name', '')
+        req.headers['X-User-Email'] = env.fetch('5gtango.user.email', '')
+      end
       LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Response was #{response.status}, #{response.headers}, #{response.body}")
       return respond(response.status, response.headers, response.body)
     rescue Faraday::Error::ConnectionFailed => e
