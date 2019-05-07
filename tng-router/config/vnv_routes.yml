@@ -90,7 +90,7 @@ paths:
       verbs: 'get,options'
     - role: developer
       verbs: 'get,options'
-  /api/v3/roles(/?|/*):
+  /api/v3/users/roles(/?|/*):
     site: http://tng-gtk-usr:4567/roles
     permissions:
     - role: '-'
