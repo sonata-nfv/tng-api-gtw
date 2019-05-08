@@ -67,6 +67,7 @@ class Getter
         req.headers['X-User-Email'] = env.fetch('5gtango.user.email', '')
       end
       LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Response was #{response.status}, #{response.headers}, #{response.body}")
+      response.headers.delete 'Transfer-Encoding'
       return respond(response.status, response.headers, response.body)
     rescue Faraday::Error::ConnectionFailed => e
       LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"The server at #{env['5gtango.sink_path']} is either unavailable or is not currently accepting requests. Please try again in a few minutes.")
