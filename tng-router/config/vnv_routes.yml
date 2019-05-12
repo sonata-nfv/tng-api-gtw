@@ -136,3 +136,12 @@ paths:
       verbs: 'get,options,post'
     - role: developer
       verbs: 'get,options'
+  /api/v3/recommendations(/?|/*): 
+    site: http://tng-vnv-dsm:4010/tng-vnv-dsm/api/v1
+    permissions:
+    - role: admin
+      verbs: 'options,post,get,delete'
+    - role: developer
+      verbs: 'get,delete,options,post'
+    - role: customer
+      verbs: 'get'
