@@ -49,5 +49,9 @@ COPY . /app
 EXPOSE 5000
 ENV PORT 5000
 ENV ROUTES_FILE=sp_routes.yml
+ENV REDIS_URL=redis://son-redis:6379
+ENV PUSHGATEWAY_URL=http://son-monitor-pushgateway:9091 
+ENV PROMETHEUS_JOB_NAME=sonata
 #ENV NO_AUTH=true # uncomment this variable when you want to start authenticating users
+ENV NO_THROTTLE=true # uncomment this variable when you want to stop throttling requests
 CMD ["bundle", "exec", "rackup", "-p", "5000", "--host", "0.0.0.0"]
