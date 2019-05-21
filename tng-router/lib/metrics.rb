@@ -50,7 +50,7 @@ class Metrics
 
   def self.counter(params)
     msg = '#'+__method__.to_s
-
+    LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"params=#{params}")
     base_labels = params.fetch(:base_labels,{})
     factor = params.fetch(:value,1).to_f
 
@@ -68,7 +68,7 @@ class Metrics
         @@registry.register(counter)
         
         # push the registry to the gateway
-        Prometheus::Client::Push.new(@@prometheus_job_name, params[:instance], @@pushgateway_url).add(@@registry) 
+        Prometheus::Client::Push.new(@@prometheus_job_name, 'default_instance', @@pushgateway_url).add(@@registry) #params[:instance]
       end
     rescue Exception => e
       LOGGER.error(component:LOGGED_COMPONENT, operation:msg, message:"#{e.message}\n#{e.backtrace.join("\n\t")}")
@@ -77,6 +77,7 @@ class Metrics
 
   def self.gauge(params)
     msg = '#'+__method__.to_s
+    LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"params=#{params}")
     base_labels = params.fetch(:base_labels,{})
     factor = params.fetch(:value,1).to_f
 
@@ -95,10 +96,8 @@ class Metrics
             value = value.to_f + factor          
           end          
         end
-
         gauge.set(base_labels,value)
-        Prometheus::Client::Push.new(@@prometheus_job_name, params[:instance], @@pushgateway_url).replace(@@registry)
-
+        Prometheus::Client::Push.new(@@prometheus_job_name, 'default_instance', @@pushgateway_url).replace(@@registry) #params[:instance]
       else
         # creates a metric type gauge
         gauge = Prometheus::Client::Gauge.new(params[:name].to_sym, params[:docstring], base_labels)
