@@ -33,6 +33,7 @@
 # encoding: utf-8
 require 'rack'
 require_relative '../utils'
+require_relative '../metrics'
 require 'tng/gtk/utils/logger'
 
 class Instrumentation
@@ -51,6 +52,19 @@ class Instrumentation
 
     headers['X-Timing'] = (Time.now - began_at).to_f.to_s
     LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Finishing with status #{status}")
+    labels = {status: status, method: env['REQUEST_METHOD'].downcase, host: env['HTTP_HOST'].to_s, path: clean_uuids(env['PATH_INFO'])}
+    result= Metrics.counter(name: 'api_http_requests', docstring: 'Counter of HTTP requests done', base_labels: labels)
+    LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Counter KPI: result=#{result}")
+    result=Metrics.gauge(name: 'api_http_request_duration_seconds', value: headers['X-Timing'], docstring: 'Time taken by each HTTP request', base_labels: labels)
+    LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Gauge KPI: result=#{result}")
     [status, headers, body]
   end
+  
+  private
+  def clean_uuids(string_with_uuid)
+    return '' unless string_with_uuid
+    string_with_uuid.gsub(/[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}/, ':uuid\\1') #'/api/v3/requests/76acf635-b982-4a05-805b-3433976e6aa9/another'.to_s.gsub(/[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}/, ':uuid\\1')
+  end
 end
+
+
