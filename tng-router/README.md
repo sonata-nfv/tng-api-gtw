@@ -10,10 +10,10 @@ This is the 5GTANGO Gatekeeper API Router for the Verification&amp;Validation an
 Supported endpoints, alphabetically sorted and with the indication of the platform in which it is available, are the following.
 
 ### Service Platform
-The entrypoints for the Service Platform are configured in the [config/sp_routes.yml]() file.
+The entrypoints for the Service Platform are configured in the [config/sp_routes.yml](https://github.com/sonata-nfv/tng-api-gtw/blob/master/tng-router/config/sp_routes.yml) file.
 
 **Endpoints**|**Description**
-:----|:----:|:---:|:---:
+:----|:----:
 `/`|The root of the API.
 `/api/v3`|The v3 root of the API.
 `/api/v3/functions`|The list of available functions (VNFs) in the Catalogue.
@@ -40,10 +40,10 @@ The entrypoints for the Service Platform are configured in the [config/sp_routes
 `/api/v3/users/sessions`|
 
 ### Validation and Verification Platform
-The entrypoints for the Validation and Verification Platform are configured in the [config/vnv_routes.yml]() file.
+The entrypoints for the Validation and Verification Platform are configured in the [config/vnv_routes.yml](https://github.com/sonata-nfv/tng-api-gtw/blob/master/tng-router/config/vnv_routes.yml) file.
 
 **Endpoints**|**Description**
-:----|:----:|:---:|:---:
+:----|:----:
 `/`|The root of the API.
 `/api/v3`|The v3 root of the API.
 `/api/v3/functions`|The list of available functions (VNFs) in the Catalogue.
