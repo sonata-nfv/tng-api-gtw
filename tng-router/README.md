@@ -16,28 +16,27 @@ The entrypoints for the Service Platform are configured in the [config/sp_routes
 :----|:----:
 `/`|The root of the API.
 `/api/v3`|The v3 root of the API.
-`/api/v3/functions`|The list of available functions (VNFs) in the Catalogue.
-`/api/v3/packages`|
-`/api/v3/pings`| 
-`/api/v3/policies`|
-`/api/v3/policies/placement`|
-`/api/v3/records/functions`|The list of function records available in the Repository.
-`/api/v3/records/services`|The list of service records available in the Repository.
-`/api/v3/requests`|
-`/api/v3/services`|
-`/api/v3/settings/platforms`
-`/api/v3/settings/vims`|
-`/api/v3/settings/wims`|
-`/api/v3/slas/agreements`|
-`/api/v3/slas/configurations`|
-`/api/v3/slas/licenses`|
-`/api/v3/slas/templates`|
-`/api/v3/slas/violations`|
-`/api/v3/slices`|
-`/api/v3/slice-instances`|
-`/api/v3/users`|
-`/api/v3/users/roles`|
-`/api/v3/users/sessions`|
+`/api/v3/functions`|Lists available functions (VNFs) in the Catalogue
+`/api/v3/packages`|Manages packages (uploading, downloading, etc.)
+`/api/v3/pings`|The Gatekeeper's `readiness` and `liveness` endpoint
+`/api/v3/policies`|Manages run-time policies
+`/api/v3/policies/placement`|Manages placements policies
+`/api/v3/records/functions`|Lists function records available in the Repository
+`/api/v3/records/services`|Lists service records available in the Repository
+`/api/v3/requests`|Manages services' and slices' lifecycle events (creation, scaling, deletion, etc.)
+`/api/v3/services`|Lists available services (NSs) in the Catalogue
+`/api/v3/settings/platforms`|Manages platform's settings
+`/api/v3/settings/vims`|Manages VIM's settings
+`/api/v3/settings/wims`|Manages WIM's settings
+`/api/v3/slas/agreements`|Manages SLA aggreements
+`/api/v3/slas/configurations`|Manages SLA configurations
+`/api/v3/slas/licenses`|Manages SLA 
+`/api/v3/slas/templates`|Manages SLA 
+`/api/v3/slas/violations`|Manages SLA 
+`/api/v3/slices`|Manages slice templates 
+`/api/v3/users`|Manages users 
+`/api/v3/users/roles`|Manages user's roles 
+`/api/v3/users/sessions`|Manages user's sessions (logging in)
 
 ### Validation and Verification Platform
 The entrypoints for the Validation and Verification Platform are configured in the [config/vnv_routes.yml](https://github.com/sonata-nfv/tng-api-gtw/blob/master/tng-router/config/vnv_routes.yml) file.
@@ -46,16 +45,16 @@ The entrypoints for the Validation and Verification Platform are configured in t
 :----|:----:
 `/`|The root of the API.
 `/api/v3`|The v3 root of the API.
-`/api/v3/functions`|The list of available functions (VNFs) in the Catalogue.
-`/api/v3/packages`|
-`/api/v3/pings`| 
-`/api/v3/services`|
-`/api/v3/tests/descriptors`|
-`/api/v3/tests/plans`|
-`/api/v3/tests/results`|
-`/api/v3/users`|
-`/api/v3/users/roles`|
-`/api/v3/users/sessions`|
+`/api/v3/functions`|Lists available functions (VNFs) in the Catalogue
+`/api/v3/packages`|Manages packages (uploading, downloading, etc.)
+`/api/v3/pings`|The Gatekeeper's `readiness` and `liveness` endpoint
+`/api/v3/services`|Lists available services (NSs) in the Catalogue
+`/api/v3/tests/descriptors`|Lists available test descriptors (TDs) in the Catalogue
+`/api/v3/tests/plans`|Manages test plans
+`/api/v3/tests/results`|Lists available test ressults (TRs) in the Repository
+`/api/v3/users`|Manages users
+`/api/v3/users/roles`|Manages user's roles
+`/api/v3/users/sessions`|Manages user's sessions (logging in)
 
 ## Installing / Getting started
 
