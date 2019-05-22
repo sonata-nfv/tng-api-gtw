@@ -272,7 +272,7 @@ Expected returned data is:
 * `HTTP` code `404` (`Not Found`), if the package is not found.
 
 ### Services 
-Are are on-boarded within packages (see above), so one can not `POST`, `PUT`, `PATCH` or `DELETE` them.
+Are on-boarded within packages (see above), so one can not `POST`, `PUT`, `PATCH` or `DELETE` them.
 
 #### Querying
 
