@@ -34,7 +34,7 @@ The entrypoints for the Service Platform are configured in the [config/sp_routes
 `/api/v3/slas/templates`|Manages SLA 
 `/api/v3/slas/violations`|Manages SLA 
 `/api/v3/slices`|Manages slice templates 
-`/api/v3/users`|Manages users 
+`/api/v3/users`|[Manages users](https://github.com/sonata-nfv/tng-api-gtw/wiki/users-management-usage)
 `/api/v3/users/roles`|Manages user's roles 
 `/api/v3/users/sessions`|Manages user's sessions (logging in)
 
@@ -52,7 +52,7 @@ The entrypoints for the Validation and Verification Platform are configured in t
 `/api/v3/tests/descriptors`|Lists available test descriptors (TDs) in the Catalogue
 `/api/v3/tests/plans`|Manages test plans
 `/api/v3/tests/results`|Lists available test ressults (TRs) in the Repository
-`/api/v3/users`|Manages users
+`/api/v3/users`|[Manages users](https://github.com/sonata-nfv/tng-api-gtw/wiki/users-management-usage)
 `/api/v3/users/roles`|Manages user's roles
 `/api/v3/users/sessions`|Manages user's sessions (logging in)
 
