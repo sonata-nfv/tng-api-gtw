@@ -82,6 +82,7 @@ class EmbodiedMethod
         req.url url
         req.headers['Content-Type'] = request.content_type
         req.headers['Authorization'] = 'Bearer '+env['5gtango.user.token'] if env.key?('5gtango.user.token')
+        STDERR.puts ">>>> #{LOGGED_COMPONENT}#{msg}: env['5gtango.user.name']=#{env['5gtango.user.name']}"
         req.headers['X-User-Name'] = env.fetch('5gtango.user.name', '')
         req.headers['X-User-Email'] = env.fetch('5gtango.user.email', '')
         req.body = body
