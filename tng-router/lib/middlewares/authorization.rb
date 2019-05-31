@@ -40,8 +40,6 @@ require_relative '../utils'
 class Authorization
   LOGGER=Tng::Gtk::Utils::Logger
   LOGGED_COMPONENT=self.name
-  @@began_at = Time.now.utc
-  LOGGER.info(component:LOGGED_COMPONENT, operation:'initializing', start_stop: 'START', message:"Started at #{@@began_at}")
   
   def initialize(app, options= {})
     @app = app
@@ -52,6 +50,5 @@ class Authorization
     LOGGER.debug(component:LOGGED_COMPONENT, operation: msg, message:"env=#{env}")
     @app.call(env)
   end
-  LOGGER.info(component:LOGGED_COMPONENT, operation:'initializing', start_stop: 'STOP', message:"Ended at #{Time.now.utc}", time_elapsed:"#{Time.now.utc-@@began_at}")
 end
 

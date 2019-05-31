@@ -68,7 +68,7 @@ class Metrics
         @@registry.register(counter)
         
         # push the registry to the gateway
-        Prometheus::Client::Push.new(@@prometheus_job_name, 'default_instance', @@pushgateway_url).add(@@registry) #params[:instance]
+        Prometheus::Client::Push.new(@@prometheus_job_name, params[:instance], @@pushgateway_url).add(@@registry) #params[:instance]
       end
     rescue Exception => e
       LOGGER.error(component:LOGGED_COMPONENT, operation:msg, message:"#{e.message}\n#{e.backtrace.join("\n\t")}")
@@ -97,7 +97,7 @@ class Metrics
           end          
         end
         gauge.set(base_labels,value)
-        Prometheus::Client::Push.new(@@prometheus_job_name, 'default_instance', @@pushgateway_url).replace(@@registry) #params[:instance]
+        Prometheus::Client::Push.new(@@prometheus_job_name, params[:instance], @@pushgateway_url).replace(@@registry) #params[:instance]
       else
         # creates a metric type gauge
         gauge = Prometheus::Client::Gauge.new(params[:name].to_sym, params[:docstring], base_labels)

@@ -41,7 +41,6 @@ class ReadinessLiveliness
   LOGGER=Tng::Gtk::Utils::Logger
   LOGGED_COMPONENT=self.name
   @@began_at = Time.now.utc
-  LOGGER.info(component:LOGGED_COMPONENT, operation:'initializing', start_stop: 'START', message:"Started at #{@@began_at}")
   
   def initialize(app, options= {})
     @app = app
@@ -59,6 +58,5 @@ class ReadinessLiveliness
     env['REQUEST_METHOD'] == 'GET' &&
     env['REQUEST_PATH'].split('/')[-1] == 'pings'
   end
-  LOGGER.info(component:LOGGED_COMPONENT, operation:'initializing', start_stop: 'STOP', message:"Ended at #{Time.now.utc}", time_elapsed:"#{Time.now.utc-@@began_at}")
 end
 
