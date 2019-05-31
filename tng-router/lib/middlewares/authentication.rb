@@ -101,6 +101,7 @@ class Authentication
     
   def find_user_name_by_token(token:)
     return '' unless token.key?(:username)
+    STDERR.puts ">>>>Authentication.find_user_name_by_token: #{token[:username]}"
     token[:username] 
   end
   def find_user_email_by_token(token:)
