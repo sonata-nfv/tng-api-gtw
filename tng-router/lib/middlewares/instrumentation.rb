@@ -55,8 +55,8 @@ class Instrumentation
     labels = {status: status, method: env['REQUEST_METHOD'].downcase, host: env['HTTP_HOST'].to_s, path: clean_uuids(env['PATH_INFO'])}
     result= Metrics.counter(name: 'api_http_requests', docstring: 'Counter of HTTP requests done', base_labels: labels)
     LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Counter KPI: result=#{result}")
-    result=Metrics.gauge(name: 'api_http_request_duration_seconds', value: headers['X-Timing'], docstring: 'Time taken by each HTTP request', base_labels: labels)
-    LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Gauge KPI: result=#{result}")
+    #result=Metrics.gauge(name: 'api_http_request_duration_seconds', value: headers['X-Timing'], docstring: 'Time taken by each HTTP request', base_labels: labels)
+    #LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Gauge KPI: result=#{result}")
     [status, headers, body]
   end
   

@@ -43,8 +43,6 @@ require 'tng/gtk/utils/logger'
 class EmbodiedMethod
   LOGGER=Tng::Gtk::Utils::Logger
   LOGGED_COMPONENT=self.name
-  @@began_at = Time.now.utc
-  LOGGER.info(component:LOGGED_COMPONENT, operation:'class loading', start_stop: 'START', message:"Started at #{@@began_at}")
   attr_accessor :app
   
   include Utils
@@ -98,5 +96,4 @@ class EmbodiedMethod
   def allowed_content_type(content_type)
     (content_type =~ /application\/json/) || (content_type =~ /application\/yaml/) || (content_type =~ /application\/xml/)
   end
-  LOGGER.info(component:LOGGED_COMPONENT, operation:'class loading', start_stop: 'STOP', message:"Ended at #{Time.now.utc}", time_elapsed:"#{Time.now.utc-@@began_at}")
 end
