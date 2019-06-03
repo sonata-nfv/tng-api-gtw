@@ -50,7 +50,7 @@ class Uploader
     request = Rack::Request.new(env)
     bad_request('No files to upload') unless request.form_data?
     
-    env.each { |k,v| STDERR.puts ">>>> #{LOGGED_COMPONENT}#{msg}: #{k}=>#{v}" if (k =~ /HTTP_/ || k =~ /5gtango/)}
+    #env.each { |k,v| STDERR.puts ">>>> #{LOGGED_COMPONENT}#{msg}: #{k}=>#{v}" if (k =~ /HTTP_/ || k =~ /5gtango/)}
 
     Tempfile.open do |tempfile|
       tempfile.binmode
@@ -68,10 +68,10 @@ class Uploader
           req.headers['Content-Encoding'] = 'gzip'
           req.headers['Content-Length'] = tempfile.size.to_s
           req.headers['Accept'] = 'application/json'
-          req.headers['Authorization'] = 'Bearer '+env['HTTP_5GTANGO.USER.TOKEN'] if env.key?('HTTP_5GTANGO.USER.TOKEN')
-          STDERR.puts ">>>> #{LOGGED_COMPONENT}#{msg}: env['HTTP_5GTANGO.USER.NAME']=#{env['HTTP_5GTANGO.USER.NAME']}"
-          req.headers['X-User-Name'] = env.fetch('HTTP_5GTANGO.USER.NAME', '')
-          req.headers['X-User-Email'] = env.fetch('HTTP_5GTANGO.USER.EMAIL', '')
+          req.headers['Authorization'] = 'Bearer '+env['5gtango.user.token'] if env.key?('5gtango.user.token')
+          STDERR.puts ">>>> #{LOGGED_COMPONENT}#{msg}: env['5gtango.user.name']=#{env['5gtango.user.name']}"
+          req.headers['X-User-Name'] = env.fetch('5gtango.user.name', '')
+          req.headers['X-User-Email'] = env.fetch('5gtango.user.email', '')
           req.body = Faraday::UploadIO.new(tempfile, 'octet/stream')
         end
         return respond(200, {'Content-Type'=>'application/json'}, resp.body)
