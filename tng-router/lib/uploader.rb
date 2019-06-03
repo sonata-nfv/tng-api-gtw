@@ -66,6 +66,10 @@ class Uploader
           req.headers['Content-Encoding'] = 'gzip'
           req.headers['Content-Length'] = tempfile.size.to_s
           req.headers['Accept'] = 'application/json'
+          req.headers['Authorization'] = 'Bearer '+env['HTTP_5GTANGO.USER.TOKEN'] if env.key?('HTTP_5GTANGO.USER.TOKEN')
+          STDERR.puts ">>>> #{LOGGED_COMPONENT}#{msg}: env['HTTP_5GTANGO.USER.NAME']=#{env['HTTP_5GTANGO.USER.NAME']}"
+          req.headers['X-User-Name'] = env.fetch('HTTP_5GTANGO.USER.NAME', '')
+          req.headers['X-User-Email'] = env.fetch('HTTP_5GTANGO.USER.EMAIL', '')
           req.body = Faraday::UploadIO.new(tempfile, 'octet/stream')
         end
         return respond(200, {'Content-Type'=>'application/json'}, resp.body)
