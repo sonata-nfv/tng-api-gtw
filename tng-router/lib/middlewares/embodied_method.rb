@@ -81,10 +81,10 @@ class EmbodiedMethod
       resp = connection.public_send(method_name) do |req|
         req.url url
         req.headers['Content-Type'] = request.content_type
-        req.headers['Authorization'] = 'Bearer '+env['5gtango.user.token'] if env.key?('5gtango.user.token')
-        STDERR.puts ">>>> #{LOGGED_COMPONENT}#{msg}: env['5gtango.user.name']=#{env['5gtango.user.name']}"
-        req.headers['X-User-Name'] = env.fetch('5gtango.user.name', '')
-        req.headers['X-User-Email'] = env.fetch('5gtango.user.email', '')
+        req.headers['Authorization'] = 'Bearer '+env['HTTP_5GTANGO.USER.TOKEN'] if env.key?('HTTP_5GTANGO.USER.TOKEN')
+        STDERR.puts ">>>> #{LOGGED_COMPONENT}#{msg}: env['HTTP_5GTANGO.USER.NAME']=#{env['HTTP_5GTANGO.USER.NAME']}"
+        req.headers['X-User-Name'] = env.fetch('HTTP_5GTANGO.USER.NAME', '')
+        req.headers['X-User-Email'] = env.fetch('HTTP_5GTANGO.USER.EMAIL', '')
         req.body = body
         LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Params: #{request.params}\nBody: #{body}\nHeaders: #{req.headers}")
       end
