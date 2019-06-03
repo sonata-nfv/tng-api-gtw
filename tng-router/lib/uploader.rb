@@ -49,6 +49,8 @@ class Uploader
     msg = '#'+__method__.to_s
     request = Rack::Request.new(env)
     bad_request('No files to upload') unless request.form_data?
+    
+    env.each { |k,v| STDERR.puts ">>>> #{LOGGED_COMPONENT}#{msg}: #{k}=>#{v}" if (k =~ /HTTP_/ || k =~ /5gtango/)}
 
     Tempfile.open do |tempfile|
       tempfile.binmode
