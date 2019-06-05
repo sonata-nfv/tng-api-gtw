@@ -30,10 +30,11 @@ The entrypoints for the Service Platform are configured in the [config/sp_routes
 `/api/v3/settings/wims`|Manages WIM's settings
 `/api/v3/slas/agreements`|Manages SLA aggreements
 `/api/v3/slas/configurations`|Manages SLA configurations
-`/api/v3/slas/licenses`|Manages SLA 
-`/api/v3/slas/templates`|Manages SLA 
-`/api/v3/slas/violations`|Manages SLA 
+`/api/v3/slas/licenses`|Manages SLA licenses
+`/api/v3/slas/templates`|Manages SLA templates
+`/api/v3/slas/violations`|Manages SLA violations
 `/api/v3/slices`|Manages slice templates 
+`/api/v3/slice-instances`|Lists slice instances (creation and deletion are handled through requests) 
 `/api/v3/users`|[Manages users](https://github.com/sonata-nfv/tng-api-gtw/wiki/users-management-usage)
 `/api/v3/users/roles`|Manages user's roles 
 `/api/v3/users/sessions`|Manages user's sessions (logging in)
