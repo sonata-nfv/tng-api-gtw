@@ -17,7 +17,7 @@ The entrypoints for the Service Platform are configured in the [config/sp_routes
 `/`|The root of the API.
 `/api/v3`|The v3 root of the API.
 `/api/v3/functions`|Lists available functions (VNFs) in the Catalogue
-`/api/v3/packages`|Manages packages (uploading, downloading, etc.)
+`/api/v3/packages`|[Manages packages](https://github.com/sonata-nfv/tng-api-gtw/wiki/packages-management) (uploading, downloading, etc.)
 `/api/v3/pings`|The Gatekeeper's `readiness` and `liveness` endpoint
 `/api/v3/policies`|Manages run-time policies
 `/api/v3/policies/placement`|Manages placements policies
@@ -47,7 +47,7 @@ The entrypoints for the Validation and Verification Platform are configured in t
 `/`|The root of the API.
 `/api/v3`|The v3 root of the API.
 `/api/v3/functions`|Lists available functions (VNFs) in the Catalogue
-`/api/v3/packages`|Manages packages (uploading, downloading, etc.)
+`/api/v3/packages`|[Manages packages](https://github.com/sonata-nfv/tng-api-gtw/wiki/packages-management) (uploading, downloading, etc.)
 `/api/v3/pings`|The Gatekeeper's `readiness` and `liveness` endpoint
 `/api/v3/services`|Lists available services (NSs) in the Catalogue
 `/api/v3/tests/descriptors`|Lists available test descriptors (TDs) in the Catalogue
