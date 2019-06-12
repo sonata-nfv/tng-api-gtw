@@ -54,7 +54,7 @@ The entrypoints for the Validation and Verification Platform are configured in t
 `/api/v3/tests/plans`|Manages test plans
 `/api/v3/tests/results`|Lists available test ressults (TRs) in the Repository
 `/api/v3/users`|[Manages users](https://github.com/sonata-nfv/tng-api-gtw/wiki/users-management-usage)
-`/api/v3/users/roles`|Manages user's roles
+`/api/v3/users/roles`|[List user's roles](https://github.com/sonata-nfv/tng-api-gtw/wiki/users-roles-listing-usage) (user's roles are defined together with [routes](https://github.com/sonata-nfv/tng-api-gtw/wiki/defining-routes))
 `/api/v3/users/sessions`|[Manages user's sessions (logging in)](https://github.com/sonata-nfv/tng-api-gtw/wiki/users-management-usage#logging-in)
 
 ## Installing / Getting started
