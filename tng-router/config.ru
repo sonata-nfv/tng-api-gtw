@@ -45,6 +45,18 @@ def symbolize(obj)
   obj
 end
 
+def routes_to_roles(routes)
+  roles = {}
+  routes.each do |k, v|
+    # :/=>{:site=>"http://tng-gtk-sp:5000/", :permissions=>[{:role=>"-", :verbs=>"get"}]}
+    v[:permissions].each do |permission|
+      roles[permission[:role]] ||= []
+      roles[permission[:role]] << {from: k.to_s, to: v[:site], verbs: permission[:verbs]}
+    end
+  end
+  roles
+end
+
 Dispatcher.configure do |config|
   app_config = symbolize YAML::load_file(File.join(__dir__, 'config', 'app.yml'))
   config.throttling = app_config[:throttling]
@@ -62,9 +74,10 @@ Dir.glob(File.join(__dir__, 'lib', '**', '*.rb')).each { |file| require file } i
 use Instrumentation unless ENV['NO_KPIS']
 use ReadinessLiveliness
 use Authentication unless ENV['NO_AUTH']
-#use Throttle, profiles: Dispatcher.configuration.throttling unless ENV['NO_THROTTLE']
+use Throttle, profiles: Dispatcher.configuration.throttling unless ENV['NO_THROTTLE']
 use ConfigFinder, base_path: Dispatcher.configuration.base_path, paths: Dispatcher.configuration.paths
-use Authorization unless ENV['NO_AUTH']
+use Authorization, paths: Dispatcher.configuration.paths unless ENV['NO_AUTH']
+use Roles, roles: routes_to_roles Dispatcher.configuration.paths
 use Getter
 use EmbodiedMethod
 use OtherMethods
