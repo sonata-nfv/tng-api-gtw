@@ -36,7 +36,7 @@ The entrypoints for the Service Platform are configured in the [config/sp_routes
 `/api/v3/slices`|Manages slice templates 
 `/api/v3/slice-instances`|Lists slice instances (creation and deletion are handled through requests) 
 `/api/v3/users`|[Manages users](https://github.com/sonata-nfv/tng-api-gtw/wiki/users-management-usage)
-`/api/v3/users/roles`|Manages user's roles 
+`/api/v3/users/roles`|[List user's roles](https://github.com/sonata-nfv/tng-api-gtw/wiki/users-roles-listing-usage) (user's roles are defined together with [routes](https://github.com/sonata-nfv/tng-api-gtw/wiki/defining-routes))
 `/api/v3/users/sessions`|[Manages user's sessions (logging in)](https://github.com/sonata-nfv/tng-api-gtw/wiki/users-management-usage#logging-in)
 
 ### Validation and Verification Platform
