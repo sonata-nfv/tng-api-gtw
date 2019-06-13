@@ -71,13 +71,13 @@ end
 
 Dir.glob(File.join(__dir__, 'lib', '**', '*.rb')).each { |file| require file } if Dir.exist?('lib')
 
-use Throttle, profiles: Dispatcher.configuration.throttling unless ENV['NO_THROTTLE']
 use Instrumentation unless ENV['NO_KPIS']
-use ReadinessLiveliness
-use Roles, roles: routes_to_roles(Dispatcher.configuration.paths)
 use Authentication unless ENV['NO_AUTH']
+use Throttle, profiles: Dispatcher.configuration.throttling unless ENV['NO_THROTTLE']
 use ConfigFinder, base_path: Dispatcher.configuration.base_path, paths: Dispatcher.configuration.paths
 use Authorization, paths: Dispatcher.configuration.paths unless ENV['NO_AUTH']
+use ReadinessLiveliness
+use Roles, roles: routes_to_roles(Dispatcher.configuration.paths)
 use Getter
 use EmbodiedMethod
 use OtherMethods

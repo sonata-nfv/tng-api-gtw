@@ -63,7 +63,7 @@ class ConfigFinder
       config_key = get_config_key(request.path)
       LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"config_key: #{config_key}")
       return bad_request("Error finding #{request.request_method} for #{request.path}") if config_key.nil?
-      env['5gtango.permissions'] = get_permission(env, @paths[config_key.to_sym][:permissions])
+      env['5gtango.verbs'] = get_permited_verbs(env, @paths[config_key.to_sym][:permissions])
       env['5gtango.sink_path'] = build_path(request, config_key.to_sym)
     rescue MethodNotAllowedError => e
       LOGGER.error(component:LOGGED_COMPONENT, operation:msg, message:e.message)
@@ -121,9 +121,8 @@ class ConfigFinder
   
   def request_method(env) env['REQUEST_METHOD'.freeze].downcase.to_sym end
   def is_authenticated?(env) env.key?('5gtango.user.name') end
-  def get_permission(env, permissions)
-    return permissions.to_json unless env.key?('5gtango.user.role')
-    permissions.each { |permission| return permission.to_json if permission[:role] == env['5gtango.user.role']}
+  def get_permited_verbs(env, permissions)
+    permissions.each { |permission| return permission[:verbs] if permission[:role] == env['5gtango.user.role']}
     ''
   end
   

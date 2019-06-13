@@ -32,8 +32,6 @@
 # frozen_string_literal: true
 # encoding: utf-8
 require 'rack'
-require 'jwt'
-require 'time'
 require 'tng/gtk/utils/logger'
 require_relative '../utils'
 
@@ -41,14 +39,23 @@ class Authorization
   LOGGER=Tng::Gtk::Utils::Logger
   LOGGED_COMPONENT=self.name
   
-  def initialize(app, options= {})
-    @app = app
+  def initialize(app, options={})
+    @app, @paths = app, options[:paths]
   end
 
   def call(env)
-    msg = '#'+__method__.to_s
-    LOGGER.debug(component:LOGGED_COMPONENT, operation: msg, message:"env=#{env}")
-    @app.call(env)
+    content = {'Content-Type'=>'application/json'}
+    return([403, content, [{error: "Forbidden: user role must be defined"}.to_json]]) unless (env.key?('5gtango.role') && env['5gtango.role'] != '')
+    if is_authorized?(env)
+      return @app.call(env)
+    else
+      return([403, content, [{error: "Forbidden: user role #{env['5gtango.role']} is not authorized to #{env['REQUEST_METHOD']} from #{env['REQUEST_PATH']}"}.to_json]])
+    end
+  end
+  
+  private
+  def is_authorized?(env)
+    env['5gtango.verbs'].split(',').include?(env['REQUEST_METHOD'].downcase)
   end
 end
 
