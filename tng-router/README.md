@@ -23,7 +23,7 @@ The entrypoints for the Service Platform are configured in the [config/sp_routes
 `/api/v3/policies/placement`|Manages placements policies
 `/api/v3/records/functions`|Lists function records available in the Repository
 `/api/v3/records/services`|Lists service records available in the Repository
-`/api/v3/requests`|[Manages services' and slices' lifecycle events (creation, scaling, deletion, etc.)](https://github.com/sonata-nfv/tng-api-gtw/wiki/Requests-management)
+`/api/v3/requests`|[Manages services' and slices' lifecycle events](https://github.com/sonata-nfv/tng-api-gtw/wiki/Requests-management) (creation, scaling, deletion, etc.)
 `/api/v3/services`|Lists available services (NSs) in the Catalogue
 `/api/v3/settings/platforms`|Manages platform's settings
 `/api/v3/settings/vims`|Manages VIM's settings
