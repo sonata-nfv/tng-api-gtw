@@ -25,9 +25,7 @@ The entrypoints for the Service Platform are configured in the [config/sp_routes
 `/api/v3/records/services`|Lists service records available in the Repository
 `/api/v3/requests`|[Manages services' and slices' lifecycle events](https://github.com/sonata-nfv/tng-api-gtw/wiki/Requests-management) (creation, scaling, deletion, etc.)
 `/api/v3/services`|Lists available services (NSs) in the Catalogue
-`/api/v3/settings/platforms`|Manages platform's settings
-`/api/v3/settings/vims`|Manages VIM's settings
-`/api/v3/settings/wims`|Manages WIM's settings
+`/api/v3/settings`|[Manages different kinds of settings](https://github.com/sonata-nfv/tng-api-gtw/wiki/settings-usage)
 `/api/v3/slas/agreements`|Manages SLA aggreements
 `/api/v3/slas/configurations`|Manages SLA configurations
 `/api/v3/slas/licenses`|Manages SLA licenses
