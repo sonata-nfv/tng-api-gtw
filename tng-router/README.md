@@ -25,7 +25,7 @@ The entrypoints for the Service Platform are configured in the [config/sp_routes
 `/api/v3/records/services`|Lists service records available in the Repository
 `/api/v3/requests`|[Manages services' and slices' lifecycle events](https://github.com/sonata-nfv/tng-api-gtw/wiki/Requests-management) (creation, scaling, deletion, etc.)
 `/api/v3/services`|Lists available services (NSs) in the Catalogue
-`/api/v3/settings`|[Manages different kinds of settings](https://github.com/sonata-nfv/tng-api-gtw/wiki/settings-usage)
+`/api/v3/settings`|[Manages different kinds of settings](https://github.com/sonata-nfv/tng-api-gtw/wiki/Settings-usage)
 `/api/v3/slas/agreements`|Manages SLA aggreements
 `/api/v3/slas/configurations`|Manages SLA configurations
 `/api/v3/slas/licenses`|Manages SLA licenses
@@ -48,6 +48,7 @@ The entrypoints for the Validation and Verification Platform are configured in t
 `/api/v3/packages`|[Manages packages](https://github.com/sonata-nfv/tng-api-gtw/wiki/packages-management) (uploading, downloading, etc.)
 `/api/v3/pings`|The Gatekeeper's `readiness` and `liveness` endpoint
 `/api/v3/services`|Lists available services (NSs) in the Catalogue
+`/api/v3/settings/platforms`|[Manages different (testing) platforms](https://github.com/sonata-nfv/tng-api-gtw/wiki/Settings-usage)
 `/api/v3/tests/descriptors`|Lists available test descriptors (TDs) in the Catalogue
 `/api/v3/tests/plans`|Manages test plans
 `/api/v3/tests/results`|Lists available test ressults (TRs) in the Repository
