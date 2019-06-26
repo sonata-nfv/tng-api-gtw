@@ -105,11 +105,6 @@ paths:
     permissions:
     - role: '-'
       verbs: get
-  /api/v3/policies/placement(/?|/*): 
-    site: http://tng-gtk-sp:5000/policies/placement
-    permissions:
-    - role: '-'
-      verbs: get
   /api/v3/policies(/?|/*): 
     site: http://tng-policy-mngr:8081/api/v1
     permissions:
