@@ -19,8 +19,7 @@ The entrypoints for the Service Platform are configured in the [config/sp_routes
 `/api/v3/functions`|Lists available functions (VNFs) in the Catalogue
 `/api/v3/packages`|[Manages packages](https://github.com/sonata-nfv/tng-api-gtw/wiki/packages-management) (uploading, downloading, etc.)
 `/api/v3/pings`|The Gatekeeper's `readiness` and `liveness` endpoint
-`/api/v3/policies`|Manages run-time policies
-`/api/v3/policies/placement`|Manages placements policies
+`/api/v3/policies`|[Manages placement and run-time policies](Policies-usage)
 `/api/v3/records/functions`|Lists function records available in the Repository
 `/api/v3/records/services`|Lists service records available in the Repository
 `/api/v3/requests`|[Manages services' and slices' lifecycle events](https://github.com/sonata-nfv/tng-api-gtw/wiki/Requests-management) (creation, scaling, deletion, etc.)
