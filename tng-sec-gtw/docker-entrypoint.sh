@@ -2,6 +2,15 @@
 sed -e "s/{DOMAIN}/$DOMAIN/g" /default-no-ssl-template.conf > /default-no-ssl.conf
 sed -e "s/{DOMAIN}/$DOMAIN/g" /default-ssl-template.conf > /default-ssl.conf
 
+if [ $KUBERNETES == "true" ]
+then
+  dns=`cat /etc/resolv.conf | grep nameserver | awk '{print $2}'`
+  sed -e "s/127.0.0.11/$dns/g" /default-no-ssl.conf > /default-no-ssl-k8s.conf
+  sed -e "s/127.0.0.11/$dns/g" /default-ssl.conf > /default-ssl-k8s.conf
+  mv /default-no-ssl-k8s.conf /default-no-ssl.conf
+  mv /default-ssl-k8s.conf /default-ssl.conf
+fi
+
 if [ -f /etc/nginx/cert/sonata.crt ] && [ -f /etc/nginx/cert/sonata.key ]
 then
    echo "Starting 5GTANGO (V&V or Service) Platform" > /dev/stdout
