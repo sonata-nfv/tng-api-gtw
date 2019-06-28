@@ -45,11 +45,11 @@ class Authorization
 
   def call(env)
     content = {'Content-Type'=>'application/json'}
-    return([403, content, [{error: "Forbidden: user role must be defined"}.to_json]]) unless (env.key?('5gtango.role') && env['5gtango.role'] != '')
+    return([403, content, [{error: "Forbidden: user role must be defined"}.to_json]]) unless (env.key?('5gtango.user.role') && env['5gtango.user.role'] != '')
     if is_authorized?(env)
       return @app.call(env)
     else
-      return([403, content, [{error: "Forbidden: user role #{env['5gtango.role']} is not authorized to #{env['REQUEST_METHOD']} from #{env['REQUEST_PATH']}"}.to_json]])
+      return([403, content, [{error: "Forbidden: user role #{env['5gtango.user.role']} is not authorized to #{env['REQUEST_METHOD']} from #{env['REQUEST_PATH']}"}.to_json]])
     end
   end
   

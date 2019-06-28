@@ -56,7 +56,7 @@ RSpec.describe Authorization do
     it 'fails' do
       env = env_for(path)
       env['5gtango.verbs'] = 'post'
-      env['5gtango.role'] = 'admin'
+      env['5gtango.user.role'] = 'admin'
       code, _, _= middleware.call(env)
       expect(code).to eq(403)
     end
@@ -66,7 +66,7 @@ RSpec.describe Authorization do
     it 'fails' do
       env = env_for(path)
       env['5gtango.verbs'] = 'post'
-      env['5gtango.role'] = 'admin'
+      env['5gtango.user.role'] = 'admin'
       env['REQUEST_METHOD'] = 'GET'
       allow(app).to receive(:call).with(env)
       middleware.call(env)
@@ -75,7 +75,7 @@ RSpec.describe Authorization do
     it 'returns 403' do
       env = env_for(path)
       env['5gtango.verbs'] = 'post'
-      env['5gtango.role'] = 'admin'
+      env['5gtango.user.role'] = 'admin'
       env['REQUEST_METHOD'] = 'GET'
       allow(app).to receive(:call).with(env)
       code, _, _ = middleware.call(env)
@@ -87,7 +87,7 @@ RSpec.describe Authorization do
     it 'just falls through' do
       env = env_for(path)
       env['5gtango.verbs'] = 'get'
-      env['5gtango.role'] = 'admin'
+      env['5gtango.user.role'] = 'admin'
       env['REQUEST_METHOD'] = 'GET'
       allow(app).to receive(:call).with(env)
       middleware.call(env)
