@@ -158,6 +158,12 @@ paths:
     permissions:
     - role: '-'
       verbs: post
+    - role: admin
+      verbs: 'delete'
+    - role: customer
+      verbs: 'delete'
+    - role: developer
+      verbs: 'delete'
   /api/v3/users/roles(/?|/*):
     site: http://tng-gtk-usr:4567/roles
     permissions:
