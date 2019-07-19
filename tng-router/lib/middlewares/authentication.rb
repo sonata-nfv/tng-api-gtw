@@ -80,6 +80,7 @@ class Authentication
 
     env['5gtango.user.name'] = find_user_name_by_token(token: decoded_token)
     env['5gtango.user.email'] = find_user_email_by_token(token: decoded_token)
+    STDERR.puts ">>>>>> User name=#{env['5gtango.user.name']}, user email=#{env['5gtango.user.email']}"
     #env['5gtango.user.token'] = token[1]
     env['5gtango.user.role'] = decoded_token[:role]
     env['5gtango.user.endpoints'] = decoded_token[:endpoints].to_json
