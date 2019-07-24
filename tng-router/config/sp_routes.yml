@@ -143,6 +143,11 @@ paths:
       verbs: 'options,post,get,delete'
     - role: 'customer'
       verbs: 'options,post,get'
+  /api/v3/settings/monitoring(/?|/*):
+    site: http://son-monitor-manager:8000/api/v2/prometheus/targets
+    permissions:
+    - role: admin
+      verbs: 'get,options,post'
   /api/v3/settings/vims(/?|/*): 
     site: http://ia-nbi:8083/api/ia/v1/vims
     permissions:

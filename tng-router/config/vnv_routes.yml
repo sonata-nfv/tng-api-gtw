@@ -118,6 +118,11 @@ paths:
     permissions:
     - role: admin
       verbs: 'get,delete,options,post,patch'
+  /api/v3/settings/monitoring(/?|/*):
+    site: http://son-monitor-manager:8000/api/v2/prometheus/targets
+    permissions:
+    - role: admin
+      verbs: 'get,options,post'
   /api/v3/monitoring/data(/?|/*): 
     site: http://son-monitor-manager:8000/api/v2
     permissions:
