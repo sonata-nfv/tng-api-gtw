@@ -13,7 +13,7 @@ Supported endpoints, alphabetically sorted and with the indication of the platfo
 The entrypoints for the Service Platform are configured in the [config/sp_routes.yml](https://github.com/sonata-nfv/tng-api-gtw/blob/master/tng-router/config/sp_routes.yml) file.
 
 **Endpoints**|**Description**
-:----|:----:
+:----|:----
 `/`|The root of the API.
 `/api/v3`|The v3 root of the API.
 `/api/v3/functions`|[Lists available functions (VNFs) in the Catalogue](https://github.com/sonata-nfv/tng-gtk-common/wiki/functions-querying)
@@ -36,7 +36,7 @@ The entrypoints for the Service Platform are configured in the [config/sp_routes
 The entrypoints for the Validation and Verification Platform are configured in the [config/vnv_routes.yml](https://github.com/sonata-nfv/tng-api-gtw/blob/master/tng-router/config/vnv_routes.yml) file.
 
 **Endpoints**|**Description**
-:----|:----:
+:----|:----
 `/`|The root of the API.
 `/api/v3`|The v3 root of the API.
 `/api/v3/functions`|[Lists available functions (VNFs) in the Catalogue](https://github.com/sonata-nfv/tng-gtk-common/wiki/functions-querying)
