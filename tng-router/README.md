@@ -44,9 +44,9 @@ The entrypoints for the Validation and Verification Platform are configured in t
 `/api/v3/pings`|[The Gatekeeper's `readiness` and `liveness` endpoint](https://github.com/sonata-nfv/tng-api-gtw/wiki/readiness-liveliness-probe)
 `/api/v3/services`|[Lists available services (NSs) in the Catalogue](https://github.com/sonata-nfv/tng-gtk-common/wiki/services-querying)
 `/api/v3/settings/platforms`|[Manages different (testing) platforms](https://github.com/sonata-nfv/tng-api-gtw/wiki/Settings-usage)
-`/api/v3/tests/descriptors`|Lists available test descriptors (TDs) in the Catalogue
+`/api/v3/tests/descriptors`|[Lists available test descriptors (TDs) in the Catalogue](https://github.com/sonata-nfv/tng-gtk-vnv/wiki/test-descriptors-queries)
 `/api/v3/tests/plans`|[Manages test plans](https://github.com/sonata-nfv/tng-vnv-planner)
-`/api/v3/tests/results`|Lists available test ressults (TRs) in the Repository
+`/api/v3/tests/results`|[Lists available test ressults (TRs) in the Repository](https://github.com/sonata-nfv/tng-gtk-vnv/wiki/test-results-queries)
 `/api/v3/users`|[Manages users](https://github.com/sonata-nfv/tng-api-gtw/wiki/users-management-usage)
 `/api/v3/users/roles`|[List user's roles](https://github.com/sonata-nfv/tng-api-gtw/wiki/users-roles-listing-usage) (user's roles are defined together with [routes](https://github.com/sonata-nfv/tng-api-gtw/wiki/configure-new-routes))
 `/api/v3/users/sessions`|[Manages user's sessions (logging in)](https://github.com/sonata-nfv/tng-api-gtw/wiki/users-management-usage#logging-in)
