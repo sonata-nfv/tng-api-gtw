@@ -25,11 +25,7 @@ The entrypoints for the Service Platform are configured in the [config/sp_routes
 `/api/v3/requests`|[Manages services' and slices' lifecycle events](https://github.com/sonata-nfv/tng-api-gtw/wiki/Requests-management) (creation, scaling, deletion, etc.)
 `/api/v3/services`|Lists available services (NSs) in the Catalogue
 `/api/v3/settings`|[Manages different kinds of settings](https://github.com/sonata-nfv/tng-api-gtw/wiki/Settings-usage)
-`/api/v3/slas/agreements`|Manages SLA aggreements
-`/api/v3/slas/configurations`|Manages SLA configurations
-`/api/v3/slas/licenses`|Manages SLA licenses
-`/api/v3/slas/templates`|Manages SLA templates
-`/api/v3/slas/violations`|Manages SLA violations
+`/api/v3/slas`|[Manages SLA aggreements, configurations, licenses, templates and violations](https://github.com/sonata-nfv/tng-sla-mgmt)
 `/api/v3/slices`|Manages slice templates 
 `/api/v3/slice-instances`|Lists slice instances (creation and deletion are handled through requests) 
 `/api/v3/users`|[Manages users](https://github.com/sonata-nfv/tng-api-gtw/wiki/users-management-usage)
