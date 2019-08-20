@@ -26,8 +26,8 @@ The entrypoints for the Service Platform are configured in the [config/sp_routes
 `/api/v3/services`|Lists available services (NSs) in the Catalogue
 `/api/v3/settings`|[Manages different kinds of settings](https://github.com/sonata-nfv/tng-api-gtw/wiki/Settings-usage)
 `/api/v3/slas`|[Manages SLA aggreements, configurations, licenses, templates and violations](https://github.com/sonata-nfv/tng-sla-mgmt)
-`/api/v3/slices`|Manages slice templates 
-`/api/v3/slice-instances`|Lists slice instances (creation and deletion are handled through requests) 
+`/api/v3/slices`|[Manages slice templates](https://github.com/sonata-nfv/tng-slice-mngr)
+`/api/v3/slice-instances`|[Lists slice instances](https://github.com/sonata-nfv/tng-slice-mngr) (creation and deletion are handled through requests) 
 `/api/v3/users`|[Manages users](https://github.com/sonata-nfv/tng-api-gtw/wiki/users-management-usage)
 `/api/v3/users/roles`|[List user's roles](https://github.com/sonata-nfv/tng-api-gtw/wiki/users-roles-listing-usage) (user's roles are defined together with [routes](https://github.com/sonata-nfv/tng-api-gtw/wiki/configure-new-routes))
 `/api/v3/users/sessions`|[Manages user's sessions (logging in)](https://github.com/sonata-nfv/tng-api-gtw/wiki/users-management-usage#logging-in)
