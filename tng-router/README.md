@@ -18,7 +18,7 @@ The entrypoints for the Service Platform are configured in the [config/sp_routes
 `/api/v3`|The v3 root of the API.
 `/api/v3/functions`|[Lists available functions (VNFs) in the Catalogue](https://github.com/sonata-nfv/tng-gtk-common/wiki/functions-querying)
 `/api/v3/packages`|[Manages packages](https://github.com/sonata-nfv/tng-api-gtw/wiki/packages-management) (uploading, downloading, etc.)
-`/api/v3/pings`|The Gatekeeper's `readiness` and `liveness` endpoint
+`/api/v3/pings`|[The Gatekeeper's `readiness` and `liveness` endpoint](https://github.com/sonata-nfv/tng-api-gtw/wiki/readiness-liveliness-probe)
 `/api/v3/policies`|[Manages placement and run-time policies](https://github.com/sonata-nfv/tng-api-gtw/wiki/Policies-usage)
 `/api/v3/records/functions`|[Lists function records available in the Repository](https://github.com/sonata-nfv/tng-gtk-sp/wiki/function-records-queries)
 `/api/v3/records/services`|[Lists service records available in the Repository](https://github.com/sonata-nfv/tng-gtk-sp/wiki/service-records-queries)
@@ -41,7 +41,7 @@ The entrypoints for the Validation and Verification Platform are configured in t
 `/api/v3`|The v3 root of the API.
 `/api/v3/functions`|[Lists available functions (VNFs) in the Catalogue](https://github.com/sonata-nfv/tng-gtk-common/wiki/functions-querying)
 `/api/v3/packages`|[Manages packages](https://github.com/sonata-nfv/tng-api-gtw/wiki/packages-management) (uploading, downloading, etc.)
-`/api/v3/pings`|The Gatekeeper's `readiness` and `liveness` endpoint
+`/api/v3/pings`|[The Gatekeeper's `readiness` and `liveness` endpoint](https://github.com/sonata-nfv/tng-api-gtw/wiki/readiness-liveliness-probe)
 `/api/v3/services`|[Lists available services (NSs) in the Catalogue](https://github.com/sonata-nfv/tng-gtk-common/wiki/services-querying)
 `/api/v3/settings/platforms`|[Manages different (testing) platforms](https://github.com/sonata-nfv/tng-api-gtw/wiki/Settings-usage)
 `/api/v3/tests/descriptors`|Lists available test descriptors (TDs) in the Catalogue
