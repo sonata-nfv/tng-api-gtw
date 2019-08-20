@@ -40,9 +40,13 @@ The entrypoints for the Validation and Verification Platform are configured in t
 `/`|The root of the API.
 `/api/v3`|The v3 root of the API.
 `/api/v3/functions`|[Lists available functions (VNFs) in the Catalogue](https://github.com/sonata-nfv/tng-gtk-common/wiki/functions-querying)
+`/api/v3/monitoring/data`|[Fetches available monitoring data](https://github.com/sonata-nfv/son-monitor)
+`/api/v3/monitoring/graphs`|[Fetches available monitoring graphs](https://github.com/sonata-nfv/son-monitor)
 `/api/v3/packages`|[Manages packages](https://github.com/sonata-nfv/tng-api-gtw/wiki/packages-management) (uploading, downloading, etc.)
 `/api/v3/pings`|[The Gatekeeper's `readiness` and `liveness` endpoint](https://github.com/sonata-nfv/tng-api-gtw/wiki/readiness-liveliness-probe)
+`/api/v3/recommendations`|[Manages test recommendations](https://github.com/sonata-nfv/tng-vnv-dsm)
 `/api/v3/services`|[Lists available services (NSs) in the Catalogue](https://github.com/sonata-nfv/tng-gtk-common/wiki/services-querying)
+`/api/v3/settings/monitoring`|[Manages monitoring settings](https://github.com/sonata-nfv/son-monitor)
 `/api/v3/settings/platforms`|[Manages different (testing) platforms](https://github.com/sonata-nfv/tng-api-gtw/wiki/Settings-usage)
 `/api/v3/tests/descriptors`|[Lists available test descriptors (TDs) in the Catalogue](https://github.com/sonata-nfv/tng-gtk-vnv/wiki/test-descriptors-queries)
 `/api/v3/tests/plans`|[Manages test plans](https://github.com/sonata-nfv/tng-vnv-planner)
@@ -50,6 +54,10 @@ The entrypoints for the Validation and Verification Platform are configured in t
 `/api/v3/users`|[Manages users](https://github.com/sonata-nfv/tng-api-gtw/wiki/users-management-usage)
 `/api/v3/users/roles`|[List user's roles](https://github.com/sonata-nfv/tng-api-gtw/wiki/users-roles-listing-usage) (user's roles are defined together with [routes](https://github.com/sonata-nfv/tng-api-gtw/wiki/configure-new-routes))
 `/api/v3/users/sessions`|[Manages user's sessions (logging in)](https://github.com/sonata-nfv/tng-api-gtw/wiki/users-management-usage#logging-in)
+
+
+  /api/v3/(/?|/*): 
+    site: http://tng-vnv-dsm:4010/api/v1
 
 ## Installing / Getting started
 
