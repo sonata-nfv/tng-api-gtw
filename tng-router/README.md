@@ -45,7 +45,7 @@ The entrypoints for the Validation and Verification Platform are configured in t
 `/api/v3/services`|[Lists available services (NSs) in the Catalogue](https://github.com/sonata-nfv/tng-gtk-common/wiki/services-querying)
 `/api/v3/settings/platforms`|[Manages different (testing) platforms](https://github.com/sonata-nfv/tng-api-gtw/wiki/Settings-usage)
 `/api/v3/tests/descriptors`|Lists available test descriptors (TDs) in the Catalogue
-`/api/v3/tests/plans`|Manages test plans
+`/api/v3/tests/plans`|[Manages test plans](https://github.com/sonata-nfv/tng-vnv-planner)
 `/api/v3/tests/results`|Lists available test ressults (TRs) in the Repository
 `/api/v3/users`|[Manages users](https://github.com/sonata-nfv/tng-api-gtw/wiki/users-management-usage)
 `/api/v3/users/roles`|[List user's roles](https://github.com/sonata-nfv/tng-api-gtw/wiki/users-roles-listing-usage) (user's roles are defined together with [routes](https://github.com/sonata-nfv/tng-api-gtw/wiki/configure-new-routes))
@@ -162,13 +162,6 @@ Our style guide is really simple:
 
 1. We try to follow a [Clean Code](https://www.amazon.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882) philosophy in as much as possible, i.e., classes and methods should do one thing only, have the least number of parameters possible, etc.;
 1. we use two spaces for identation.
-
-
-
-
-
-
-
 
 ## Licensing
 
