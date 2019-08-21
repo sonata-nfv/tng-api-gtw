@@ -56,9 +56,6 @@ The entrypoints for the Validation and Verification Platform are configured in t
 `/api/v3/users/sessions`|[Manages user's sessions (logging in)](https://github.com/sonata-nfv/tng-api-gtw/wiki/users-management-usage#logging-in)
 
 
-  /api/v3/(/?|/*): 
-    site: http://tng-vnv-dsm:4010/api/v1
-
 ## Installing / Getting started
 
 This component is a [rack](https://rack.github.io/) application implemented in [ruby](https://www.ruby-lang.org/en/), version **2.4.3**, and is part of the [tng-api-gtw](https://github.com/sonata-nfv/tng-api-gtw).
