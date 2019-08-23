@@ -25,9 +25,7 @@
       { "name": "slas", "description": "SP API to manage SLA aggreements, configurations, licenses, templates and violations" },
       { "name": "slices", "description": "SP API to manage slice templates" },
       { "name": "slice-instances", "description": "SP API to list slice instances (creation and deletion are handled through requests)" },
-      { "name": "users", "description": "SP API to manage users" },
-      { "name": "users' roles", "description": "SP API to list user's roles (user's roles are defined together with routes)" },
-      { "name": "user sessions", "description": "SP API to manage users sessions" }
+      { "name": "users", "description": "SP API to manage users" }
    ],
    "paths": {
       "/": {
@@ -394,16 +392,10 @@
       },
       "/requests": {
          "post": {
-            "tags": [
-               "requests management"
-            ],
+            "tags": ["requests"],
             "summary": "Creates a request",
-            "consumes": [
-               "application/json"
-            ],
-            "produces": [
-               "application/json"
-            ],
+            "consumes": ["application/json"],
+            "produces": ["application/json"],
             "parameters": [
                {
                   "in": "body",
@@ -415,18 +407,12 @@
                }
             ],
             "responses": {
-               "201": {
-                  "description": "OK"
-               },
-               "400": {
-                  "description": "Bad Request"
-               }
+               "201": {"description": "OK"},
+               "400": {"description": "Bad Request"}
             }
          },
          "get": {
-            "tags": [
-               "requests management"
-            ],
+            "tags": ["requests"],
             "summary": "Queries requests",
             "consumes": [
                "application/json"
