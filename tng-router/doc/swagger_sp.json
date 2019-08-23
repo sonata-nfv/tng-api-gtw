@@ -1,0 +1,759 @@
+{
+   "swagger": "2.0",
+   "info": {
+      "description": "5GTANGO, an H2020 5GPPP project",
+      "version": "5.0",
+      "title": "5GTANGO SP Gatekeeper component REST API",
+      "termsOfService": "https://5gtango.eu/",
+      "license": {
+         "name": "Apache License 2.0",
+         "url": "https://github.com/sonata-nfv/tng-api-gtw/blob/master/LICENSE"
+      }
+   },
+   "host": "localhost",
+   "basePath": "/api/v3",
+   "tags": [
+      { "name": "root access", "description": "SP API root access"},
+      { "name": "functions", "description": "SP API to list Virtual Network Functions (VNFs) available in the Catalogue" },
+      { "name": "packages", "description": "SP API to manage packages (uploading, downloading, etc.)" },
+      { "name": "pings", "description": "SP API to implement readiness and liveness" },
+      { "name": "policies", "description": "SP API to manage placement and run-time policies" },
+      { "name": "records", "description": "SP API to list function or service records available in the Repository" },
+      { "name": "requests", "description": "SP API to manage services' and slices' lifecycle events (creation, scaling, deletion, etc.)" },
+      { "name": "services", "description": "SP API to list Network Services (NSs) available in the Catalogue" },
+      { "name": "settings", "description": "SP API to manage different kinds of settings" },
+      { "name": "slas", "description": "SP API to manage SLA aggreements, configurations, licenses, templates and violations" },
+      { "name": "slices", "description": "SP API to manage slice templates" },
+      { "name": "slice-instances", "description": "SP API to list slice instances (creation and deletion are handled through requests)" },
+      { "name": "users", "description": "SP API to manage users" },
+      { "name": "users' roles", "description": "SP API to list user's roles (user's roles are defined together with routes)" },
+      { "name": "user sessions", "description": "SP API to manage users sessions" }
+   ],
+   "paths": {
+      "/": {
+         "get": {
+            "tags": [ "root access" ],
+            "summary": "Returns something usefull on access to root",
+            "operationId": "returnRootAccess",
+            "consumes": [ "*/*" ],
+            "produces": [ "text/html; charset=utf-8" ],
+            "parameters": [],
+            "responses": { "200": { "description": "OK" } }
+         }
+      },
+      "/functions": {
+         "get": {
+            "tags": ["functions"],
+            "summary": "Returns a list of functions existing in the Catalogue",
+            "operationId": "returnFunctions",
+            "consumes": ["*/*"],
+            "produces": ["application/json; charset=utf-8"],
+            "parameters": [
+                {
+                  "name": "page_size",
+                  "in": "query",
+                  "description": "The number of records to be included in a page",
+                  "required": false,
+                  "type": "integer",
+                  "format": "int32",
+                  "minimum": 0,
+                  "default": 100
+                },
+                {
+                  "name": "page_number",
+                  "in": "query",
+                  "description": "The number of the page of records to be shown (starting at 0)",
+                  "required": false,
+                  "type": "integer",
+                  "format": "int32",
+                  "minimum": 0,
+                  "default": 0
+                }
+            ],
+            "responses": {
+                "200": { 
+                  "description": "OK",
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/FunctionsGetMetadataReturn"
+                    }
+                  },
+                },
+                "400": {"description": "Bad Request"}
+            }
+         },
+         "options": {
+           "tags": ["functions"],
+           "summary": "Options for functions",
+           "operationId": "functionOptions",
+           "consumes": ["*/*"],
+           "produces": ["application/json"],
+           "parameters": [],
+           "responses": {
+               "200": { "description": "OK"},
+               "400": {"description": "Bad Request"}
+           }
+         }
+      },
+      "/functions/{function_uuid}": {
+        "get": {
+          "tags": ["functions"],
+          "summary": "Query a specific function meta-data",
+          "parameters": [
+            {
+              "name": "function_uuid",
+              "in": "path",
+              "description": "UUID of the function which meta-data is required",
+              "required": true,
+              "type": "string",
+              "format": "uuid"
+            }
+          ],
+          "consumes": ["*/*"],
+          "produces": ["application/json"],
+          "responses": {
+            "200": { "description": "OK", "schema":{ "$ref":"#/definitions/FunctionsGetMetadataReturn"}},
+            "400": { "description": "Bad request"},
+            "404": { "description": "Not found"}
+          }
+        }
+      },
+      "/packages": {
+        "post": {
+            "summary": "Uploads a package",
+            "tags": ["packages"],
+            "consumes": ["multipart/form-data"],
+            "produces": ["application/json"],
+            "parameters": [
+              {
+                "name": "package",
+                "in": "formData",
+                "required": true,
+                "type": "string",
+                "description": "Uploaded package file",
+                "x-example": ""
+              },
+              {
+                "name": "callback_url",
+                "in": "formData",
+                "required": false,
+                "type": "string",
+                "description": "URL called after unpackaging (optional)",
+                "x-example": ""
+              },
+              {
+                "name": "layer",
+                "in": "formData",
+                "required": false,
+                "type": "integer",
+                "format": "int32",
+                "minimum": 0,
+                "default": 0
+              },
+              {
+                "name": "skip_store",
+                "in": "formData",
+                "required": false,
+                "type": "string",
+                "description": "Skip catalog upload of contents (optional)",
+                "x-example": ""
+              }
+            ],
+            "responses": {
+                "200": { 
+                  "description": "OK",
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/PackagesGetMetadataReturn"
+                    }
+                  },
+                },
+                "400": {"description": "Bad Request"}
+            }
+        },
+        "get": {
+          "tags": ["packages"],
+          "summary": "Query packages",
+          "operationId": "packageQuerying",
+          "consumes": ["*/*"],
+          "produces": ["application/json"],
+          "parameters": [
+            {
+              "name": "page_size",
+              "in": "query",
+              "description": "The number of records to be included in a page",
+              "required": false,
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+            },
+            {
+              "name": "page_number",
+              "in": "query",
+              "description": "The number of the page of records to be shown (starting in 0)",
+              "required": false,
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0,
+              "default": 0
+            }
+          ],
+          "responses": {
+              "200": { 
+                "description": "OK",
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/PackagesGetMetadataReturn"
+                  }
+                },
+              },
+              "400": {"description": "Bad Request"},
+              "404": {"description": "Not found"}
+          }
+        },
+        "options": {
+          "tags": ["packages"],
+          "summary": "Options packages",
+          "operationId": "packageOptions",
+          "consumes": ["*/*"],
+          "produces": ["application/json"],
+          "parameters": [],
+          "responses": {
+            "200": { "description": "OK"}          
+          }
+        }
+      },
+      "/packages/on-change": {
+        "post": {
+            "summary": "Uploads a package",
+            "consumes": ["application/json"],
+            "produces": ["application/json"],
+            "parameters": [
+              {
+                "in": "body",
+                "name": "onChangeEvent",
+                "description": "Pet object that needs to be added to the store",
+                "required": true,
+                "schema": { "$ref": "#/definitions/OnPackageChangeEvent"}
+              }
+             ],
+            "operationId": "postOnChangeEvent",
+            "tags": ["packages"],
+            "responses": {
+                "200": { 
+                  "description": "OK, the package upload request has been accepted", 
+                  "schema": {} 
+                },
+                "400": { "description": "Bad Request", "schema": {} }
+            }
+        }
+      },
+      "/packages/{package_uuid}": {
+        "get": {
+          "tags": ["packages"],
+          "summary": "Query a specific package meta-data",
+          "parameters": [
+            {
+              "name": "package_uuid",
+              "in": "path",
+              "required": true,
+              "description": "UUID of the package which file is required",
+              "type": "string",
+              "format": "uuid"
+            }
+          ],
+          "operationId": "queryPackage",
+          "responses": {
+              "200": { "description": "OK, the package query request has been accepted"},
+              "400": { "description": "Bad Request" }
+          }
+        },
+        "delete": {
+          "tags": ["packages"],
+          "summary": "Delete a specific package (meta-data and files)",
+          "parameters": [
+            {
+              "name": "package_uuid",
+              "in": "path",
+              "description": "UUID of the package to be deleted",
+              "required": true,
+              "type": "string",
+              "format": "uuid"
+            }
+          ],
+          "consumes": ["*/*"],
+          "produces": ["application/json"],
+          "responses": {
+            "204": { "description": "No Content"},
+            "400": { "description": "Bad request"},
+            "404": { "description": "Not found"}
+          }
+        }
+      },
+      "/packages/{package_uuid}/package-file": {
+        "get": {
+          "tags": ["packages"],
+          "summary": "Fetch a specific package file",
+          "parameters": [
+            {
+              "name": "package_uuid",
+              "in": "path",
+              "required": true,
+              "description": "UUID of the package which file is required",
+              "type": "string",
+              "format": "uuid"
+            }
+          ],
+          "consumes": ["*/*"],
+          "produces": ["application/zip"],
+          "responses": {
+            "200": { "description": "OK", "schema":{ "type":"string", "format":"binary" } },
+            "400": { "description": "Bad request"},
+            "404": { "description": "Not found"}
+          }
+        }
+      },
+      "/packages/{package_uuid}/files/{file_uuid}": {
+        "get": {
+          "tags": ["packages"],
+          "summary": "Fetch a specific file from within the package",
+          "parameters": [
+            {
+              "name": "package_uuid",
+              "in": "path",
+              "required": true,
+              "description": "UUID of the package which file is required",
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "name": "file_uuid",
+              "in": "path",
+              "required": true,
+              "description": "UUID of the file that is required",
+              "type": "string",
+              "format": "uuid"
+            }
+          ],
+          "consumes": ["*/*"],
+          "produces": ["application/octet-stream"],
+          "responses": {
+            "200": { "description": "OK", "schema":{ "type":"string", "format":"binary"}},
+            "400": { "description": "Bad request"},
+            "404": { "description": "Not found"}
+          }
+        }
+      },
+      "/packages/status/{process_uuid}": {
+        "get": {
+          "tags": ["packages"],
+          "summary": "Returns the status of a given package on-boarding process",
+          "operationId": "returnPackageOnboardingStatus",
+          "consumes": ["*/*"],
+          "produces": ["application/json"],
+          "parameters": [
+            {
+              "name": "process_uuid",
+              "in": "path",
+              "required": true,
+              "description": "The process UUID returned when the package was initially uploaded",
+              "type": "string",
+              "format": "uuid"
+            }
+          ],
+          "responses": {
+            "200": { "description": "OK"},
+            "400": { "description": "Bad request"},
+            "404": { "description": "Not found"}
+          }
+        }
+      },
+      "/pings": {
+         "get": {
+            "tags": [
+               "pings"
+            ],
+            "summary": "Returns time since started",
+            "operationId": "returnPong",
+            "consumes": [
+               "*/*"
+            ],
+            "produces": [
+               "application/json"
+            ],
+            "parameters": [],
+            "responses": {
+               "200": {
+                  "description": "OK"
+               }
+            }
+         }
+      },
+      "/requests": {
+         "post": {
+            "tags": [
+               "requests management"
+            ],
+            "summary": "Creates a request",
+            "consumes": [
+               "application/json"
+            ],
+            "produces": [
+               "application/json"
+            ],
+            "parameters": [
+               {
+                  "in": "body",
+                  "name": "uuid",
+                  "description": "The UUID of the entity to which the request is related to (Service or Slice)",
+                  "schema": {
+                     "$ref": "#/definitions/RequestData"
+                  }
+               }
+            ],
+            "responses": {
+               "201": {
+                  "description": "OK"
+               },
+               "400": {
+                  "description": "Bad Request"
+               }
+            }
+         },
+         "get": {
+            "tags": [
+               "requests management"
+            ],
+            "summary": "Queries requests",
+            "consumes": [
+               "application/json"
+            ],
+            "produces": [
+               "application/json"
+            ],
+            "parameters": [
+               {
+                  "in": "body",
+                  "name": "id",
+                  "description": "The UUID of the request",
+                  "schema": {
+                     "$ref": "#/definitions/RequestResponseData"
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK"
+               },
+               "400": {
+                  "description": "Bad Request"
+               },
+               "404": {
+                  "description": "Not found"
+               }
+            }
+         }
+      },
+      "/services": {
+        "get": {
+          "tags": ["services"],
+          "summary": "Query services",
+          "operationId": "serviceQuerying",
+          "consumes": ["*/*"],
+          "produces": ["application/json"],
+          "parameters": [
+            {
+              "name": "page_size",
+              "in": "query",
+              "description": "The number of records to be included in a page",
+              "required": false,
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+            },
+            {
+              "name": "page_number",
+              "in": "query",
+              "description": "The number of the page of records to be shown (starting in 0)",
+              "required": false,
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0,
+              "default": 0
+            }
+          ],
+          "responses": {
+              "200": { 
+                "description": "OK",
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/ServicesGetMetadataReturn"
+                  }
+                },
+              },
+              "400": {"description": "Bad Request"}
+          }
+        },
+        "options": {
+          "tags": ["services"],
+          "summary": "Options for services",
+          "operationId": "serviceOptions",
+          "consumes": ["*/*"],
+          "produces": ["application/json"],
+          "parameters": [],
+          "responses": {
+              "200": { "description": "OK"},
+              "400": {"description": "Bad Request"}
+          }
+        }
+      },
+      "/services/{service_uuid}": {
+        "get": {
+          "tags": ["services"],
+          "summary": "Query a specific service meta-data",
+          "parameters": [
+            {
+              "name": "service_uuid",
+              "in": "path",
+              "description": "UUID of the service which meta-data is required",
+              "required": true,
+              "type": "string",
+              "format": "uuid"
+            }
+          ],
+          "consumes": ["*/*"],
+          "produces": ["application/json"],
+          "responses": {
+            "200": { 
+              "description": "OK",
+              "schema":{ "$ref":"#/definitions/ServicesGetMetadataReturn"}
+            },
+            "400": { "description": "Bad request"},
+            "404": { "description": "Not found"}
+          }
+        }
+      }
+   },
+   "definitions": {
+       "FunctionsGetMetadataReturn": {
+         "required": [ "function_uuid", "vnfd" ],
+         "properties": {
+           "function_uuid": { "type": "string", "description": "UUID of the service."},
+           "vnfd": { "type": "string", "description": "Service descriptor"}
+         },
+         "type": "object"
+       },
+       "OnPackageChangeEvent": {
+         "type": "object",
+         "required": [ "event_name", "package_id"],
+         "properties": {
+           "event_name": { "type": "string" },
+           "package_id": { "type": "string" },
+           "package_location": { "type": "string" },
+           "package_metadata": { "type": "string" },
+           "package_process_status": { "type": "string" },
+           "package_process_uuid": { "type": "string", "description": "UUID of started unpackaging process." }
+         },
+         "title": "OnPackageChangeEvent"
+       },
+       "PackagesPostReturn": {
+         "required": [ "package_process_uuid" ],
+         "properties": {
+           "package_process_uuid": {
+             "type": "string",
+             "description": "UUID of started unpackaging process."
+           }
+         },
+         "type": "object"
+       },
+       "PackagesGetStatusReturn": {
+         "required": [ "package_process_uuid", "status"],
+         "properties": {
+           "package_process_uuid": {
+             "type": "string",
+             "description": "UUID of started unpackaging process."
+           },
+           "status": {
+             "type": "string",
+             "description": "Status of the unpacking process: waiting|runnig|failed|done"
+           },
+           "error_msg": {
+             "type": "string",
+             "description": "More detailed error message."
+           }
+         },
+         "type": "object"
+       },
+       "PackagesGetMetadataReturn": {
+         "required": [ "package_uuid", "pd" ],
+         "properties": {
+           "package_uuid": {
+             "type": "string",
+             "description": "UUID of the package."
+           },
+           "pd": {
+             "type": "string",
+             "description": "Package descriptor"
+           }
+         },
+         "type": "object"
+       },
+       "ServicesGetMetadataReturn": {
+         "required": [ "service_uuid", "nsd" ],
+         "properties": {
+           "service_uuid": {"type": "string", "description": "UUID of the service."},
+           "nsd": { "type": "string", "description": "Service descriptor"}
+         },
+         "type": "object"
+       },
+      "RequestData": {
+         "type": "object",
+         "properties": {
+            "uuid": {
+               "type": "string",
+               "description": "The UUID of the entity to which the instantiation request is related to (Service or Slice) -- mandatory for request_type CREATE_SERVICE (default) and CREATE_SLICE (nstId)"
+            },
+            "instance_uuid": {
+               "type": "string",
+               "description": "The UUID of the instance of the entity to which the request is related to (Service or Slice) -- mandatory for request_type TERMINATE_SERVICE and TERMINATE_SLICE"
+            },
+            "egresses": {
+               "type": "array",
+               "description": "List of egress points to be taken into consideration during the instantiation",
+               "items": {
+                  "type": "string"
+               }
+            },
+            "ingresses": {
+               "type": "array",
+               "description": "List of ingress points to be taken into consideration during the instantiation",
+               "items": {
+                  "type": "string"
+               }
+            },
+            "blacklist": {
+               "type": "array",
+               "description": "List of sites where not to instantiate",
+               "items": {
+                  "type": "string"
+               }
+            },
+            "callback": {
+               "type": "string",
+               "description": "The callback to call when the instantiation is ready"
+            },
+            "name": {
+               "type": "string",
+               "description": "The callback to call when the instantiation is ready"
+            },
+            "description": {
+               "type": "string",
+               "description": "The callback to call when the instantiation is ready"
+            },
+            "sla_id": {
+               "type": "string",
+               "description": "The callback to call when the instantiation is ready"
+            },
+            "policy_id": {
+               "type": "string",
+               "description": "The callback to call when the instantiation is ready"
+            }
+         }
+      },
+      "RequestResponseData": {
+         "type": "object",
+         "properties": {
+            "blacklist": {
+               "type": "array",
+               "description": "List of sites where not to instantiate",
+               "items": {
+                  "type": "string"
+               }
+            },
+            "callback": {
+               "type": "string",
+               "description": "The callback to call when the request status changes"
+            },
+            "created_at": {
+               "type": "string",
+               "description": "The time at which the request has been created"
+            },
+            "customer_name": {
+               "type": "string",
+               "description": "The name of the Customer making the request"
+            },
+            "customer_email": {
+               "type": "string",
+               "description": "The email of the Customer making the request"
+            },
+            "description": {
+               "type": "string",
+               "description": "Free (optional) text describing the request"
+            },
+            "egresses": {
+               "type": "array",
+               "description": "List of egress points to be taken into consideration during the instantiation",
+               "items": {
+                  "type": "string"
+               }
+            },
+            "error": {
+               "type": "string",
+               "description": "Text describing the error ocurred in the request, if thre is any"
+            },
+            "id": {
+               "type": "string",
+               "description": "The ID of the request"
+            },
+            "ingresses": {
+               "type": "array",
+               "description": "List of ingress points to be taken into consideration during the instantiation",
+               "items": {
+                  "type": "string"
+               }
+            },
+            "instance_uuid": {
+               "type": "string",
+               "description": "The UUID of the instance of the entity to which the request is related to (Service or Slice) -- mandatory for TERMINATION"
+            },
+            "name": {
+               "type": "string",
+               "description": "The name of the request (optional)"
+            },
+            "nstId": {
+               "type": "string",
+               "description": "The UUID of the slice template to which the request is related to -- mandatory for CREATION"
+            },
+            "request_type": {
+               "type": "string",
+               "description": "The type of the request. Defaults to CREATE_SERVICE, but can also be TERMINATE_SERVICE, CREATE_SLICE, TERMINATE_SLICE, SCALE_SERVICE or MIGRATE_FUNCTION"
+            },
+            "service_uuid": {
+               "type": "string",
+               "description": "The UUID of the service to which the request is related to -- mandatory for CREATION"
+            },
+            "sla_id": {
+               "type": "string",
+               "description": "The UUID of the SLA chosen by the customer"
+            },
+            "policy_id": {
+               "type": "string",
+               "description": "The UUID of the policy related to the above SLA UUID"
+            },
+            "status": {
+               "type": "string",
+               "description": "The status of the request: starts NEW, becomes INSTANTIATING or TERMINATING while the MANO does the work, and finishes either READY (success) or ERROR (fail)"
+            },
+            "updated_at": {
+               "type": "string",
+               "description": "The time at which the request has been updated"
+            }
+         }
+      }
+   }
+}
+
