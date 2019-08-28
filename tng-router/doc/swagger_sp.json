@@ -23,8 +23,7 @@
       { "name": "services", "description": "SP API to list Network Services (NSs) available in the Catalogue" },
       { "name": "settings", "description": "SP API to manage different kinds of settings" },
       { "name": "SLAs", "description": "SP API to manage SLA aggreements, configurations, licenses, templates and violations" },
-      { "name": "slices", "description": "SP API to manage slice templates" },
-      { "name": "slice-instances", "description": "SP API to list slice instances (creation and deletion are handled through requests)" },
+      { "name": "slices", "description": "SP API to manage slice templates and slice instances (creation and deletion are handled through requests)" },
       { "name": "users", "description": "SP API to manage users" }
    ],
    "paths": {
@@ -390,6 +389,9 @@
             }
          }
       },
+      "/policies": {
+          "tags": [ "policies"]
+      },
       "/records/functions": {
           "get": {
               "tags": ["records"],
@@ -611,6 +613,15 @@
                }
             }
          }
+      },
+      "/settings/monitoring": {
+          "tags": ["settings"]
+      },
+      "/settings/vims": {
+          "tags": ["settings"]
+      },
+      "/settings/wims": {
+          "tags": ["settings"]
       },
       "/services": {
         "get": {
