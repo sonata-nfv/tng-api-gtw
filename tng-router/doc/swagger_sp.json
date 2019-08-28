@@ -2544,7 +2544,8 @@
                      }
                   }
                }
-            }
+            },
+            "tags": ["slices"]
          },
          "get": {
             "description": "**Query NST**: Queries NST information (multiple NSTs).\n",
@@ -3228,7 +3229,8 @@
                      }
                   }
                }
-            }
+            },
+            "tags": ["slices"]
          }
       },
       "/slices/descriptors/{nstId}": {
@@ -3884,7 +3886,8 @@
                      }
                   }
                }
-            }
+            },
+            "tags": ["slices"]
          },
          "delete": {
             "description": "**Delete NST**: Delete a NST. After deletion, there is no possible anymore to create Network Slice Instances (NSIs).\n",
@@ -4488,7 +4491,8 @@
                      }
                   }
                }
-            }
+            },
+            "tags": ["slices"]
          }
       },
       "/users": {
