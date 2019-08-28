@@ -390,6 +390,175 @@
             }
          }
       },
+      "/records/functions": {
+          "get": {
+              "tags": ["records"],
+              "responses": {
+                  "200": {
+                      "description": "Success",
+                      "headers": {
+                          "Content-Type": {
+                              "description": "Through this endpoint GET request, the Records returns a JSON formatted paginated list of VNF records.",
+                              "type": "string",
+                              "maximum": 1,
+                              "minimum": 1
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "Error",
+                      "headers": {
+                          "Content-Type": {
+                              "description": "Error Establishing a Database Connection.",
+                              "type": "string",
+                              "maximum": 1,
+                              "minimum": 1
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/records/functions/{vnf_instance_id}": {
+          "get": {
+              "tags": ["records"],
+              "parameters": [
+                {
+                  "name": "vnf_instance_id",
+                  "in": "path",
+                  "description": "UUID of the function instance record which is required",
+                  "required": true,
+                  "type": "string",
+                  "format": "uuid"
+                }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Success",
+                      "headers": {
+                          "Content-Type": {
+                              "description": "Through this endpoint GET request, the Records returns a JSON of vnf record requested.",
+                              "type": "string",
+                              "maximum": 1,
+                              "minimum": 1
+                          }
+                      }
+                  },
+                  "422": {
+                      "description": "Error",
+                      "headers": {
+                          "Content-Type": {
+                              "description": "Error parsing Json.",
+                              "type": "string",
+                              "maximum": 1,
+                              "minimum": 1
+                          }
+                      }
+                  },
+                  "409": {
+                      "description": "Error",
+                      "headers": {
+                          "Content-Type": {
+                              "description": "Duplicated trr UUID.",
+                              "type": "string",
+                              "maximum": 1,
+                              "minimum": 1
+                          }
+                      }
+                  },
+                  "404": {
+                      "description": "Error",
+                      "headers": {
+                          "Content-Type": {
+                              "description": "DocumentNotFound.",
+                              "type": "string",
+                              "maximum": 1,
+                              "minimum": 1
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/records/services": {
+          "get": {
+              "tags": ["records"],
+              "responses": {
+                  "200": {
+                      "description": "Success",
+                      "headers": {
+                          "Content-Type": {
+                              "description": "List all ns-instances",
+                              "type": "string",
+                              "maximum": 1,
+                              "minimum": 1
+                          }
+                      }
+                  },
+                  "404": {
+                      "description": "Error",
+                      "headers": {
+                          "Content-Type": {
+                              "description": "nsr: No requests were found",
+                              "type": "string",
+                              "maximum": 1,
+                              "minimum": 1
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "Error",
+                      "headers": {
+                          "Content-Type": {
+                              "description": "Error Establishing a Database Connection",
+                              "type": "string",
+                              "maximum": 1,
+                              "minimum": 1
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/records/services/{nsr_id}": {
+          "get": {
+              "tags": ["records"],
+              "parameters": [
+                {
+                  "name": "nsr_id",
+                  "in": "path",
+                  "description": "UUID of the service instance record which is required",
+                  "required": true,
+                  "type": "string",
+                  "format": "uuid"
+                }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Success",
+                      "headers": {
+                          "Content-Type": {
+                              "description": "get a ns-instance",
+                              "type": "string",
+                              "maximum": 1,
+                              "minimum": 1
+                          }
+                      }
+                  },
+                  "415": {
+                      "description": "Error",
+                      "headers": {
+                          "Content-Type": {
+                              "description": "invalid format",
+                              "type": "string",
+                              "maximum": 1,
+                              "minimum": 1
+                          }
+                      }
+                  }
+              }
+          }
+      },
       "/requests": {
          "post": {
             "tags": ["requests"],
