@@ -15,8 +15,10 @@
    "tags": [
       { "name": "root access", "description": "VnV API root access"},
       { "name": "functions", "description": "VnV API to list Virtual Network Functions (VNFs) available in the Catalogue" },
+      { "name": "monitoring", "description": "VnV API to manage monitoring data and graphs" },
       { "name": "packages", "description": "VnV API to manage packages (uploading, downloading, etc.)" },
       { "name": "pings", "description": "VnV API to implement readiness and liveness" },
+      { "name": "recommendations", "description": "VnV API to manage recommendations" },
       { "name": "services", "description": "VnV API to list Network Services (NSs) available in the Catalogue" },
       { "name": "settings", "description": "VnV API to manage different kinds of settings" },
       { "name": "tests", "description": "VnV API to list test descriptors and results, and manage test plans" },
@@ -112,6 +114,8 @@
           }
         }
       },
+      "/monitoring/data":{},
+      "/monitoring/graphs":{},
       "/packages": {
         "post": {
             "summary": "Uploads a package",
@@ -385,6 +389,7 @@
             }
          }
       },
+      "/recommendations": {},
       "settings/monitoring": {
           "tags": ["settings"]
       },
@@ -758,8 +763,513 @@
                 }
       },
       "/tests/plans": {
-          "tags": ["tests"]
+            "get": {
+              "tags": ["tests"],
+              "summary": "Find all test plan",
+              "description": "Finding all test plans",
+              "operationId": "listAllTestPlansUsingGET",
+              "produces": [
+                "*/*"
+              ],
+              "parameters": [
+                {
+                  "name": "serviceName",
+                  "in": "query",
+                  "description": "serviceName",
+                  "required": false,
+                  "type": "string"
+                },
+                {
+                  "name": "status",
+                  "in": "query",
+                  "description": "status",
+                  "required": false,
+                  "type": "string"
+                },
+                {
+                  "name": "testName",
+                  "in": "query",
+                  "description": "testName",
+                  "required": false,
+                  "type": "string"
+                },
+                {
+                  "name": "testUuid",
+                  "in": "query",
+                  "description": "testUuid",
+                  "required": false,
+                  "type": "string"
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "OK",
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/TestPlan"
+                    }
+                  }
+                }
+              },
+              "deprecated": false
+            },
+            "post": {
+              "tags": ["tests"],
+              "summary": "Create a test plan",
+              "description": "Creating a test plan",
+              "operationId": "saveUsingPOST",
+              "consumes": [
+                "application/json"
+              ],
+              "produces": [
+                "*/*"
+              ],
+              "parameters": [
+                {
+                  "in": "body",
+                  "name": "testPlan",
+                  "description": "testPlan",
+                  "required": true,
+                  "schema": {
+                    "$ref": "#/definitions/TestPlan"
+                  }
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "OK",
+                  "schema": {
+                    "$ref": "#/definitions/TestPlan"
+                  }
+                },
+                "400": {
+                  "description": "Bad Request"
+                }
+              },
+              "deprecated": false
+            }
       },
+      "/tests/plans/services": {
+            "post": {
+              "tags": ["tests"],
+              "summary": "Create a test plan by service uuid",
+              "operationId": "buildTestPlansByServiceUsingPOST",
+              "consumes": [
+                "application/json"
+              ],
+              "produces": [
+                "*/*"
+              ],
+              "parameters": [
+                {
+                  "name": "confirmRequired",
+                  "in": "query",
+                  "description": "confirmRequired",
+                  "required": false,
+                  "type": "boolean"
+                },
+                {
+                  "name": "serviceUuid",
+                  "in": "query",
+                  "description": "serviceUuid",
+                  "required": true,
+                  "type": "string"
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "OK",
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/TestPlan"
+                    }
+                  }
+                },
+                "400": {
+                  "description": "Bad Request"
+                }
+              },
+              "deprecated": false
+            }
+          },
+          "/tests/plans/services/{nsdUuid}/tests": {
+            "get": {
+              "tags": [
+                "tests"
+              ],
+              "summary": "Find all tests related with a service uuid",
+              "operationId": "listTestsByServiceUsingGET",
+              "produces": [
+                "*/*"
+              ],
+              "parameters": [
+                {
+                  "name": "nsdUuid",
+                  "in": "path",
+                  "description": "nsdUuid",
+                  "required": true,
+                  "type": "string"
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "OK",
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  }
+                }
+              },
+              "deprecated": false
+            }
+          },
+          "/tests/plans/testAndServices": {
+            "post": {
+              "tags": [
+                "tests"
+              ],
+              "summary": "Create a test plan by test uuid and service uuid",
+              "operationId": "buildTestPlansByNsTdPairUsingPOST",
+              "consumes": [
+                "application/json"
+              ],
+              "produces": [
+                "*/*"
+              ],
+              "parameters": [
+                {
+                  "name": "confirmRequired",
+                  "in": "query",
+                  "description": "confirmRequired",
+                  "required": false,
+                  "type": "boolean"
+                },
+                {
+                  "name": "serviceUuid",
+                  "in": "query",
+                  "description": "serviceUuid",
+                  "required": true,
+                  "type": "string"
+                },
+                {
+                  "name": "testUuid",
+                  "in": "query",
+                  "description": "testUuid",
+                  "required": true,
+                  "type": "string"
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "OK",
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/TestPlan"
+                    }
+                  }
+                },
+                "400": {
+                  "description": "Bad Request"
+                }
+              },
+              "deprecated": false
+            }
+          },
+          "/tests/plans/testing-tags": {
+            "post": {
+              "tags": [
+                "tests"
+              ],
+              "summary": "Create a test plan by testing tag",
+              "operationId": "buildTestPlansByTestingTagUsingPOST",
+              "consumes": [
+                "application/json"
+              ],
+              "produces": [
+                "*/*"
+              ],
+              "parameters": [
+                {
+                  "name": "confirmRequired",
+                  "in": "query",
+                  "description": "confirmRequired",
+                  "required": false,
+                  "type": "boolean"
+                },
+                {
+                  "name": "testingTag",
+                  "in": "query",
+                  "description": "testingTag",
+                  "required": true,
+                  "type": "string"
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "OK",
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/TestPlan"
+                    }
+                  }
+                },
+                "400": {
+                  "description": "Bad Request"
+                }
+              },
+              "deprecated": false
+            }
+          },
+          "/tests/plans/testing-tags/{tag}/services": {
+            "get": {
+              "tags": [
+                "tests"
+              ],
+              "summary": "Find all services related with a tag",
+              "operationId": "listServicesByTagUsingGET",
+              "produces": [
+                "*/*"
+              ],
+              "parameters": [
+                {
+                  "name": "tag",
+                  "in": "path",
+                  "description": "tag",
+                  "required": true,
+                  "type": "string"
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "OK",
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  }
+                }
+              },
+              "deprecated": false
+            }
+          },
+          "/tests/plans/testing-tags/{tag}/tests": {
+            "get": {
+              "tags": [
+                "tests"
+              ],
+              "summary": "Find all tests related with a testing_tag",
+              "operationId": "listTestsByTagUsingGET",
+              "produces": [
+                "*/*"
+              ],
+              "parameters": [
+                {
+                  "name": "tag",
+                  "in": "path",
+                  "description": "tag",
+                  "required": true,
+                  "type": "string"
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "OK",
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  }
+                }
+              },
+              "deprecated": false
+            }
+          },
+          "/tests/plans/tests": {
+            "post": {
+              "tags": [
+                "tests"
+              ],
+              "summary": "Create a test plan by test uuid",
+              "operationId": "buildTestPlansByTestUsingPOST",
+              "consumes": [
+                "application/json"
+              ],
+              "produces": [
+                "*/*"
+              ],
+              "parameters": [
+                {
+                  "name": "confirmRequired",
+                  "in": "query",
+                  "description": "confirmRequired",
+                  "required": false,
+                  "type": "boolean"
+                },
+                {
+                  "name": "testUuid",
+                  "in": "query",
+                  "description": "testUuid",
+                  "required": true,
+                  "type": "string"
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "OK",
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/TestPlan"
+                    }
+                  }
+                },
+                "400": {
+                  "description": "Bad Request"
+                }
+              },
+              "deprecated": false
+            }
+          },
+          "/tests/plans/tests/{testdUuid}/services": {
+            "get": {
+              "tags": [
+                "tests"
+              ],
+              "summary": "Find all services related with a test",
+              "operationId": "listServicesByTestUsingGET",
+              "produces": [
+                "*/*"
+              ],
+              "parameters": [
+                {
+                  "name": "testdUuid",
+                  "in": "path",
+                  "description": "testdUuid",
+                  "required": true,
+                  "type": "string"
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "OK",
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  }
+                }
+              },
+              "deprecated": false
+            }
+          },
+          "/tests/plans/{uuid}": {
+            "get": {
+              "tags": [
+                "tests"
+              ],
+              "summary": "Find a test plan",
+              "description": "Finding test plan by uuid",
+              "operationId": "findTestPlanUsingGET",
+              "produces": [
+                "*/*"
+              ],
+              "parameters": [
+                {
+                  "name": "uuid",
+                  "in": "path",
+                  "description": "uuid",
+                  "required": true,
+                  "type": "string"
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "OK",
+                  "schema": {
+                    "$ref": "#/definitions/TestPlan"
+                  }
+                }
+              },
+              "deprecated": false
+            },
+            "put": {
+              "tags": [
+                "tests"
+              ],
+              "summary": "Update a test plan status",
+              "description": "Updating a test plan status by uuid",
+              "operationId": "updateUsingPUT",
+              "consumes": [
+                "application/json"
+              ],
+              "produces": [
+                "*/*"
+              ],
+              "parameters": [
+                {
+                  "name": "status",
+                  "in": "query",
+                  "description": "status",
+                  "required": true,
+                  "type": "string"
+                },
+                {
+                  "name": "uuid",
+                  "in": "path",
+                  "description": "uuid",
+                  "required": true,
+                  "type": "string"
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "OK",
+                  "schema": {
+                    "$ref": "#/definitions/TestPlan"
+                  }
+                },
+                "400": {
+                  "description": "Bad Request"
+                }
+              },
+              "deprecated": false
+            },
+            "delete": {
+              "tags": [
+                "tests"
+              ],
+              "summary": "Cancel a test plan",
+              "description": "canceling test plan by uuid",
+              "operationId": "deleteTestPlanUsingDELETE",
+              "produces": [
+                "*/*"
+              ],
+              "parameters": [
+                {
+                  "name": "uuid",
+                  "in": "path",
+                  "description": "uuid",
+                  "required": true,
+                  "type": "string"
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "OK"
+                }
+              },
+              "deprecated": false
+            }
+          },
       "/tests/plans/{plan_uuid}": {
           "tags": ["tests"]
       },
