@@ -27,3 +27,8 @@ For the versions available, see the [link to releases on this repository](/relea
 ## Licensing
 
 For licensing issues, please check the [Licence](https://github.com/sonata-nfv/tng-api-gtw/blob/master/LICENSE) file.
+
+#### Feedback-Channel
+
+* Please use the GitHub issues to report bugs.
+* You may use the mailing list [sonata-dev@lists.atosresearch.eu](mailto:sonata-dev@lists.atosresearch.eu)
