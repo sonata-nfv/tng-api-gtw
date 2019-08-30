@@ -931,6 +931,114 @@
           				}
           			}
       },
+      "/recommendations/health": {
+          "get": {
+              "responses": {
+                  "200": {
+                      "description": "Success"
+                  }
+              },
+              "operationId": "get_dsm_health",
+              "tags": [
+                  "default"
+              ]
+          }
+      },
+      "/recommendations/pair/{package_uuid}": {
+          "parameters": [
+              {
+                  "name": "package_uuid",
+                  "in": "path",
+                  "required": true,
+                  "type": "string"
+              }
+          ],
+          "post": {
+              "responses": {
+                  "200": {
+                      "description": "Success"
+                  }
+              },
+              "operationId": "post_dsm_add_user_item",
+              "tags": [
+                  "default"
+              ]
+          }
+      },
+      "/recommendations/pair/{user}/{item}": {
+          "parameters": [
+              {
+                  "name": "user",
+                  "in": "path",
+                  "required": true,
+                  "type": "string"
+              },
+              {
+                  "name": "item",
+                  "in": "path",
+                  "required": true,
+                  "type": "string"
+              }
+          ],
+          "post": {
+              "responses": {
+                  "200": {
+                      "description": "Success"
+                  }
+              },
+              "operationId": "post_dsm_user_item",
+              "tags": [
+                  "default"
+              ]
+          }
+      },
+      "/recommendations/test_items": {
+          "get": {
+              "responses": {
+                  "200": {
+                      "description": "Success"
+                  }
+              },
+              "operationId": "get_dsm_test_items",
+              "tags": [
+                  "default"
+              ]
+          }
+      },
+      "/recommendations/users": {
+          "get": {
+              "responses": {
+                  "200": {
+                      "description": "Success"
+                  }
+              },
+              "operationId": "get_dsm_get_users",
+              "tags": [
+                  "default"
+              ]
+          }
+      },
+      "/recommendations/users/{user}": {
+          "parameters": [
+              {
+                  "name": "user",
+                  "in": "path",
+                  "required": true,
+                  "type": "string"
+              }
+          ],
+          "delete": {
+              "responses": {
+                  "200": {
+                      "description": "Success"
+                  }
+              },
+              "operationId": "delete_dsm_delete_user",
+              "tags": [
+                  "default"
+              ]
+          }
+      },
       "/records/functions": {
           "get": {
               "tags": ["records"],
