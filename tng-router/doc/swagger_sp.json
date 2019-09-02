@@ -940,7 +940,7 @@
               },
               "operationId": "get_dsm_health",
               "tags": [
-                  "default"
+                  "recommendations"
               ]
           }
       },
@@ -961,7 +961,7 @@
               },
               "operationId": "post_dsm_add_user_item",
               "tags": [
-                  "default"
+                  "recommendations"
               ]
           }
       },
@@ -988,7 +988,7 @@
               },
               "operationId": "post_dsm_user_item",
               "tags": [
-                  "default"
+                  "recommendations"
               ]
           }
       },
@@ -1001,7 +1001,7 @@
               },
               "operationId": "get_dsm_test_items",
               "tags": [
-                  "default"
+                  "recommendations"
               ]
           }
       },
@@ -1014,7 +1014,7 @@
               },
               "operationId": "get_dsm_get_users",
               "tags": [
-                  "default"
+                  "recommendations"
               ]
           }
       },
@@ -1035,7 +1035,7 @@
               },
               "operationId": "delete_dsm_delete_user",
               "tags": [
-                  "default"
+                  "recommendations"
               ]
           }
       },
@@ -1753,7 +1753,7 @@
       "/settings/wims": {
           "get": {
             "tags": [
-              "wims"
+              "settings"
             ],
             "summary": "Returns a list of WIMs existing in the DB",
             "consumes": [
@@ -1794,9 +1794,7 @@
         },
       "/settings/wims/{wim_uuid}": {
           "get": {
-            "tags": [
-              "wims"
-            ],
+            "tags": ["settings"],
             "summary": "Query a specific wim",
             "parameters": [
               {
@@ -1827,9 +1825,7 @@
             }
           },
           "delete": {
-            "tags": [
-              "wims"
-            ],
+            "tags": ["settings"],
             "summary": "Delete a specific WIM",
             "parameters": [
               {
@@ -1860,7 +1856,7 @@
       "/settings/wims/{type}": {
           "post": {
             "tags": [
-              "wims"
+              "settings"
             ],
             "summary": "Add new WIM",
             "parameters": [
@@ -1911,7 +1907,7 @@
       "/settings/wims/{type}/{wim_uuid}": {
           "patch": {
             "tags": [
-              "wims"
+              "settings"
             ],
             "summary": "Update a specific WIM",
             "parameters": [
