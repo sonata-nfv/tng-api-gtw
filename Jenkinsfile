@@ -101,7 +101,7 @@ pipeline {
       when {
         branch 'v5.0'
       }
-      steps {
+      stages {
         stage('Generating release') {
           steps {
             sh 'docker tag registry.sonata-nfv.eu:5000/tng-api-gtw:latest registry.sonata-nfv.eu:5000/tng-api-gtw:v5.0'
