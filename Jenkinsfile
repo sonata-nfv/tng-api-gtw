@@ -97,11 +97,11 @@ pipeline {
         }
       }
     }
-    steps {
-      stage('Promoting release v5.0') {
-        when {
-          branch 'v5.0'
-        }
+    stage('Promoting release v5.0') {
+      when {
+        branch 'v5.0'
+      }
+      steps {
         stage('Generating release') {
           steps {
             sh 'docker tag registry.sonata-nfv.eu:5000/tng-api-gtw:latest registry.sonata-nfv.eu:5000/tng-api-gtw:v5.0'
@@ -122,7 +122,7 @@ pipeline {
         }
       }
     }
-}
+  }
   post {
     success {
       emailext(subject: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'", body: """<p>SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
