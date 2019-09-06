@@ -149,3 +149,21 @@ paths:
       verbs: 'get,delete,options,post'
     - role: customer
       verbs: 'get'
+  /api/v3/analytics(/?|/*): 
+    site: http://tng-analytics-engine:8085
+    permissions:
+    - role: admin
+      verbs: 'options,post,get,delete'
+    - role: developer
+      verbs: 'get,delete,options,post'
+    - role: customer
+      verbs: 'get'
+  /api/v3/ranalytics(/?|/*): 
+    site: http://tng-analytics-rserver:8083
+    permissions:
+    - role: admin
+      verbs: 'options,get'
+    - role: developer
+      verbs: 'get,options'
+    - role: customer
+      verbs: 'get'

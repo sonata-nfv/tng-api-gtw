@@ -108,6 +108,10 @@ pipeline {
             sh 'docker tag registry.sonata-nfv.eu:5000/tng-api-gtw:latest sonatanfv/tng-api-gtw:v5.0'
             sh 'docker push registry.sonata-nfv.eu:5000/tng-api-gtw:v5.0'
             sh 'docker push sonatanfv/tng-api-gtw:v5.0'
+            sh 'docker tag registry.sonata-nfv.eu:5000/tng-sec-gtw:latest registry.sonata-nfv.eu:5000/tng-sec-gtw:v5.0'
+            sh 'docker tag registry.sonata-nfv.eu:5000/tng-sec-gtw:latest sonatanfv/tng-sec-gtw:v5.0'
+            sh 'docker push registry.sonata-nfv.eu:5000/tng-sec-gtw:v5.0'
+            sh 'docker push sonatanfv/tng-sec-gtw:v5.0'
           }
         }
         stage('Deploying in v5.0 servers') {
