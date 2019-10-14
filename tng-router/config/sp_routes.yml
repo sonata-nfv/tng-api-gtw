@@ -109,7 +109,7 @@ paths:
     site: http://tng-policy-mngr:8081/api/v1
     permissions:
     - role: '-'
-      verbs: get
+      verbs: 'get,post'
   /api/v3/slas/templates(/?|/*): 
     site: http://tng-sla-mgmt:8080/tng-sla-mgmt/api/slas/v1/templates
     permissions:
