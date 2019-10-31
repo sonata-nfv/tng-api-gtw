@@ -72,8 +72,14 @@ paths:
       verbs: 'get,options'
     - role: customer
       verbs: 'get,options'
+  /api/v3/tests/plans/policies(/?|/*):
+    site: http://tng-vnv-platform-adapter:5001/adapters/policies
+    permissions:
+    - role: admin
+      verbs: 'get,options,post,put'
+    - role: developer
+      verbs: 'get,options,post,put'
   /api/v3/tests/plans(/?|/*):
-    #site: http://tng-gtk-vnv:5000/plans
     site: http://tng-vnv-planner:6100/api/v1/test-plans
     permissions:
     - role: admin
