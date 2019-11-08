@@ -51,9 +51,9 @@ pipeline {
     }
     stage('Deployment in pre-integration') {
       parallel {
-        stage('Deployment in Integration') {
+        stage('Deployment in pre-integration') {
           steps {
-            echo 'Deploying in integration...'
+            echo 'Deploying in pre-integration...'
           }
         }
         stage('Deploying') {
