@@ -96,6 +96,11 @@ pipeline {
           }
         }
       }
+    }
+    stage('Deployment in Integration') {
+      when {
+         branch 'master'
+      }      
       parallel {
         stage('Deployment in Integration') {
           steps {
