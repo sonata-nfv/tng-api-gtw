@@ -165,7 +165,7 @@ paths:
     - role: customer
       verbs: 'get'
   /api/v3/ranalytics(/?|/*): 
-    site: http://tng-analytics-rserver:8083
+    site: http://tng-analytics-rserver:80
     permissions:
     - role: admin
       verbs: 'options,get'

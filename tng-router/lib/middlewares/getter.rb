@@ -39,6 +39,8 @@ class Getter
   LOGGER=Tng::Gtk::Utils::Logger
   LOGGED_COMPONENT=self.name
   include Utils
+  include Rack::Utils
+
   attr_accessor :app
   
   def initialize(app, options= {})
@@ -68,6 +70,8 @@ class Getter
       end
       LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"Response was #{response.status}, #{response.headers}, #{response.body}")
       response.headers.delete 'Transfer-Encoding'
+      #response.add_header 'Content-Length', bytesize(parsed_response).to_s
+      response.headers['Content-Length'] = response.body.bytesize.to_s
       return respond(response.status, response.headers, response.body)
     rescue Faraday::Error::ConnectionFailed => e
       LOGGER.debug(component:LOGGED_COMPONENT, operation:msg, message:"The server at #{env['5gtango.sink_path']} is either unavailable or is not currently accepting requests. Please try again in a few minutes.")
