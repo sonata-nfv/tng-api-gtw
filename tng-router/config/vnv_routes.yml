@@ -158,8 +158,8 @@ paths:
       verbs: 'get,delete,options,post'
     - role: customer
       verbs: 'get'
-  /api/v3/ranalytics(/?|/*): 
-    site: http://tng-analytics-rserver:8083
+  /api/v3/analytic/results(/?|/*): 
+    site: http://tng-analytics-results:8086
     permissions:
     - role: admin
       verbs: 'options,get'
