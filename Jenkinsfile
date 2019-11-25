@@ -49,11 +49,11 @@ pipeline {
         }
       }
     }
-    stage('Deployment in Integration') {
+    stage('Deployment in pre-integration') {
       parallel {
-        stage('Deployment in Integration') {
+        stage('Deployment in pre-integration') {
           steps {
-            echo 'Deploying in integration...'
+            echo 'Deploying in pre-integration...'
           }
         }
         stage('Deploying') {
@@ -97,6 +97,28 @@ pipeline {
         }
       }
     }
+    stage('Deployment in Integration') {
+      when {
+         branch 'master'
+      }      
+      parallel {
+        stage('Deployment in Integration') {
+          steps {
+            echo 'Deploying in integration...'
+          }
+        }
+        stage('Deploying') {
+          steps {
+            sh 'rm -rf tng-devops || true'
+            sh 'git clone https://github.com/sonata-nfv/tng-devops.git'
+            dir(path: 'tng-devops') {
+              sh 'ansible-playbook roles/sp.yml -i environments -e "target=int-sp-ath.5gtango.eu component=gatekeeper"'
+              sh 'ansible-playbook roles/vnv.yml -i environments -e "target=int-vnv.5gtango.eu component=gatekeeper"'
+            }
+          }
+        }
+      }
+    }
     stage('Promoting release v5.0') {
       when {
         branch 'v5.0'
@@ -108,6 +130,10 @@ pipeline {
             sh 'docker tag registry.sonata-nfv.eu:5000/tng-api-gtw:latest sonatanfv/tng-api-gtw:v5.0'
             sh 'docker push registry.sonata-nfv.eu:5000/tng-api-gtw:v5.0'
             sh 'docker push sonatanfv/tng-api-gtw:v5.0'
+            sh 'docker tag registry.sonata-nfv.eu:5000/tng-sec-gtw:latest registry.sonata-nfv.eu:5000/tng-sec-gtw:v5.0'
+            sh 'docker tag registry.sonata-nfv.eu:5000/tng-sec-gtw:latest sonatanfv/tng-sec-gtw:v5.0'
+            sh 'docker push registry.sonata-nfv.eu:5000/tng-sec-gtw:v5.0'
+            sh 'docker push sonatanfv/tng-sec-gtw:v5.0'
           }
         }
         stage('Deploying in v5.0 servers') {
