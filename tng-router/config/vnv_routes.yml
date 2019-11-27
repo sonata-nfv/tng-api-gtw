@@ -168,8 +168,8 @@ paths:
     site: http://tng-analytics-results:80
     permissions:
     - role: admin
-      verbs: 'options,get'
+      verbs: 'options,get,delete'
     - role: developer
-      verbs: 'get,options'
+      verbs: 'get,options,delete'
     - role: customer
       verbs: 'get'
