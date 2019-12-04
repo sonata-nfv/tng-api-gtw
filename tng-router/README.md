@@ -17,6 +17,8 @@ The entrypoints for the Service Platform are configured in the [config/sp_routes
 `/`|The root of the API.
 `/api/v3`|The v3 root of the API.
 `/api/v3/functions`|[Lists available functions (VNFs) in the Catalogue](https://github.com/sonata-nfv/tng-gtk-common/wiki/functions-querying)
+`/api/v3/monitoring/data`|[Fetches different kinds of monitoring data](https://github.com/sonata-nfv/son-monitor/wiki/Usage-documentation)
+`/api/v3/monitoring/graphs`|Fetches different kinds of monitoring graphs](https://github.com/sonata-nfv/son-monitor/wiki/Usage-documentation)
 `/api/v3/packages`|[Manages packages](https://github.com/sonata-nfv/tng-api-gtw/wiki/packages-management) (uploading, downloading, etc.)
 `/api/v3/pings`|[The Gatekeeper's `readiness` and `liveness` endpoint](https://github.com/sonata-nfv/tng-api-gtw/wiki/readiness-liveliness-probe)
 `/api/v3/policies`|[Manages placement and run-time policies](https://github.com/sonata-nfv/tng-api-gtw/wiki/Policies-usage)
@@ -25,6 +27,7 @@ The entrypoints for the Service Platform are configured in the [config/sp_routes
 `/api/v3/requests`|[Manages services' and slices' lifecycle events](https://github.com/sonata-nfv/tng-api-gtw/wiki/Requests-management) (creation, scaling, deletion, etc.)
 `/api/v3/services`|[Lists available services (NSs) in the Catalogue](https://github.com/sonata-nfv/tng-gtk-common/wiki/services-querying)
 `/api/v3/settings`|[Manages different kinds of settings](https://github.com/sonata-nfv/tng-api-gtw/wiki/Settings-usage)
+`/api/v3/settings/monitoring`|[Manages different kinds of monitoring settings](https://github.com/sonata-nfv/son-monitor/wiki/Usage-documentation)
 `/api/v3/slas`|[Manages SLA aggreements, configurations, licenses, templates and violations](https://github.com/sonata-nfv/tng-sla-mgmt)
 `/api/v3/slices`|[Manages slice templates](https://github.com/sonata-nfv/tng-slice-mngr)
 `/api/v3/slice-instances`|[Lists slice instances](https://github.com/sonata-nfv/tng-slice-mngr) (creation and deletion are handled through requests) 
@@ -171,4 +174,3 @@ Our style guide is really simple:
 ## Licensing
 
 This 5GTANGO component is published under Apache 2.0 license. Please see the [LICENSE](https://github.com/sonata-nfv/tng-api-gtw/blob/master/LICENSE) file for more details.
-
