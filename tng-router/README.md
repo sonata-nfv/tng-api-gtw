@@ -18,7 +18,7 @@ The entrypoints for the Service Platform are configured in the [config/sp_routes
 `/api/v3`|The v3 root of the API.
 `/api/v3/functions`|[Lists available functions (VNFs) in the Catalogue](https://github.com/sonata-nfv/tng-gtk-common/wiki/functions-querying)
 `/api/v3/monitoring/data`|[Fetches different kinds of monitoring data](https://github.com/sonata-nfv/son-monitor/wiki/Usage-documentation)
-`/api/v3/monitoring/graphs`|Fetches different kinds of monitoring graphs](https://github.com/sonata-nfv/son-monitor/wiki/Usage-documentation)
+`/api/v3/monitoring/graphs`|[Fetches different kinds of monitoring graphs](https://github.com/sonata-nfv/son-monitor/wiki/Usage-documentation)
 `/api/v3/packages`|[Manages packages](https://github.com/sonata-nfv/tng-api-gtw/wiki/packages-management) (uploading, downloading, etc.)
 `/api/v3/pings`|[The Gatekeeper's `readiness` and `liveness` endpoint](https://github.com/sonata-nfv/tng-api-gtw/wiki/readiness-liveliness-probe)
 `/api/v3/policies`|[Manages placement and run-time policies](https://github.com/sonata-nfv/tng-api-gtw/wiki/Policies-usage)
