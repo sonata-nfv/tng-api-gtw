@@ -41,7 +41,7 @@ gem 'sinatra-contrib', '2.0.2', require: false
 gem 'faraday', '0.14.0'
 gem 'curb', '0.9.3'
 
-gem 'puma', '3.12.2'
+gem 'puma', '3.12.6'
 gem 'tng-gtk-utils', '0.5.1'
 gem 'ci_reporter_rspec', '1.0.0'
 gem 'rubocop', '0.52.0'
